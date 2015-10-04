@@ -55,7 +55,7 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
             }
 
             tutorialView.userInteractionEnabled = true
-            var tap = UITapGestureRecognizer(target: self, action:"hideTutorial")
+            let tap = UITapGestureRecognizer(target: self, action:"hideTutorial")
             tutorialView.addGestureRecognizer(tap)
             self.view.addSubview(tutorialView)
             self.navigationController?.navigationBarHidden = true
@@ -112,7 +112,7 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
                 if coordinator == nil{
                     return nil
                 }
-                var managedObjectContext = NSManagedObjectContext()
+                let managedObjectContext = NSManagedObjectContext()
                 managedObjectContext.persistentStoreCoordinator = coordinator
                 return managedObjectContext
                 
@@ -125,13 +125,13 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
             
             //Get the saved moods
             let  requestMood = NSFetchRequest(entityName: "Mood")
-            var savedMoods = appdel.managedObjectContext?.executeFetchRequest(requestMood, error: nil)  as! [Mood]
+            var savedMoods = (try! appdel.managedObjectContext?.executeFetchRequest(requestMood))  as! [Mood]
             
             
             
                 let  request = NSFetchRequest(entityName: "Dates")
                 //Get dates where something was saved
-                var dates = appdel.managedObjectContext?.executeFetchRequest(request, error: nil)  as! [Dates]
+                var dates = (try! appdel.managedObjectContext?.executeFetchRequest(request))  as! [Dates]
             
             
             
@@ -162,7 +162,7 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
             if(savedMoods.count <= 0){
                 addNewMood()
             }else{
-                var lastMeasure = savedMoods[savedMoods.count-1]
+                let lastMeasure = savedMoods[savedMoods.count-1]
                 if(returnDateForm(lastMeasure.date) != returnDateForm(NSDate())){
                     addNewMood()
                 }else{
@@ -191,7 +191,7 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
             
             //Go one view back
             
-            var informUser = UIAlertController(title: "Saved", message:"Your mood was saved", preferredStyle: UIAlertControllerStyle.Alert)
+            let informUser = UIAlertController(title: "Saved", message:"Your mood was saved", preferredStyle: UIAlertControllerStyle.Alert)
             informUser.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
                 self.navigationController?.popViewControllerAnimated(true)
                 
@@ -241,7 +241,7 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
     func returnDateForm(date:NSDate) -> String{
         let dateFormatter = NSDateFormatter()
         
-        var theDateFormat = NSDateFormatterStyle.ShortStyle
+        let theDateFormat = NSDateFormatterStyle.ShortStyle
         let theTimeFormat = NSDateFormatterStyle.NoStyle
         
         dateFormatter.dateStyle = theDateFormat

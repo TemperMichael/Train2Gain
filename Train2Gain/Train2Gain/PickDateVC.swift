@@ -35,7 +35,7 @@ class PickDateVC: UIViewController, ADBannerViewDelegate{
         
         m_dp_DatePicker.setDate(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate, animated: true)
         
-        m_dp_DatePicker.viewForBaselineLayout()!.setValue(UIColor.whiteColor(), forKeyPath: "tintColor")
+        m_dp_DatePicker.viewForBaselineLayout().setValue(UIColor.whiteColor(), forKeyPath: "tintColor")
         
         for sub in m_dp_DatePicker.subviews{
             sub.setValue(UIColor.whiteColor(), forKeyPath: "textColor")
@@ -57,7 +57,7 @@ class PickDateVC: UIViewController, ADBannerViewDelegate{
     func returnDateForm(date:NSDate) -> String{
         let dateFormatter = NSDateFormatter()
         
-        var theDateFormat = NSDateFormatterStyle.ShortStyle
+        let theDateFormat = NSDateFormatterStyle.ShortStyle
         let theTimeFormat = NSDateFormatterStyle.NoStyle
         
         dateFormatter.dateStyle = theDateFormat

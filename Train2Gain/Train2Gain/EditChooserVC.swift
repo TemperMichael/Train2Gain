@@ -34,7 +34,7 @@ class EditChooserVC: UIViewController, ADBannerViewDelegate {
         bmButton.layer.borderColor = UIColor.whiteColor().CGColor
         moodButton.layer.borderColor = UIColor.whiteColor().CGColor
         
-        var chosendate = NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate
+        let chosendate = NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate
         changeLabel.text = "Change data of \(returnDateForm(chosendate))"
         
         //Set background
@@ -67,13 +67,13 @@ class EditChooserVC: UIViewController, ADBannerViewDelegate {
         
         if let btn = sender as? UIButton{
             if(btn == bmButton){
-             var vc = segue.destinationViewController as! MeasureVC
+             let vc = segue.destinationViewController as! MeasureVC
                 vc.editMode = true
                 
             }
             
             if(btn == moodButton){
-                var cvc = segue.destinationViewController as! MoodCVC
+                let cvc = segue.destinationViewController as! MoodCVC
                 cvc.editMode = true
             }
         }
@@ -85,7 +85,7 @@ class EditChooserVC: UIViewController, ADBannerViewDelegate {
     func returnDateForm(date:NSDate) -> String{
         let dateFormatter = NSDateFormatter()
         
-        var theDateFormat = NSDateFormatterStyle.ShortStyle
+        let theDateFormat = NSDateFormatterStyle.ShortStyle
         let theTimeFormat = NSDateFormatterStyle.NoStyle
         
         dateFormatter.dateStyle = theDateFormat

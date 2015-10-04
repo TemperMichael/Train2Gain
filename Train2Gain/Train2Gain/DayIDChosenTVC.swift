@@ -21,13 +21,13 @@ class DayIDChosenTVC: UITableViewController {
    
        override func viewDidLoad() {
         super.viewDidLoad()
-        var backgroundView = UIView(frame: CGRectZero)
+        let backgroundView = UIView(frame: CGRectZero)
         self.tableView.tableFooterView = backgroundView
         self.tableView.backgroundColor = UIColor(red:22/255 ,green:200/255, blue:1.00 ,alpha: 1)
        
-              var appdel =  UIApplication.sharedApplication().delegate as! AppDelegate
+              let appdel =  UIApplication.sharedApplication().delegate as! AppDelegate
         let  requestDoneEx = NSFetchRequest(entityName: "DoneExercise")
-        var doneEx = appdel.managedObjectContext?.executeFetchRequest(requestDoneEx, error: nil)  as! [DoneExercise]
+        let doneEx = (try! appdel.managedObjectContext?.executeFetchRequest(requestDoneEx))  as! [DoneExercise]
         
         self.title = "\(selectedDayDetails[0])"
       
@@ -59,7 +59,7 @@ class DayIDChosenTVC: UITableViewController {
     }
     
     override func viewDidDisappear(animated: Bool) {
-         var appdel =  UIApplication.sharedApplication().delegate as! AppDelegate
+         let appdel =  UIApplication.sharedApplication().delegate as! AppDelegate
         appdel.rollBackContext()
     }
     
@@ -121,7 +121,7 @@ class DayIDChosenTVC: UITableViewController {
         
         let dateFormatter = NSDateFormatter()
         
-        var theDateFormat = NSDateFormatterStyle.ShortStyle
+        let theDateFormat = NSDateFormatterStyle.ShortStyle
         let theTimeFormat = NSDateFormatterStyle.NoStyle
         
         dateFormatter.dateStyle = theDateFormat

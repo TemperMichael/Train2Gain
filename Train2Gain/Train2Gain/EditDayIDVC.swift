@@ -66,7 +66,7 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
         
         //Setup background
         
-        var bgSize = CGSize(width: view.frame.width, height: view.frame.height)
+        let bgSize = CGSize(width: view.frame.width, height: view.frame.height)
         var backgroundIMG = UIImage(named: "Background2.png")
         backgroundIMG = imageResize(backgroundIMG!, sizeChange: bgSize)
         self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
@@ -77,7 +77,7 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
             if coordinator == nil{
                 return nil
             }
-            var managedObjectContext = NSManagedObjectContext()
+            let managedObjectContext = NSManagedObjectContext()
             managedObjectContext.persistentStoreCoordinator = coordinator
             return managedObjectContext
             
@@ -102,7 +102,7 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
             }
             
             setCounter.append(i);
-            var newItem = DoneExercise()
+            let newItem = DoneExercise()
             newItem.dayID = item.dayID
             newItem.sets = item.sets
             newItem.reps = item.reps
@@ -192,7 +192,7 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
     
     
     @IBAction func saveCL(sender: AnyObject) {
-        var weight = (m_tf_Weights.text as NSString).doubleValue
+        var weight = (m_tf_Weights.text! as NSString).doubleValue
         
         //Save all in kg
         if(weightUnit == "lbs"){
@@ -217,7 +217,7 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
         var alreadyExists = true
         var savePos : Int?
         let  request = NSFetchRequest(entityName: "Dates")
-        dates = appdel.managedObjectContext?.executeFetchRequest(request, error: nil)  as! [Dates]
+        dates = (try! appdel.managedObjectContext?.executeFetchRequest(request))  as! [Dates]
         for(var i = 0; i < dates.count ; i++){
             
             if(dates[i] == NSDate()){
@@ -246,7 +246,7 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
         }
         
         let  requestDoneEx = NSFetchRequest(entityName: "DoneExercise")
-        var doneEx = appdel.managedObjectContext?.executeFetchRequest(requestDoneEx, error: nil)  as! [DoneExercise]
+        var doneEx = (try! appdel.managedObjectContext?.executeFetchRequest(requestDoneEx))  as! [DoneExercise]
         
         
         for checkCells in saveData{
@@ -281,7 +281,7 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
     func returnDateForm(date:NSDate) -> String{
         let dateFormatter = NSDateFormatter()
         
-        var theDateFormat = NSDateFormatterStyle.ShortStyle
+        let theDateFormat = NSDateFormatterStyle.ShortStyle
         let theTimeFormat = NSDateFormatterStyle.NoStyle
         
         dateFormatter.dateStyle = theDateFormat
@@ -321,7 +321,7 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
                     
                     m_L_Weights.text = weightUnit
                     
-                    var weight = (m_tf_Weights.text as NSString).doubleValue
+                    var weight = (m_tf_Weights.text! as NSString).doubleValue
                     
                     //Save all in kg
                     if(weightUnit == "lbs"){
@@ -332,7 +332,7 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
                     
                     allExWithSets[userPos].doneReps = m_tf_Reps.text != "" ?  NSDecimalNumber(string: m_tf_Reps.text) : 0
                     
-                    slideIn(duration: 1, completionDelegate: _view,direction: animationDirection)
+                    slideIn(1, completionDelegate: _view,direction: animationDirection)
                     
                     weight = (allExWithSets[userPos].weight).doubleValue
                     
@@ -424,7 +424,7 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
     //Keyboard methods
     
     
-    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         //Close Keyboard when clicking outside
         m_tf_Weights.resignFirstResponder()
         m_tf_Reps.resignFirstResponder()
@@ -445,7 +445,7 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
         self.view.frame.origin.y += 20
         
         if(textField == m_tf_Reps && m_tf_Reps.text != ""){
-            allExWithSets[userPos].doneReps = m_tf_Reps.text.toInt()!
+            allExWithSets[userPos].doneReps = Int(m_tf_Reps.text!)!
         }
         if(textField == m_tf_Weights &&  m_tf_Weights.text != ""){
             
@@ -460,29 +460,29 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
         
         var myCharacterSet : NSCharacterSet?
-        let text = (textField.text as NSString).stringByReplacingCharactersInRange(range, withString: string)
+        let text = (textField.text! as NSString).stringByReplacingCharactersInRange(range, withString: string)
         
         let disallowedCharacterSet = NSCharacterSet(charactersInString: "0123456789.").invertedSet
         let replacementStringIsLegal = string.rangeOfCharacterFromSet(disallowedCharacterSet) == nil
         
         let scanner = NSScanner(string: text)
         let resultingTextIsNumeric = scanner.scanDecimal(nil) && scanner.atEnd
-        println(resultingTextIsNumeric)
+        print(resultingTextIsNumeric)
         
-        var getDecimalNumbers = (textField.text as NSString).componentsSeparatedByString(".")
+        var getDecimalNumbers = (textField.text! as NSString).componentsSeparatedByString(".")
         if getDecimalNumbers.count > 1 && (getDecimalNumbers[1] as! NSString).integerValue > 9 && string != ""  {
             return false
         }
         
-        var newLength = count(textField.text) + count(string) - range.length
+        var newLength = textField.text!.characters.count + string.characters.count - range.length
         var back = 0
         if(textField == m_tf_Weights){
             back = 6
             
             
-            let resultingStringLengthIsLegal = count(text) <= 6
+            let resultingStringLengthIsLegal = text.characters.count <= 6
             
-            if(count(text) == 0 || (replacementStringIsLegal &&
+            if(text.characters.count == 0 || (replacementStringIsLegal &&
                 resultingStringLengthIsLegal &&
                 resultingTextIsNumeric) ){
                     
@@ -498,7 +498,7 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
             return false
         }else if(textField == m_tf_Reps){
             back = 2
-            if (newLength <= back && ((text.toInt() >= 0 && text.toInt() < 100) || text == "")) {
+            if (newLength <= back && ((Int(text) >= 0 && Int(text) < 100) || text == "")) {
                 return true
             } else {
                 return false
@@ -519,7 +519,7 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
                 wasStopped = false
             }else{
                 startTime =  saveCurrentTime! +  NSDate.timeIntervalSinceReferenceDate()
-                println(startTime)
+                print(startTime)
             }
             
         }

@@ -94,7 +94,7 @@ class ExerciseChosenVC: UIViewController, UITextFieldDelegate, ADBannerViewDeleg
         
         //Setup background
         
-        var bgSize = CGSize(width: view.frame.width, height: view.frame.height)
+        let bgSize = CGSize(width: view.frame.width, height: view.frame.height)
         var backgroundIMG = UIImage(named: "Background2.png")
         backgroundIMG = imageResize(backgroundIMG!, sizeChange: bgSize)
         self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
@@ -109,7 +109,7 @@ class ExerciseChosenVC: UIViewController, UITextFieldDelegate, ADBannerViewDeleg
             if coordinator == nil{
                 return nil
             }
-            var managedObjectContext = NSManagedObjectContext()
+            let managedObjectContext = NSManagedObjectContext()
             managedObjectContext.persistentStoreCoordinator = coordinator
             return managedObjectContext
             
@@ -137,7 +137,7 @@ class ExerciseChosenVC: UIViewController, UITextFieldDelegate, ADBannerViewDeleg
                 setCounter.append(i+1);
                 
                 
-                var newItem = Exercise()
+                let newItem = Exercise()
                 newItem.dayID = item.dayID
                 newItem.sets = item.sets
                 newItem.reps = item.reps
@@ -213,7 +213,7 @@ class ExerciseChosenVC: UIViewController, UITextFieldDelegate, ADBannerViewDeleg
             if coordinator == nil{
                 return nil
             }
-            var managedObjectContext = NSManagedObjectContext()
+            let managedObjectContext = NSManagedObjectContext()
             managedObjectContext.persistentStoreCoordinator = coordinator
             return managedObjectContext
             
@@ -223,7 +223,7 @@ class ExerciseChosenVC: UIViewController, UITextFieldDelegate, ADBannerViewDeleg
             for(var i = 0 ; i < item.sets as Int ;i++){
                 
                 setCounter.append(i+1);
-                var newItem = Exercise()
+                let newItem = Exercise()
                 
                 newItem.dayID = item.dayID
                 newItem.sets = item.sets
@@ -259,7 +259,7 @@ class ExerciseChosenVC: UIViewController, UITextFieldDelegate, ADBannerViewDeleg
     func returnDateForm(date:NSDate) -> String{
         let dateFormatter = NSDateFormatter()
         
-        var theDateFormat = NSDateFormatterStyle.ShortStyle
+        let theDateFormat = NSDateFormatterStyle.ShortStyle
         let theTimeFormat = NSDateFormatterStyle.NoStyle
         
         dateFormatter.dateStyle = theDateFormat
@@ -297,7 +297,7 @@ class ExerciseChosenVC: UIViewController, UITextFieldDelegate, ADBannerViewDeleg
     
     
     @IBAction func saveCL(sender: AnyObject) {
-        var weight = (m_tf_Weights.text as NSString).doubleValue
+        var weight = (m_tf_Weights.text! as NSString).doubleValue
         
         //Save all in kg
         if(weightUnit == "lbs"){
@@ -322,7 +322,7 @@ class ExerciseChosenVC: UIViewController, UITextFieldDelegate, ADBannerViewDeleg
         var alreadyExists = true
         var savePos : Int?
         let  request = NSFetchRequest(entityName: "Dates")
-        dates = appdel.managedObjectContext?.executeFetchRequest(request, error: nil)  as! [Dates]
+        dates = (try! appdel.managedObjectContext?.executeFetchRequest(request))  as! [Dates]
         for(var i = 0; i < dates.count ; i++){
             
             if(returnDateForm(dates[i].savedDate) == returnDateForm(date)){
@@ -417,7 +417,7 @@ class ExerciseChosenVC: UIViewController, UITextFieldDelegate, ADBannerViewDeleg
                     
                     m_L_Weights.text = weightUnit
                     
-                    var weight = (m_tf_Weights.text as NSString).doubleValue
+                    var weight = (m_tf_Weights.text! as NSString).doubleValue
                     
                     //Save all in kg
                     if(weightUnit == "lbs"){
@@ -441,7 +441,7 @@ class ExerciseChosenVC: UIViewController, UITextFieldDelegate, ADBannerViewDeleg
                      NSUserDefaults.standardUserDefaults().setObject(savedEnteredExercises, forKey: clickedExc[0].dayID)
                     
 */
-                    slideIn(duration: 1, completionDelegate: _view,direction: animationDirection)
+                    slideIn(1, completionDelegate: _view,direction: animationDirection)
                     
                     weight = (allExWithSets[userPos].weight).doubleValue
                     
@@ -535,7 +535,7 @@ class ExerciseChosenVC: UIViewController, UITextFieldDelegate, ADBannerViewDeleg
     //Keyboard methods
     
     
-    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         //Close Keyboard when clicking outside
         m_tf_Weights.resignFirstResponder()
         m_tf_Reps.resignFirstResponder()
@@ -556,7 +556,7 @@ class ExerciseChosenVC: UIViewController, UITextFieldDelegate, ADBannerViewDeleg
         self.view.frame.origin.y += 20
         
         if(textField == m_tf_Reps && m_tf_Reps.text != ""){
-            allExWithSets[userPos].doneReps = m_tf_Reps.text.toInt()!
+            allExWithSets[userPos].doneReps = Int(m_tf_Reps.text!)!
         }
         if(textField == m_tf_Weights &&  m_tf_Weights.text != ""){
             
@@ -570,8 +570,7 @@ class ExerciseChosenVC: UIViewController, UITextFieldDelegate, ADBannerViewDeleg
     //Set textfield input options
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
         
-        var myCharacterSet : NSCharacterSet?
-        let text = (textField.text as NSString).stringByReplacingCharactersInRange(range, withString: string)
+        let text = (textField.text! as NSString).stringByReplacingCharactersInRange(range, withString: string)
         
         let disallowedCharacterSet = NSCharacterSet(charactersInString: "0123456789.").invertedSet
         let replacementStringIsLegal = string.rangeOfCharacterFromSet(disallowedCharacterSet) == nil
@@ -580,20 +579,20 @@ class ExerciseChosenVC: UIViewController, UITextFieldDelegate, ADBannerViewDeleg
         let resultingTextIsNumeric = scanner.scanDecimal(nil) && scanner.atEnd
       
         
-        var getDecimalNumbers = (textField.text as NSString).componentsSeparatedByString(".")
-        if getDecimalNumbers.count > 1 && (getDecimalNumbers[1] as! NSString).integerValue > 9 && string != ""  {
+        var getDecimalNumbers = (textField.text! as NSString).componentsSeparatedByString(".")
+        if getDecimalNumbers.count > 1 && (getDecimalNumbers[1] as NSString).integerValue > 9 && string != ""  {
             return false
         }
         
-        var newLength = count(textField.text) + count(string) - range.length
+        let newLength = textField.text!.characters.count + string.characters.count - range.length
         var back = 0
         if(textField == m_tf_Weights){
             back = 6
             
             
-            let resultingStringLengthIsLegal = count(text) <= 6
+            let resultingStringLengthIsLegal = text.characters.count <= 6
             
-            if(count(text) == 0 || (replacementStringIsLegal &&
+            if(text.characters.count == 0 || (replacementStringIsLegal &&
                 resultingStringLengthIsLegal &&
                 resultingTextIsNumeric) ){
                     
@@ -609,7 +608,7 @@ class ExerciseChosenVC: UIViewController, UITextFieldDelegate, ADBannerViewDeleg
             return false
         }else if(textField == m_tf_Reps){
             back = 2
-            if (newLength <= back && ((text.toInt() >= 0 && text.toInt() < 100) || text == "")) {
+            if (newLength <= back && ((Int(text) >= 0 && Int(text) < 100) || text == "")) {
                 return true
             } else {
                 return false

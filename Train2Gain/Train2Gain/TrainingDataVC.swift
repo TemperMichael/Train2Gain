@@ -112,7 +112,7 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
 
             tutorialView.userInteractionEnabled = true
-            var tap = UITapGestureRecognizer(target: self, action:"hideTutorial")
+            let tap = UITapGestureRecognizer(target: self, action:"hideTutorial")
             tutorialView.addGestureRecognizer(tap)
             self.view.addSubview(tutorialView)
             self.navigationController?.navigationBarHidden = true
@@ -126,7 +126,7 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         
     
         //Hide empty cells
-        var backgroundView = UIView(frame: CGRectZero)
+        let backgroundView = UIView(frame: CGRectZero)
         
         self.m_tv_DayIds.tableFooterView = backgroundView
         
@@ -149,7 +149,7 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             customAttributes: [:])
 
         
-        doneEx = appdel.managedObjectContext?.executeFetchRequest(requestDoneEx, error: nil)  as! [DoneExercise]
+        doneEx = (try! appdel.managedObjectContext?.executeFetchRequest(requestDoneEx))  as! [DoneExercise]
     }
     
     func hideTutorial(){
@@ -208,7 +208,7 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     func returnDateForm(date:NSDate) -> String{
         let dateFormatter = NSDateFormatter()
         
-        var theDateFormat = NSDateFormatterStyle.ShortStyle
+        let theDateFormat = NSDateFormatterStyle.ShortStyle
         let theTimeFormat = NSDateFormatterStyle.NoStyle
         
         dateFormatter.dateStyle = theDateFormat
@@ -242,13 +242,13 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         //Save chosen exercise day
         if(segue.identifier == "DayIDChosen"){
-            var vc = segue.destinationViewController as! DayIDChosenTVC
+            let vc = segue.destinationViewController as! DayIDChosenTVC
             vc.selectedDayDetails = selectedDayDetails
             
         }
         
         if(segue.identifier == "editSegue"){
-            var vc = segue.destinationViewController as! EditDayIDVC
+            let vc = segue.destinationViewController as! EditDayIDVC
             vc.selectedExc = selectedDoneExc
         }
         
@@ -259,7 +259,7 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
  
     
-    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
+    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
         
         
         let deleteAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Delete") { (action, index) -> Void in
@@ -282,7 +282,10 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             
             self.dayIDs.removeAtIndex(indexPath.row)
             
-            context.save(nil)
+            do {
+                try context.save()
+            } catch _ {
+            }
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
 
         }
@@ -309,7 +312,7 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("TrainingDataCell", forIndexPath: indexPath) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("TrainingDataCell", forIndexPath: indexPath) 
         
         //Set Seperator left to zero
         cell.separatorInset = UIEdgeInsetsZero
@@ -337,22 +340,22 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         m_b_PickDate.setTitle(returnDateForm(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate), forState: UIControlState.Normal)
         
         //Hide empty cells
-        var backgroundView = UIView(frame: CGRectZero)
+        let backgroundView = UIView(frame: CGRectZero)
         
         self.m_tv_DayIds.tableFooterView = backgroundView
         
         self.m_tv_DayIds.backgroundColor = UIColor(red:86/255 ,green:158/255, blue:197/255 ,alpha:0)
        
         //Get data
-        var appdel =  UIApplication.sharedApplication().delegate as! AppDelegate
+        let appdel =  UIApplication.sharedApplication().delegate as! AppDelegate
         let  requestDoneEx = NSFetchRequest(entityName: "DoneExercise")
-        doneExercises = appdel.managedObjectContext?.executeFetchRequest(requestDoneEx, error: nil)  as! [DoneExercise]
+        doneExercises = (try! appdel.managedObjectContext?.executeFetchRequest(requestDoneEx))  as! [DoneExercise]
         
         let  requestMeasurements = NSFetchRequest(entityName: "Measurements")
-        measurements = appdel.managedObjectContext?.executeFetchRequest(requestMeasurements, error: nil)  as! [Measurements]
+        measurements = (try! appdel.managedObjectContext?.executeFetchRequest(requestMeasurements))  as! [Measurements]
         
         let  requestMood = NSFetchRequest(entityName: "Mood")
-        moods = appdel.managedObjectContext?.executeFetchRequest(requestMood, error: nil)  as! [Mood]
+        moods = (try! appdel.managedObjectContext?.executeFetchRequest(requestMood))  as! [Mood]
         
         var checkString = ""
         var checkBefore = ""

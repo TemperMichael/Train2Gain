@@ -47,7 +47,7 @@ class ExercisesTVC: UIViewController ,UITableViewDelegate, UITableViewDataSource
             }
 
             tutorialView.userInteractionEnabled = true
-            var tap = UITapGestureRecognizer(target: self, action:"hideTutorial")
+            let tap = UITapGestureRecognizer(target: self, action:"hideTutorial")
             tutorialView.addGestureRecognizer(tap)
             self.view.addSubview(tutorialView)
             self.navigationController?.navigationBarHidden = true
@@ -69,7 +69,7 @@ class ExercisesTVC: UIViewController ,UITableViewDelegate, UITableViewDataSource
         
         
         //Hide empty cells
-        var backgroundView = UIView(frame: CGRectZero)
+        let backgroundView = UIView(frame: CGRectZero)
         self.tableView.tableFooterView = backgroundView
         self.tableView.backgroundColor = UIColor(red:22/255 ,green:200/255, blue:1.00 ,alpha: 0)
         
@@ -128,7 +128,7 @@ class ExercisesTVC: UIViewController ,UITableViewDelegate, UITableViewDataSource
         
         
         //Hide empty cells
-        var backgroundView = UIView(frame: CGRectZero)
+        let backgroundView = UIView(frame: CGRectZero)
         self.tableView.tableFooterView = backgroundView
         self.tableView.backgroundColor = UIColor(red:22/255 ,green:200/255, blue:1.00 ,alpha: 0)
         
@@ -136,7 +136,7 @@ class ExercisesTVC: UIViewController ,UITableViewDelegate, UITableViewDataSource
         
         //Get exercises core data
         let  request = NSFetchRequest(entityName: "Exercise")
-        exercises = appdel.managedObjectContext?.executeFetchRequest(request, error: nil)  as! [Exercise]
+        exercises = (try! appdel.managedObjectContext?.executeFetchRequest(request))  as! [Exercise]
         
         
         
@@ -192,7 +192,7 @@ class ExercisesTVC: UIViewController ,UITableViewDelegate, UITableViewDataSource
     }
     
     
-    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
+    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
         
         
         let deleteAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Delete") { (action, index) -> Void in
@@ -211,7 +211,10 @@ class ExercisesTVC: UIViewController ,UITableViewDelegate, UITableViewDataSource
             
             self.dayIDs.removeAtIndex(indexPath.row)
             
-            context.save(nil)
+            do {
+                try context.save()
+            } catch _ {
+            }
             self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
             
 
@@ -247,7 +250,7 @@ class ExercisesTVC: UIViewController ,UITableViewDelegate, UITableViewDataSource
         if(segue.identifier == "ExerciseChosen"){
            
             
-            var vc = segue.destinationViewController as! ExerciseChosenVC
+            let vc = segue.destinationViewController as! ExerciseChosenVC
             vc.clickedExc = selectedExc
         }
         
@@ -256,7 +259,7 @@ class ExercisesTVC: UIViewController ,UITableViewDelegate, UITableViewDataSource
             
            
             if let editAction = sender as? UITableViewRowAction{
-               var vc = segue.destinationViewController as! AddExerciseVC
+               let vc = segue.destinationViewController as! AddExerciseVC
                 vc.editMode = true
 
                 vc.selectedExc = self.selectedExc
@@ -276,7 +279,7 @@ class ExercisesTVC: UIViewController ,UITableViewDelegate, UITableViewDataSource
     
     
      func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("ExerciseCell", forIndexPath: indexPath) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("ExerciseCell", forIndexPath: indexPath) 
         cell.textLabel?.font = UIFont(name: "HelveticaNeue-Light", size: 18)
         cell.textLabel?.textColor = UIColor(red:22/255 ,green:204/255, blue:1.00 ,alpha:1.0)
         cell.textLabel?.text = dayIDs[indexPath.row]

@@ -72,7 +72,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
             tutorialView.frame.size.height -= 60
             }
             tutorialView.userInteractionEnabled = true
-            var tap = UITapGestureRecognizer(target: self, action:"hideTutorial")
+            let tap = UITapGestureRecognizer(target: self, action:"hideTutorial")
             tutorialView.addGestureRecognizer(tap)
             self.view.addSubview(tutorialView)
             self.navigationController?.navigationBarHidden = true
@@ -95,7 +95,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         m_tf_Leg.delegate = self
         
         if(editMode){
-            measures = appdel.managedObjectContext?.executeFetchRequest(requestMeasures, error: nil)  as! [Measurements]
+            measures = (try! appdel.managedObjectContext?.executeFetchRequest(requestMeasures))  as! [Measurements]
             
             for singleMeasure in measures{
                 if(returnDateForm(singleMeasure.date) ==  returnDateForm(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate)){
@@ -194,7 +194,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
             if coordinator == nil{
                 return nil
             }
-            var managedObjectContext = NSManagedObjectContext()
+            let managedObjectContext = NSManagedObjectContext()
             managedObjectContext.persistentStoreCoordinator = coordinator
             return managedObjectContext
             
@@ -203,10 +203,10 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         var alreadyExists = true
         var savePos : Int?
         let  request = NSFetchRequest(entityName: "Dates")
-        dates = appdel.managedObjectContext?.executeFetchRequest(request, error: nil)  as! [Dates]
+        dates = (try! appdel.managedObjectContext?.executeFetchRequest(request))  as! [Dates]
         
         
-            measures = appdel.managedObjectContext?.executeFetchRequest(requestMeasures, error: nil)  as! [Measurements]
+            measures = (try! appdel.managedObjectContext?.executeFetchRequest(requestMeasures))  as! [Measurements]
         
         
         
@@ -237,7 +237,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         if(measures.count <= 0){
            addNewMeasure()
         }else{
-            var lastMeasure = measures[measures.count-1]
+            let lastMeasure = measures[measures.count-1]
             if(returnDateForm(lastMeasure.date) != returnDateForm(NSDate())){
              addNewMeasure()
             }else{
@@ -266,7 +266,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         appdel.saveContext()
         
         
-        var informUser = UIAlertController(title: "Saved", message:"Your body measurements were saved", preferredStyle: UIAlertControllerStyle.Alert)
+        let informUser = UIAlertController(title: "Saved", message:"Your body measurements were saved", preferredStyle: UIAlertControllerStyle.Alert)
         informUser.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
             self.navigationController?.popViewControllerAnimated(true)
             
@@ -288,7 +288,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
     func returnDateForm(date:NSDate) -> String{
         let dateFormatter = NSDateFormatter()
         
-        var theDateFormat = NSDateFormatterStyle.ShortStyle
+        let theDateFormat = NSDateFormatterStyle.ShortStyle
         let theTimeFormat = NSDateFormatterStyle.NoStyle
         
         dateFormatter.dateStyle = theDateFormat
@@ -310,34 +310,34 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         
         _Object.date = date
         
-        value = (m_tf_Weights.text as NSString).doubleValue
+        value = (m_tf_Weights.text! as NSString).doubleValue
         if(weightUnit == "lbs"){
             value = value /  2.20462262185
         }
-        _Object.weight = NSDecimalNumber(string: !m_tf_Weights.text.isEmpty ? "\(value)" : "0")
+        _Object.weight = NSDecimalNumber(string: !m_tf_Weights.text!.isEmpty ? "\(value)" : "0")
         
         
-        value = (m_tf_Arm.text as NSString).doubleValue
+        value = (m_tf_Arm.text! as NSString).doubleValue
         if(lengthUnit == "inch"){
             value = value * 2.54
         }
-        _Object.arm = NSDecimalNumber(string: !m_tf_Arm.text.isEmpty ? "\(value)" : "0")
+        _Object.arm = NSDecimalNumber(string: !m_tf_Arm.text!.isEmpty ? "\(value)" : "0")
         
         
-        value = (m_tf_Chest.text as NSString).doubleValue
+        value = (m_tf_Chest.text! as NSString).doubleValue
         if(lengthUnit == "inch"){
             value = value * 2.54        }
-        _Object.chest = NSDecimalNumber(string: !m_tf_Chest.text.isEmpty ? "\(value)" : "0")
+        _Object.chest = NSDecimalNumber(string: !m_tf_Chest.text!.isEmpty ? "\(value)" : "0")
         
-        value = (m_tf_Waist.text as NSString).doubleValue
+        value = (m_tf_Waist.text! as NSString).doubleValue
         if(lengthUnit == "inch"){
             value = value * 2.54        }
-        _Object.waist = NSDecimalNumber(string: !m_tf_Waist.text.isEmpty ? "\(value)" : "0")
+        _Object.waist = NSDecimalNumber(string: !m_tf_Waist.text!.isEmpty ? "\(value)" : "0")
         
-        value = (m_tf_Leg.text as NSString).doubleValue
+        value = (m_tf_Leg.text! as NSString).doubleValue
         if(lengthUnit == "inch"){
             value = value * 2.54        }
-        _Object.leg = NSDecimalNumber(string: !m_tf_Leg.text.isEmpty ? "\(value)" : "0")
+        _Object.leg = NSDecimalNumber(string: !m_tf_Leg.text!.isEmpty ? "\(value)" : "0")
         
     }
     
@@ -363,7 +363,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
     //Keyboard methods
     
     
-    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         //Close Keyboard when clicking outside
         m_tf_Weights.resignFirstResponder()
         m_tf_Chest.resignFirstResponder()
@@ -449,25 +449,24 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
             }
         }
         
-        var getDecimalNumbers = (textField.text as NSString).componentsSeparatedByString(".")
-        if getDecimalNumbers.count > 1 && (getDecimalNumbers[1] as! NSString).integerValue > 9 && string != ""  {
+        var getDecimalNumbers = (textField.text! as NSString).componentsSeparatedByString(".")
+        if getDecimalNumbers.count > 1 && (getDecimalNumbers[1] as NSString).integerValue > 9 && string != ""  {
             return false
         }
         
         
-        var myCharacterSet : NSCharacterSet?
-        let text = (textField.text as NSString).stringByReplacingCharactersInRange(range, withString: string)
+        let text = (textField.text! as NSString).stringByReplacingCharactersInRange(range, withString: string)
         
         
         
         let disallowedCharacterSet = NSCharacterSet(charactersInString: "0123456789.").invertedSet
         let replacementStringIsLegal = string.rangeOfCharacterFromSet(disallowedCharacterSet) == nil
         
-        let resultingStringLengthIsLegal =  (getDecimalNumbers.count > 1 || string == ".") ? count(text) <= 6 : count(text) <= 3
+        let resultingStringLengthIsLegal =  (getDecimalNumbers.count > 1 || string == ".") ? text.characters.count <= 6 : text.characters.count <= 3
         
         let scanner = NSScanner(string: text)
         let resultingTextIsNumeric = scanner.scanDecimal(nil) && scanner.atEnd
-        if(count(text) == 0 || (replacementStringIsLegal &&
+        if(text.characters.count == 0 || (replacementStringIsLegal &&
             resultingStringLengthIsLegal &&
             resultingTextIsNumeric) ){
                 

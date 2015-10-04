@@ -110,7 +110,8 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
             var error:NSError?
             var messageText = "Scan your fingerprint"
             
-            if context.canEvaluatePolicy(LAPolicy.DeviceOwnerAuthenticationWithBiometrics, error: &error){
+            do {
+                context.canEvaluatePolicy(LAPolicy.DeviceOwnerAuthenticationWithBiometrics, error: &error)
                 context.evaluatePolicy(LAPolicy.DeviceOwnerAuthenticationWithBiometrics, localizedReason: messageText, reply: {
                     (success: Bool , policyError: NSError?) -> Void in
                     
@@ -148,7 +149,8 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
                     
                 })
                 //If touch id is not supported
-            }else{
+            } catch var error1 as NSError {
+                error = error1
                 // If the security policy cannot be evaluated then show a short message depending on the error.
                 switch error!.code{
                     
@@ -184,7 +186,7 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
         
         
         var inputTextField: UITextField?
-        var passwordPrompt = UIAlertController(title: "Enter Password", message: _Message, preferredStyle: UIAlertControllerStyle.Alert)
+        let passwordPrompt = UIAlertController(title: "Enter Password", message: _Message, preferredStyle: UIAlertControllerStyle.Alert)
         passwordPrompt.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
             if(self.privacyMode.on){
             self.privacyMode.setOn(false, animated: true)
@@ -196,8 +198,8 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
             
             if(single){
                 
-                var textField = passwordPrompt.textFields![0] as! UITextField
-                var password = textField.text
+                let textField = passwordPrompt.textFields![0] 
+                let password = textField.text
                 
                 
                 if(password == self.m_Password){
@@ -211,13 +213,13 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
                 }
                 
             }else{
-                var textField = passwordPrompt.textFields![0] as! UITextField
-                var password = textField.text
-                textField = passwordPrompt.textFields![1] as! UITextField
-                var passwordConfirmend = textField.text
+                var textField = passwordPrompt.textFields![0] 
+                let password = textField.text
+                textField = passwordPrompt.textFields![1] 
+                let passwordConfirmend = textField.text
                 
                 if(password == passwordConfirmend && passwordConfirmend != ""){
-                    self.m_Password = passwordConfirmend
+                    self.m_Password = passwordConfirmend!
                     NSUserDefaults.standardUserDefaults().setObject(passwordConfirmend, forKey: "Password")
                 }else{
                    
@@ -226,13 +228,13 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
             }
             
         }))
-        passwordPrompt.addTextFieldWithConfigurationHandler({(textField: UITextField!) in
+        passwordPrompt.addTextFieldWithConfigurationHandler({(textField: UITextField) in
             textField.placeholder = "Password"
             textField.secureTextEntry = true
             inputTextField = textField
         })
         if(single == false){
-            passwordPrompt.addTextFieldWithConfigurationHandler({(textField: UITextField!) in
+            passwordPrompt.addTextFieldWithConfigurationHandler({(textField: UITextField) in
                 textField.placeholder = "Confirm Password"
                 textField.secureTextEntry = true
                 inputTextField = textField
@@ -246,7 +248,7 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
     
     @IBAction func tutorialCL(sender: AnyObject) {
         
-        var informUser = UIAlertController(title: "Tutorials", message:"Tutorials will be shown again in the views", preferredStyle: UIAlertControllerStyle.Alert)
+        let informUser = UIAlertController(title: "Tutorials", message:"Tutorials will be shown again in the views", preferredStyle: UIAlertControllerStyle.Alert)
         informUser.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
           
             NSUserDefaults.standardUserDefaults().setObject(nil, forKey: "tutorialAddExercise")
