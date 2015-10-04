@@ -147,6 +147,7 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
             weight = weight *  2.20462262185
         }
         
+        
         m_tf_Reps.text = allExWithSets[0].doneReps.stringValue
         
         if(weight<1000){
@@ -161,6 +162,7 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
         if(weight == 0){
             m_tf_Weights.text = "0"
         }
+        
     }
     
     
@@ -349,7 +351,7 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
                         m_tf_Weights.text = NSString(format: "%.0f",weight) as String
                     }
                     
-                    if(weight >= 0.01){
+                    if(weight == 0){
                         m_tf_Weights.text = ""
                     }
                     
