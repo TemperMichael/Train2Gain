@@ -32,9 +32,7 @@ class ExerciseChosenVC: UIViewController, UITextFieldDelegate, ADBannerViewDeleg
     
     @IBOutlet weak var iAd: ADBannerView!
     
-    
     @IBOutlet weak var stopWatchLabel: UILabel!
-    
     
     @IBOutlet weak var m_L_Weights: UILabel!
     
