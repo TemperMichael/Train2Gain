@@ -60,7 +60,7 @@ public class ChartViewBase: UIView, ChartAnimatorDelegate
     
     /// font object for drawing the information text when there are no values in the chart
     public var infoFont: UIFont! = UIFont(name: "HelveticaNeue", size: 12.0)
-    public var infoTextColor: UIColor! = UIColor(red: 247.0/255.0, green: 189.0/255.0, blue: 51.0/255.0, alpha: 1.0) // orange
+    public var infoTextColor: UIColor! = UIColor(red: 22/255.0, green: 200/255.0, blue: 255/255.0, alpha: 1.0) // orange
     
     /// description text that appears in the bottom right corner of the chart
     public var descriptionText = "Description"
@@ -84,7 +84,7 @@ public class ChartViewBase: UIView, ChartAnimatorDelegate
     public weak var delegate: ChartViewDelegate?
     
     /// text that is displayed when the chart is empty
-    public var noDataText = "No chart data available."
+    public var noDataText = ""
     
     /// text that is displayed when the chart is empty that describes why the chart is empty
     public var noDataTextDescription: String?
@@ -462,6 +462,7 @@ public class ChartViewBase: UIView, ChartAnimatorDelegate
             if (xIndex <= Int(_deltaX) && xIndex <= Int(_deltaX * _animator.phaseX))
             {
                 let e = _data.getEntryForHighlight(highlight)
+                
                 if (e === nil || e!.xIndex != highlight.xIndex)
                 {
                     continue

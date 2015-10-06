@@ -17,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     
-    
+    var shouldRotate = false
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
@@ -142,11 +142,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     
+    
+    func application(application: UIApplication, supportedInterfaceOrientationsForWindow window: UIWindow?) -> UIInterfaceOrientationMask {
+        
+        if (self.shouldRotate){
+            return UIInterfaceOrientationMask.AllButUpsideDown
+        }
+        else{
+            return UIInterfaceOrientationMask.Portrait
+        }
+        
+    }
+    
+    
     func rollBackContext(){
         if let moc = self.managedObjectContext {
             moc.rollback()
         }
     }
+    
 
 }
 

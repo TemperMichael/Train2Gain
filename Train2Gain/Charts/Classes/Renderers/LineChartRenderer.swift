@@ -474,9 +474,18 @@ public class LineChartRenderer: LineScatterCandleRadarChartRenderer
                         continue
                     }
                     
-                    let val = entries[j + minx].value
+                    var val = entries[j + minx].value
+                    
+                    
+                    //Here are the labels for the values get set
+                    if(val == 0){
+                       ChartUtils.drawText(context: context, text: "0", point: CGPoint(x: positions[j].x, y: positions[j].y - CGFloat(valOffset) - valueFont.lineHeight), align: .Center, attributes: [NSFontAttributeName: valueFont, NSForegroundColorAttributeName: valueTextColor])
+                    }else{
+                    
                     
                     ChartUtils.drawText(context: context, text: formatter!.stringFromNumber(val)!, point: CGPoint(x: positions[j].x, y: positions[j].y - CGFloat(valOffset) - valueFont.lineHeight), align: .Center, attributes: [NSFontAttributeName: valueFont, NSForegroundColorAttributeName: valueTextColor])
+                    }
+                    
                 }
             }
         }

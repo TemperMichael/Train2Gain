@@ -16,7 +16,7 @@ import UIKit
 
 public class BarLineScatterCandleBubbleChartDataSet: ChartDataSet
 {
-    public var highlightColor = UIColor(red: 255.0/255.0, green: 187.0/255.0, blue: 115.0/255.0, alpha: 1.0)
+    public var highlightColor = UIColor(red: 22.0/255.0, green: 200.0/255.0, blue: 255.0/255.0, alpha: 1.0)
     public var highlightLineWidth = CGFloat(0.5)
     public var highlightLineDashPhase = CGFloat(0.0)
     public var highlightLineDashLengths: [CGFloat]?

@@ -19,6 +19,7 @@ public class ChartDefaultXAxisValueFormatter: NSObject, ChartXAxisValueFormatter
     
     public func stringForXValue(index: Int, original: String, viewPortHandler: ChartViewPortHandler) -> String
     {
+     
         return original // just return original, no adjustments
     }
     

@@ -15,10 +15,14 @@ class OverViewTVC: UITableViewController {
     
     var m_Password : String =  ""
     var selectedSection:String = ""
+    
+    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
    
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        appDelegate.shouldRotate = false
         tableView.scrollEnabled = false
         
         
@@ -104,7 +108,7 @@ class OverViewTVC: UITableViewController {
     }
     
     override func viewDidAppear(animated: Bool) {
-        
+        appDelegate.shouldRotate = false
         //Hide empty cells
         let backgroundView = UIView(frame: CGRectZero)
         
