@@ -215,11 +215,11 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         var year = components.year
         var day = components.day
         
-        var saveDays:[Int] = []
+        
        
         
         for singleMonth in selectedMonths{
-            
+            var saveDays:[Int] = []
             for singleDoneEx in selectedDoneEx{
                 
                 date = singleDoneEx.date
