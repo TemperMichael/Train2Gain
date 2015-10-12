@@ -76,7 +76,7 @@ public class ChartLegend: ChartComponentBase
     public var font: UIFont = UIFont.systemFontOfSize(10.0)
     public var textColor = UIColor.blackColor()
 
-    public var form = ChartLegendForm.Square
+    public var form = ChartLegendForm.Circle
     public var formSize = CGFloat(8.0)
     public var formLineWidth = CGFloat(1.5)
     

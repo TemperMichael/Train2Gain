@@ -115,7 +115,7 @@ public class ChartLegendRenderer: ChartRendererBase
         }
         
         let labelFont = _legend.font
-        let labelTextColor = _legend.textColor
+        var labelTextColor = _legend.textColor
         let labelLineHeight = labelFont.lineHeight
         let formYOffset = labelLineHeight / 2.0
 
@@ -182,7 +182,7 @@ public class ChartLegendRenderer: ChartRendererBase
                 || legendPosition == .AboveChartRight
                 || legendPosition == .AboveChartCenter)
             {
-                posY = 0
+                posY = 5
             }
             else
             {
@@ -234,7 +234,11 @@ public class ChartLegendRenderer: ChartRendererBase
                     {
                         posX -= calculatedLabelSizes[i].width
                     }
-                    
+                    if(i == 0){
+                        labelTextColor = UIColor.grayColor()
+                    }else{
+                        labelTextColor = UIColor(red:51/255, green:181/255, blue:229/255, alpha:1)
+                    }
                     drawLabel(context, x: posX, y: posY, label: labels[i]!, font: labelFont, textColor: labelTextColor)
                     
                     if (direction == .LeftToRight)
@@ -352,10 +356,20 @@ public class ChartLegendRenderer: ChartRendererBase
                     
                     if (!wasStacked)
                     {
+                        if(i == 0){
+                            labelTextColor = UIColor.grayColor()
+                        }else{
+                            labelTextColor = UIColor(red:51/255, green:181/255, blue:229/255, alpha:1)
+                        }
                         drawLabel(context, x: x, y: posY, label: labels[i]!, font: labelFont, textColor: labelTextColor)
                     }
                     else
                     {
+                        if(i == 0){
+                            labelTextColor = UIColor.grayColor()
+                        }else{
+                            labelTextColor = UIColor(red:51/255, green:181/255, blue:229/255, alpha:1)
+                        }
                         posY += labelLineHeight
                         drawLabel(context, x: x, y: posY, label: labels[i]!, font: labelFont, textColor: labelTextColor)
                     }

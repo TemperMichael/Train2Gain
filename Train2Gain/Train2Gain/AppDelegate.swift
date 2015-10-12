@@ -30,6 +30,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             self.window!.rootViewController = rootViewController;
         self.window?.makeKeyAndVisible()
         
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.Pad){
+            shouldRotate = true
+        }
+        
 
         
         

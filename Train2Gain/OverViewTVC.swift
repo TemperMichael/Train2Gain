@@ -23,6 +23,9 @@ class OverViewTVC: UITableViewController {
         super.viewDidLoad()
         
         appDelegate.shouldRotate = false
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.Pad){
+            appDelegate.shouldRotate = true
+        }
         tableView.scrollEnabled = false
         
         
@@ -101,14 +104,27 @@ class OverViewTVC: UITableViewController {
         return cell
     }
     
+    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+      tableView.reloadData()
+    }
+    
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         //Set colors of cells
         cell.backgroundColor = UIColor(red:22/255 ,green:200/255, blue:1.00 ,alpha:1.0)
         
     }
     
+    
+   
+    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+        return UIInterfaceOrientationMask.Portrait
+    }
+    
     override func viewDidAppear(animated: Bool) {
         appDelegate.shouldRotate = false
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.Pad){
+            appDelegate.shouldRotate = true
+        }
         //Hide empty cells
         let backgroundView = UIView(frame: CGRectZero)
         
@@ -116,6 +132,9 @@ class OverViewTVC: UITableViewController {
         
         self.tableView.backgroundColor = UIColor(red:22/255 ,green:200/255, blue:1.00 ,alpha:1.0)
         
+      
+       
+        //self.view.layoutIfNeeded()
         //Get and save actual date
         NSUserDefaults.standardUserDefaults().setObject(NSDate(), forKey: "dateUF")
         //Get actual pw if one is set

@@ -503,6 +503,14 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         
     }
+    
+    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+        var backgroundIMG = UIImage(named: "Background2.png")
+        backgroundIMG = imageResize(backgroundIMG!, sizeChange: size)
+        self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
+        
+    }
+    
 
     
 }
