@@ -59,9 +59,15 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         
         iAd.delegate = self
         iAd.hidden = true
+       
+        var backgroundIMG = UIImage(named: "Background2.png")
+        backgroundIMG = imageResize(backgroundIMG!, sizeChange: view.frame.size)
+        self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
+
         if(NSUserDefaults.standardUserDefaults().objectForKey("tutorialBodyMeasurements") == nil){
             
-            self.view.backgroundColor = UIColor(red: 0/255, green: 185/255, blue: 1, alpha: 1)
+            //self.view.backgroundColor = UIColor(red: 0/255, green: 185/255, blue: 1, alpha: 1)
+            
             tutorialView = UIImageView(frame: self.view.frame)
             
             tutorialView.image = UIImage(named: "TutorialBodyMeasurements.png")
@@ -78,11 +84,6 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
             self.navigationController?.navigationBarHidden = true
             
       
-        }else{
-            var backgroundIMG = UIImage(named: "Background2.png")
-            backgroundIMG = imageResize(backgroundIMG!, sizeChange: view.frame.size)
-            self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
-            
         }
 
         

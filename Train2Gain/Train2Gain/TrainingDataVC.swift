@@ -98,8 +98,12 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         iAd.delegate = self
         iAd.hidden = true
+        
+        var backgroundIMG = UIImage(named: "Background2.png")
+        backgroundIMG = imageResize(backgroundIMG!, sizeChange: view.frame.size)
+        self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
         if(NSUserDefaults.standardUserDefaults().objectForKey("tutorialTrainingData") == nil){
-            self.view.backgroundColor = UIColor(red: 0, green: 183/255, blue: 1, alpha: 1)
+            //self.view.backgroundColor = UIColor(red: 0, green: 183/255, blue: 1, alpha: 1)
             
             tutorialView = UIImageView(frame: self.view.frame)
             
@@ -117,11 +121,6 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             self.view.addSubview(tutorialView)
             self.navigationController?.navigationBarHidden = true
             
-        }else{
-            var backgroundIMG = UIImage(named: "Background2.png")
-            backgroundIMG = imageResize(backgroundIMG!, sizeChange: view.frame.size)
-            self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
-
         }
         
     

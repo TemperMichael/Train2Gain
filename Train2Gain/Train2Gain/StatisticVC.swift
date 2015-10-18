@@ -219,6 +219,7 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
        
         
         for singleMonth in selectedMonths{
+            
             var saveDays:[Int] = []
             for singleDoneEx in selectedDoneEx{
                 
@@ -247,14 +248,54 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
                         weight = weight * 2.20462262185
                     }
                     if(singleDoneEx.setCounter.stringValue == selectedSet && !saveDays.contains(day)){
+                        
+                        if(selectedMonths.count > 1){
+                            
+                       
+                            if (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0) && monthDateDict.valueForKey(singleMonth) as! Int > 2){
+                                //leap year
+                                
+                                day += 1
+                            }
+                            
+                            
+                            switch monthDateDict.valueForKey(singleMonth) as! Int{
+                            case 2:
+                                day += 31
+                            case 3:
+                                day += 59
+                            case 4:
+                                day += 90
+                            case 5:
+                                day += 120
+                            case 6:
+                                day += 151
+                            case 7:
+                                day += 181
+                            case 8:
+                                day += 212
+                            case 9:
+                                day += 243
+                            case 10:
+                                day += 273
+                            case 11:
+                                day += 304
+                            case 12:
+                                day += 334
+                            default:
+                                print("Month Error")
+                            }
+                        }
+                            
+                        
                         yVals.append(ChartDataEntry(value: weight, xIndex: day - 1))
                         if(singleDoneEx.doneReps.doubleValue > rightMax){
                             rightMax = singleDoneEx.doneReps.doubleValue
                         }
                         
-                       
                         yValsRight.append(ChartDataEntry(value: singleDoneEx.doneReps.doubleValue, xIndex: day - 1))
                          saveDays.append(day)
+                        
                         /*
                         for(var i = 0; i < 365 ;i++){
                         let randNr = Double(arc4random_uniform(200))
@@ -272,6 +313,8 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
                         yValsRight.append(ChartDataEntry(value: randNrRight, xIndex: i))
                         }
                         */
+                        
+                        
                     }
                     
                 }
@@ -286,10 +329,16 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
                 selectedSet = ""
             }
         }
-        leftMax += leftMax/10
+        leftMax += (leftMax/100) * 6
         rightMax += rightMax/10
         
         
+        if(leftMax == 0){
+            leftMax = 1
+        }
+        if(rightMax == 0){
+            rightMax = 1
+        }
         
         chartView.leftAxis.customAxisMax = leftMax
         chartView.rightAxis.customAxisMax = rightMax
@@ -362,9 +411,20 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
                 self.xVals.append(String(i));
             }
         case "Feb":
+            
+          
             for(var i = 2; i < 29; i++){
                 self.xVals.append(String(i));
             }
+            
+            if let year = Int(selectedYear){
+                if (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)){
+                    //leap year
+                    
+                    self.xVals.append(String(29))
+                }
+            }
+         
             
         default:
             print("error addEmptyDay")

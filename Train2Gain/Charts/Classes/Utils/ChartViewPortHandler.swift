@@ -354,6 +354,9 @@ public class ChartViewPortHandler: NSObject
     
     public func isInBoundsRight(x: CGFloat) -> Bool
     {
+        if(x.isNaN){
+            return false
+        }
         let normalizedX = CGFloat(Int(x * 100.0)) / 100.0
         return (_contentRect.origin.x + _contentRect.size.width) >= normalizedX ? true : false
     }
@@ -365,6 +368,9 @@ public class ChartViewPortHandler: NSObject
     
     public func isInBoundsBottom(y: CGFloat) -> Bool
     {
+        if(y.isNaN){
+            return false
+        }
         let normalizedY = CGFloat(Int(y * 100.0)) / 100.0
         return (_contentRect.origin.y + _contentRect.size.height) >= normalizedY ? true : false
     }

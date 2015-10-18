@@ -57,8 +57,12 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
         iAd.delegate = self
         iAd.hidden = true
         
+        var backgroundIMG = UIImage(named: "Background2.png")
+        backgroundIMG = imageResize(backgroundIMG!, sizeChange: view.frame.size)
+        self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
+        
         if(NSUserDefaults.standardUserDefaults().objectForKey("tutorialAddExercise") == nil){
-            self.view.backgroundColor = UIColor(red: 25/255, green: 165/255, blue: 1, alpha: 1)
+          //  self.view.backgroundColor = UIColor(red: 25/255, green: 165/255, blue: 1, alpha: 1)
             tutorialView = UIImageView(frame: self.view.frame)
             
             tutorialView.image = UIImage(named: "TutorialAddExercise.png")
@@ -75,13 +79,6 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
             self.view.addSubview(tutorialView)
             self.navigationController?.navigationBarHidden = true
             
-        }else{
-            let bgSize = CGSize(width: view.frame.width, height: view.frame.height)
-            var backgroundIMG = UIImage(named: "Background2.png")
-            backgroundIMG = imageResize(backgroundIMG!, sizeChange: bgSize)
-            self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
-
-
         }
 
         //Set delegates of textfields
@@ -143,10 +140,7 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
     
     
     func hideTutorial(){
-        let bgSize = CGSize(width: view.frame.width, height: view.frame.height - 50)
-        var backgroundIMG = UIImage(named: "Background2.png")
-        backgroundIMG = imageResize(backgroundIMG!, sizeChange: bgSize)
-        self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
+      
 
         
         self.navigationController?.navigationBarHidden = false

@@ -605,7 +605,7 @@
                             </view>
                         </subviews>
                         <animations/>
-                        <color key="backgroundColor" red="0.0" green="0.74851701579999996" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="VWs-Us-bmb" firstAttribute="leading" secondItem="sjI-Se-vdR" secondAttribute="trailing" constant="10" id="1LD-p8-qba"/>
                             <constraint firstItem="eIo-yw-vgB" firstAttribute="leading" secondItem="bQ0-fG-0oy" secondAttribute="trailing" constant="10" id="1VM-mL-0E5"/>
@@ -2541,8 +2541,8 @@
         <image name="trash" width="128" height="128"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="LYc-40-cwN"/>
-        <segue reference="E5g-gP-udT"/>
         <segue reference="w3a-f3-MJa"/>
+        <segue reference="E5g-gP-udT"/>
+        <segue reference="DjL-gl-eea"/>
     </inferredMetricsTieBreakers>
 </document>
