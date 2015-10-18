@@ -504,6 +504,15 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+         if(NSUserDefaults.standardUserDefaults().objectForKey("tutorialTrainingData") == nil){
+             hideTutorial()
+           if(NSUserDefaults.standardUserDefaults().objectForKey("tutorialTrainingData") == nil){
+                hideTutorial()
+            
+            self.navigationController?.navigationBarHidden = false
+            }
+        }
+        
         var backgroundIMG = UIImage(named: "Background2.png")
         backgroundIMG = imageResize(backgroundIMG!, sizeChange: size)
         self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)

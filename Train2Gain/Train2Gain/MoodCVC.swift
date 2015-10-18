@@ -342,5 +342,13 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
         
         
     }
+    
+    
+    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+        if(NSUserDefaults.standardUserDefaults().objectForKey("tutorialMoods") == nil){
+         hideTutorial()
+        }
+    }
+    
 
 }

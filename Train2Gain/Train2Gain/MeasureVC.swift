@@ -522,6 +522,20 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         
         
     }
+    
+ 
+    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+        if(NSUserDefaults.standardUserDefaults().objectForKey("tutorialBodyMeasurements") == nil){
+            hideTutorial()
+        }
+
+        var backgroundIMG = UIImage(named: "Background2.png")
+        backgroundIMG = imageResize(backgroundIMG!, sizeChange: size)
+        self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
+        
+        
+        
+    }
 
     
 }
