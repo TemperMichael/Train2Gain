@@ -21,11 +21,13 @@ class DayIDChosenTVC: UITableViewController {
    
        override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //Set background
         let backgroundView = UIView(frame: CGRectZero)
         self.tableView.tableFooterView = backgroundView
         self.tableView.backgroundColor = UIColor(red:22/255 ,green:200/255, blue:1.00 ,alpha: 1)
        
-              let appdel =  UIApplication.sharedApplication().delegate as! AppDelegate
+        let appdel =  UIApplication.sharedApplication().delegate as! AppDelegate
         let  requestDoneEx = NSFetchRequest(entityName: "DoneExercise")
         let doneEx = (try! appdel.managedObjectContext?.executeFetchRequest(requestDoneEx))  as! [DoneExercise]
         
@@ -33,7 +35,7 @@ class DayIDChosenTVC: UITableViewController {
       
         var checkString = ""
         var checkBefore = ""
-        var counter = 2;
+        var counter = 2
         
         //Get done exercises of this day
         for singleEx in doneEx{
@@ -59,7 +61,7 @@ class DayIDChosenTVC: UITableViewController {
     }
     
     override func viewDidDisappear(animated: Bool) {
-         let appdel =  UIApplication.sharedApplication().delegate as! AppDelegate
+        let appdel =  UIApplication.sharedApplication().delegate as! AppDelegate
         appdel.rollBackContext()
     }
     

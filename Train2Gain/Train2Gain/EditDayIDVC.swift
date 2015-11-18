@@ -23,13 +23,12 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
     var wasStopped = true
     var saveCurrentTime : NSTimeInterval?
     var currentTime : NSTimeInterval?
-    
     var editDate : NSDate!
-    
+    var weightUnit: String! = NSUserDefaults.standardUserDefaults().objectForKey("weightUnit")! as! String
+    var lengthUnit:String! = NSUserDefaults.standardUserDefaults().objectForKey("lengthUnit")! as! String
     
     
     @IBOutlet weak var stopWatchLabel: UILabel!
-    
     
     @IBOutlet weak var m_L_Weights: UILabel!
     
@@ -47,20 +46,15 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
     
     @IBOutlet weak var iAd: ADBannerView!
     
-    
     @IBOutlet weak var nextExButton: UIButton!
-    //@IBOutlet weak var nextExButton: UIBarButtonItem!
     
     @IBOutlet weak var previousExButton: UIButton!
-    // @IBOutlet weak var previousExButton: UIBarButtonItem!
-    
-    var weightUnit: String! = NSUserDefaults.standardUserDefaults().objectForKey("weightUnit")! as! String
-    
-    var lengthUnit:String! = NSUserDefaults.standardUserDefaults().objectForKey("lengthUnit")! as! String
+   
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //Handle iAd
         iAd.delegate = self
         iAd.hidden = true
         
@@ -71,19 +65,6 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
         backgroundIMG = imageResize(backgroundIMG!, sizeChange: bgSize)
         self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
         
-        
-        var managedObjectContext: NSManagedObjectContext? = {
-            let coordinator = self.appdel.persistentStoreCoordinator;
-            if coordinator == nil{
-                return nil
-            }
-            let managedObjectContext = NSManagedObjectContext()
-            managedObjectContext.persistentStoreCoordinator = coordinator
-            return managedObjectContext
-            
-            }()
-        
-        // self.navigationController?.setToolbarHidden(false, animated: true)
         //Setup start view
         
         m_L_ListName.text = selectedExc[0].dayID
@@ -119,7 +100,7 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
         editDate = allExWithSets[0].date
         
         
-        //Set View start contents
+        //Set start contents of the view
         m_L_ExerciseName.text = allExWithSets[0].name
         if((allExWithSets[0].reps as Int) < 10){
             m_L_Reps.text = "  / \(allExWithSets[0].reps)"
@@ -147,7 +128,7 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
             weight = weight *  2.20462262185
         }
         
-        
+        //Show first exercise in correct unit
         m_tf_Reps.text = allExWithSets[0].doneReps.stringValue
         
         if(weight<1000){
@@ -184,7 +165,7 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
         filterSpecificView(true)
     }
     
-    
+    //Cancel changings
     override func viewDidDisappear(animated: Bool) {
         
         appdel.rollBackContext()
@@ -203,17 +184,7 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
         
         allExWithSets[userPos].doneReps = m_tf_Reps.text != "" ?  NSDecimalNumber(string: m_tf_Reps.text) : 0
         
-        var managedObjectContext: NSManagedObjectContext? = {
-            let coordinator = self.appdel.persistentStoreCoordinator;
-            if coordinator == nil{
-                return nil
-            }
-            var managedObjectContext = NSManagedObjectContext()
-            managedObjectContext.persistentStoreCoordinator = coordinator
-            return managedObjectContext
-            
-            }()
-        
+        //Check if data already exists
         var alreadyExists = true
         var savePos : Int?
         let  request = NSFetchRequest(entityName: "Dates")
@@ -237,7 +208,7 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
         //Rollback to don't save exerices which were needed to get done exercises
         appdel.rollBackContext()
         
-        
+        //Replace date
         if(alreadyExists){
             
             let newItem = NSEntityDescription.insertNewObjectForEntityForName("Dates", inManagedObjectContext: appdel.managedObjectContext!) as! Dates
@@ -246,27 +217,23 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
         }
         
         let  requestDoneEx = NSFetchRequest(entityName: "DoneExercise")
-        var doneEx = (try! appdel.managedObjectContext?.executeFetchRequest(requestDoneEx))  as! [DoneExercise]
+        let doneEx = (try! appdel.managedObjectContext?.executeFetchRequest(requestDoneEx))  as! [DoneExercise]
         
-        
+        //setup data
         for checkCells in saveData{
             
             for singleDoneEx in doneEx{
                 if returnDateForm(singleDoneEx.date) == returnDateForm(editDate) && singleDoneEx.dayID == checkCells[0] && singleDoneEx.name == checkCells[1] && singleDoneEx.setCounter ==  NSDecimalNumber(string:checkCells[6]){
-                    
                     singleDoneEx.doneReps = NSDecimalNumber(string:checkCells[3])
                     singleDoneEx.weight = NSDecimalNumber(string: checkCells[5])
                 }
             }
-            
-            
             appdel.saveContext()
-            
-            
         }
         
         
-        var informUser = UIAlertController(title: "Saved", message:"Your training was changed", preferredStyle: UIAlertControllerStyle.Alert)
+        //Inform user that data was saved
+        let informUser = UIAlertController(title: "Saved", message:"Your training was changed", preferredStyle: UIAlertControllerStyle.Alert)
         informUser.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
             self.navigationController?.popViewControllerAnimated(true)
             
@@ -291,7 +258,7 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
     }
     
     
-    
+    //Show next exercise
     @IBAction func nextExButtonCL(sender: AnyObject) {
         filterSpecificView(false)
     }
@@ -299,6 +266,7 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
     
     //-----------------------------------------------------
     //Own Methods
+    
     //Fit background image to display size
     func imageResize (imageObj:UIImage, sizeChange:CGSize)-> UIImage{
         
@@ -431,15 +399,16 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
         
     }
     
-    func textFieldShouldReturn(textField: UITextField!) -> Bool {
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.endEditing(true)
         return false
     }
     
+    //Move view to always see the selected textfield
+    
     func textFieldDidBeginEditing(textField: UITextField) {
         self.view.frame.origin.y -= 20
     }
-    
     
     func textFieldDidEndEditing(textField: UITextField) {
         self.view.frame.origin.y += 20
@@ -459,7 +428,6 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
     //Set textfield input options
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
         
-        var myCharacterSet : NSCharacterSet?
         let text = (textField.text! as NSString).stringByReplacingCharactersInRange(range, withString: string)
         
         let disallowedCharacterSet = NSCharacterSet(charactersInString: "0123456789.").invertedSet
@@ -470,11 +438,11 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
         print(resultingTextIsNumeric)
         
         var getDecimalNumbers = (textField.text! as NSString).componentsSeparatedByString(".")
-        if getDecimalNumbers.count > 1 && (getDecimalNumbers[1] as! NSString).integerValue > 9 && string != ""  {
+        if getDecimalNumbers.count > 1 && (getDecimalNumbers[1] as NSString).integerValue > 9 && string != ""  {
             return false
         }
         
-        var newLength = textField.text!.characters.count + string.characters.count - range.length
+        let newLength = textField.text!.characters.count + string.characters.count - range.length
         var back = 0
         if(textField == m_tf_Weights){
             back = 6
@@ -525,7 +493,6 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
         }
     }
     
-    
     @IBAction func stopStopWatch(sender: AnyObject) {
         
         wasStopped = true
@@ -533,8 +500,6 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
         
         
     }
-    
-    
     
     @IBAction func breakStopWatch(sender: AnyObject) {
         if(!wasStopped){
@@ -594,10 +559,9 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
     func bannerViewActionShouldBegin(banner: ADBannerView!, willLeaveApplication willLeave: Bool) -> Bool {
         return true
     }
+    
     func layoutAnimated(animated : Bool){
         
-        var contentFrame = self.view.bounds;
-        var bannerFrame = iAd.frame;
         if (iAd.bannerLoaded)
         {
             iAd.hidden = false
@@ -613,12 +577,11 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
                     (value: Bool) in
                     self.iAd.hidden = true
             })
-            
         }
-        
-        
     }
     
+    
+    //Show correct background after rotation
     override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
         var backgroundIMG = UIImage(named: "Background2.png")
         backgroundIMG = imageResize(backgroundIMG!, sizeChange: size)

@@ -40,9 +40,11 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //Handle iAd
         iAd.delegate = self
         iAd.hidden = true
         
+        //Show Tutorial
         if(NSUserDefaults.standardUserDefaults().objectForKey("tutorialMoods") == nil){
             tutorialView = UIImageView(frame: self.view.frame)
            
@@ -59,7 +61,6 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
             tutorialView.addGestureRecognizer(tap)
             self.view.addSubview(tutorialView)
             self.navigationController?.navigationBarHidden = true
-          
             
         }
         
@@ -106,18 +107,6 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
         
         if(selectedIndexPath != nil){
             
-           
-            var managedObjectContext: NSManagedObjectContext? = {
-                let coordinator = self.appdel.persistentStoreCoordinator;
-                if coordinator == nil{
-                    return nil
-                }
-                let managedObjectContext = NSManagedObjectContext()
-                managedObjectContext.persistentStoreCoordinator = coordinator
-                return managedObjectContext
-                
-                }()
-            
             //Check if today an mood was already chosen to rewrite it if it already exists
             var alreadyExists = true
             var savePos : Int?
@@ -126,35 +115,30 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
             //Get the saved moods
             let  requestMood = NSFetchRequest(entityName: "Mood")
             var savedMoods = (try! appdel.managedObjectContext?.executeFetchRequest(requestMood))  as! [Mood]
+
+            let  request = NSFetchRequest(entityName: "Dates")
             
+            //Get dates where something was saved
+            var dates = (try! appdel.managedObjectContext?.executeFetchRequest(request))  as! [Dates]
+            date = NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate
             
-            
-                let  request = NSFetchRequest(entityName: "Dates")
-                //Get dates where something was saved
-                var dates = (try! appdel.managedObjectContext?.executeFetchRequest(request))  as! [Dates]
-            
-            
-            
-           
-                           date = NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate
+            //Check if data already exists
+            for(var i = 0; i < dates.count ; i++){
                 
-            
-            
-                for(var i = 0; i < dates.count ; i++){
-                 
-                    if(returnDateForm(dates[i].savedDate) == returnDateForm(date)){
-                        alreadyExists = false
-                        savePos=i;
-                    }
-                    
+                if(returnDateForm(dates[i].savedDate) == returnDateForm(date)){
+                    alreadyExists = false
+                    savePos=i;
                 }
                 
-                if(alreadyExists){
-                    
-                    let newItem = NSEntityDescription.insertNewObjectForEntityForName("Dates", inManagedObjectContext: appdel.managedObjectContext!) as! Dates
-                    newItem.savedDate = NSDate()
-                    
-                }
+            }
+            
+            //Rewrite date
+            if(alreadyExists){
+                
+                let newItem = NSEntityDescription.insertNewObjectForEntityForName("Dates", inManagedObjectContext: appdel.managedObjectContext!) as! Dates
+                newItem.savedDate = NSDate()
+                
+            }
             
             
             if(!editMode){
@@ -199,7 +183,8 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
             }))
             
             let cell = cvc.cellForItemAtIndexPath(selectedIndexPath!) as! MoodCell;
-
+            
+            //Fabric - Analytic Tool
             Answers.logContentViewWithName("Mood",
                 contentType: "Saved data",
                 contentId: cell.m_L_moodName.text!,
@@ -217,8 +202,6 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
         //Go to next day
         date = date.dateByAddingTimeInterval(60*60*24)
         NSUserDefaults.standardUserDefaults().setObject(date ,forKey: "dateUF")
-        
-        
         m_b_PickDate.setTitle(returnDateForm(date), forState: UIControlState.Normal)
         
     }
@@ -228,8 +211,6 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
         //Go to prevoius day
         date = date.dateByAddingTimeInterval(-60*60*24)
         NSUserDefaults.standardUserDefaults().setObject(date ,forKey: "dateUF")
-        
-        
         m_b_PickDate.setTitle(returnDateForm(date), forState: UIControlState.Normal)
         
     }
@@ -267,14 +248,12 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
         _Object.moodName = cell.m_L_moodName.text!
         _Object.moodImagePath = imagePaths[selectedIndexPath!.row+1]
         
-        
     }
     
     //Save selected mood by index
      func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
-        let cell = collectionView.cellForItemAtIndexPath(indexPath) as! MoodCell;
-        selectedIndexPath = indexPath
+            selectedIndexPath = indexPath
         
     }
     
@@ -285,7 +264,7 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
     
     
      func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        
+
         return 1
     }
     
@@ -319,9 +298,7 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
         return true
     }
     func layoutAnimated(animated : Bool){
-        
-        var contentFrame = self.view.bounds;
-        var bannerFrame = iAd.frame;
+       
         if (iAd.bannerLoaded)
         {
             iAd.hidden = false
@@ -343,7 +320,7 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
         
     }
     
-    
+    //Hide tutorial by rotation
     override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
         if(NSUserDefaults.standardUserDefaults().objectForKey("tutorialMoods") == nil){
          hideTutorial()

@@ -32,13 +32,17 @@ class ExercisesTVC: UIViewController ,UITableViewDelegate, UITableViewDataSource
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //Handle iAd
         iAd.delegate = self
         iAd.hidden = true
+        
+        //Set background
         var backgroundIMG = UIImage(named: "Background2.png")
         backgroundIMG = imageResize(backgroundIMG!, sizeChange: view.frame.size)
         self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
+        
+        //Show tutorial
         if(NSUserDefaults.standardUserDefaults().objectForKey("tutorialTrainingPlans") == nil){
-            //self.view.backgroundColor = UIColor(red: 0, green: 183/255, blue: 1, alpha: 1)
             tutorialView = UIImageView(frame: self.view.frame)
             
             tutorialView.image = UIImage(named: "TutorialTrainingPlans.png")
@@ -57,8 +61,8 @@ class ExercisesTVC: UIViewController ,UITableViewDelegate, UITableViewDataSource
             
         }
 
+        selectedExc = []
         
-             selectedExc = []
         //Remove text from the back button
         let backButton = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.Plain, target: self, action: nil)
         backButton.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "Heiti SC", size: 18)!], forState: UIControlState.Normal)
@@ -80,11 +84,12 @@ class ExercisesTVC: UIViewController ,UITableViewDelegate, UITableViewDataSource
     
     func hideTutorial(){
         var backgroundIMG = UIImage(named: "Background2.png")
+        
         backgroundIMG = imageResize(backgroundIMG!, sizeChange: view.frame.size)
         self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
-
         
         self.navigationController?.navigationBarHidden = false
+        
         UIView.transitionWithView(self.view, duration: 1, options: UIViewAnimationOptions.CurveLinear, animations: {
             self.tutorialView.alpha = 0;
             
@@ -135,14 +140,10 @@ class ExercisesTVC: UIViewController ,UITableViewDelegate, UITableViewDataSource
         let  request = NSFetchRequest(entityName: "Exercise")
         exercises = (try! appdel.managedObjectContext?.executeFetchRequest(request))  as! [Exercise]
         
-        
-        
-        //Get strings for tabeview
-        var checkString = ""
-        var checkBefore = ""
 
         var exists = false
         
+        //Check if data already exists
         for checkIDAmount in exercises {
            exists = false
             for singleDayId in dayIDs{
@@ -191,7 +192,9 @@ class ExercisesTVC: UIViewController ,UITableViewDelegate, UITableViewDataSource
     
     func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
         
+        //Handle swipe to single tableview row
         
+        //Handle the deletion of an row
         let deleteAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Delete") { (action, index) -> Void in
             
             let context:NSManagedObjectContext = self.appdel.managedObjectContext!
@@ -219,7 +222,7 @@ class ExercisesTVC: UIViewController ,UITableViewDelegate, UITableViewDataSource
         }
         deleteAction.backgroundColor = UIColor(red:86/255 ,green:158/255, blue:197/255 ,alpha:1)
         
-        
+        //Handle the changings of the selected row item
         let editAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Edit") { (action, index) -> Void in
           
            
@@ -276,13 +279,13 @@ class ExercisesTVC: UIViewController ,UITableViewDelegate, UITableViewDataSource
     
     
      func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
+        //Setup cell
         let cell = tableView.dequeueReusableCellWithIdentifier("ExerciseCell", forIndexPath: indexPath) 
         cell.textLabel?.font = UIFont(name: "HelveticaNeue-Light", size: 18)
         cell.textLabel?.textColor = UIColor(red:22/255 ,green:204/255, blue:1.00 ,alpha:1.0)
         cell.textLabel?.text = dayIDs[indexPath.row]
         cell.backgroundColor = UIColor.whiteColor()
-       
-        
         
         //Set Seperator left to zero
         cell.separatorInset = UIEdgeInsetsZero
@@ -306,9 +309,7 @@ class ExercisesTVC: UIViewController ,UITableViewDelegate, UITableViewDataSource
         return true
     }
     func layoutAnimated(animated : Bool){
-        
-        var contentFrame = self.view.bounds;
-        var bannerFrame = iAd.frame;
+
         if (iAd.bannerLoaded)
         {
             iAd.hidden = false
@@ -330,6 +331,7 @@ class ExercisesTVC: UIViewController ,UITableViewDelegate, UITableViewDataSource
         
     }
 
+    //Show correct background after rotation
     override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
         if(NSUserDefaults.standardUserDefaults().objectForKey("tutorialTrainingPlans") == nil){
             hideTutorial()
@@ -337,8 +339,6 @@ class ExercisesTVC: UIViewController ,UITableViewDelegate, UITableViewDataSource
         var backgroundIMG = UIImage(named: "Background2.png")
         backgroundIMG = imageResize(backgroundIMG!, sizeChange: size)
         self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
-        
-
 
     }
     

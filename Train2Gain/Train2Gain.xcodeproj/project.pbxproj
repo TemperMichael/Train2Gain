@@ -165,16 +165,16 @@
 		062F951E1ADBD6CE003D62A4 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
-				06FF572E1AC5B5AF0059129D /* ExercisesTVC.swift */,
 				06879C671ACB462E00C6FEE3 /* AddExerciseVC.swift */,
+				46CEDEFE1B6C137A00B6E7D0 /* EditChooserVC.swift */,
+				46E50E571B6AF29D003F381E /* EditDayIDVC.swift */,
 				0618BA701AC7A11A00BDFBC0 /* ExerciseChosenVC.swift */,
+				06FF572E1AC5B5AF0059129D /* ExercisesTVC.swift */,
 				06FF57361AC633EB0059129D /* MeasureVC.swift */,
 				065F32DF1AD6A7BE001FD9D0 /* PickDateVC.swift */,
 				46306FFF1AEE21F600B19267 /* SettingsVC.swift */,
-				06197B6E1AD5F1C9002794A3 /* TrainingDataVC.swift */,
-				46E50E571B6AF29D003F381E /* EditDayIDVC.swift */,
-				46CEDEFE1B6C137A00B6E7D0 /* EditChooserVC.swift */,
 				46C220B31BC168F30045940F /* StatisticVC.swift */,
+				06197B6E1AD5F1C9002794A3 /* TrainingDataVC.swift */,
 			);
 			name = ViewController;
 			sourceTree = "<group>";
@@ -222,8 +222,8 @@
 				0618BA6A1AC771E600BDFBC0 /* LaunchScreen.xib */,
 				06DF4D8A1AC5A94800FA2A01 /* Main.storyboard */,
 				46EAAB011B8A40F900EB2919 /* Images.xcassets */,
-				463D47741AED17520097E480 /* Moods.swift */,
 				06DF4D2B1AC59FEB00FA2A01 /* AppDelegate.swift */,
+				463D47741AED17520097E480 /* Moods.swift */,
 				06DF4D2D1AC59FEB00FA2A01 /* Train2Gain.xcdatamodeld */,
 				06DF4D291AC59FEB00FA2A01 /* Supporting Files */,
 			);
@@ -267,8 +267,8 @@
 		463070011AEE3B8E00B19267 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
-				463D47761AED18180097E480 /* MoodCell.swift */,
 				4628E8061AED9FB900D9DDF5 /* DayIDChosenCell.swift */,
+				463D47761AED18180097E480 /* MoodCell.swift */,
 			);
 			name = Cells;
 			sourceTree = "<group>";

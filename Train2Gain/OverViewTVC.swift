@@ -23,6 +23,7 @@ class OverViewTVC: UITableViewController {
         super.viewDidLoad()
         
         appDelegate.shouldRotate = false
+        //enable rotation for ipad
         if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.Pad){
             appDelegate.shouldRotate = true
         }
@@ -127,16 +128,12 @@ class OverViewTVC: UITableViewController {
         }
         //Hide empty cells
         let backgroundView = UIView(frame: CGRectZero)
-        
         self.tableView.tableFooterView = backgroundView
-        
         self.tableView.backgroundColor = UIColor(red:22/255 ,green:200/255, blue:1.00 ,alpha:1.0)
-        
-      
-       
-        //self.view.layoutIfNeeded()
+
         //Get and save actual date
         NSUserDefaults.standardUserDefaults().setObject(NSDate(), forKey: "dateUF")
+        
         //Get actual pw if one is set
         if let pw = NSUserDefaults.standardUserDefaults().objectForKey("Password") as? String{
             m_Password = pw
@@ -146,6 +143,7 @@ class OverViewTVC: UITableViewController {
     
     override func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
         
+        //Handle selection of menu item
         switch indexPath.row{
         case 0:
             performSegueWithIdentifier("ExerciseSegue", sender: self)
@@ -182,9 +180,7 @@ class OverViewTVC: UITableViewController {
     }
     
     func checkPassword(){
-        
-        //let cell = tableView.dequeueReusableCellWithIdentifier("MenuPointCell", forIndexPath: indexPath) as! UITableViewCell
-        
+
         let context = LAContext()
         var error:NSError?
         
@@ -235,7 +231,7 @@ class OverViewTVC: UITableViewController {
                 
             })
             //If touch id is not supported
-        } catch var error1 as NSError {
+        } catch let error1 as NSError {     //TODO new do catch with Swift 2.0
             error = error1
             // If the security policy cannot be evaluated then show a short message depending on the error.
             switch error!.code{
@@ -259,7 +255,8 @@ class OverViewTVC: UITableViewController {
 
     }
     
-    //Create password dialog - single = false for setup password - single = true for entering password
+    //Create password dialog: single = false for setup password
+    //                        single = true for entering password
     func callPWAlert(_Message:String, single:Bool){
         
         
@@ -267,7 +264,7 @@ class OverViewTVC: UITableViewController {
         let passwordPrompt = UIAlertController(title: "Enter Password", message: _Message, preferredStyle: UIAlertControllerStyle.Alert)
         passwordPrompt.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: nil))
         passwordPrompt.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
-            
+            //Enter password
             if(single){
                 
                 let textField = passwordPrompt.textFields![0] 
@@ -283,6 +280,7 @@ class OverViewTVC: UITableViewController {
                 }
                 
             }else{
+                //Setup password
                 var textField = passwordPrompt.textFields![0] 
                 let password = textField.text
                 textField = passwordPrompt.textFields![1] 

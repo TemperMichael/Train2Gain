@@ -22,7 +22,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
     let  requestMeasures = NSFetchRequest(entityName: "Measurements")
     
     var date : NSDate!
-
+    
     
     var appdel =  UIApplication.sharedApplication().delegate as! AppDelegate
     
@@ -46,7 +46,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
     
     @IBOutlet weak var m_b_PickDate: UIButton!
     
-     var tutorialView:UIImageView!
+    var tutorialView:UIImageView!
     
     
     var weightUnit: String! = NSUserDefaults.standardUserDefaults().objectForKey("weightUnit")! as! String
@@ -57,16 +57,17 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //Handle iAd
         iAd.delegate = self
         iAd.hidden = true
-       
+        
+        //Set background
         var backgroundIMG = UIImage(named: "Background2.png")
         backgroundIMG = imageResize(backgroundIMG!, sizeChange: view.frame.size)
         self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
-
+        
+        //Show tutorial
         if(NSUserDefaults.standardUserDefaults().objectForKey("tutorialBodyMeasurements") == nil){
-            
-            //self.view.backgroundColor = UIColor(red: 0/255, green: 185/255, blue: 1, alpha: 1)
             
             tutorialView = UIImageView(frame: self.view.frame)
             
@@ -75,7 +76,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
             if(self.view.frame.size.height <= 490){
                 tutorialView.frame.size.height += 60
             }else{
-            tutorialView.frame.size.height -= 60
+                tutorialView.frame.size.height -= 60
             }
             tutorialView.userInteractionEnabled = true
             let tap = UITapGestureRecognizer(target: self, action:"hideTutorial")
@@ -83,18 +84,18 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
             self.view.addSubview(tutorialView)
             self.navigationController?.navigationBarHidden = true
             
-      
+            
         }
-
         
-      
-          date = NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate
+        
+        date = NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate
         m_tf_Weights.delegate = self
         m_tf_Chest.delegate = self
         m_tf_Arm.delegate = self
         m_tf_Waist.delegate = self
         m_tf_Leg.delegate = self
         
+        //Setup content of view
         if(editMode){
             measures = (try! appdel.managedObjectContext?.executeFetchRequest(requestMeasures))  as! [Measurements]
             
@@ -125,7 +126,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         var backgroundIMG = UIImage(named: "Background2.png")
         backgroundIMG = imageResize(backgroundIMG!, sizeChange: view.frame.size)
         self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
-
+        
         self.navigationController?.navigationBarHidden = false
         UIView.transitionWithView(self.view, duration: 1, options: UIViewAnimationOptions.CurveLinear, animations: {
             self.tutorialView.alpha = 0;
@@ -137,7 +138,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         })
         
     }
-
+    
     
     func getCorrectString(amount : Double) -> String{
         var returnString = "0"
@@ -149,7 +150,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         }else if(amount < 1000){
             returnString = NSString(format: "%.2f",amount) as String
         }
-      
+        
         if(amount == 0){
             returnString = "0"
         }
@@ -160,8 +161,8 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
     }
     
     override func viewDidAppear(animated: Bool) {
-          date = NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate
-         m_b_PickDate.setTitle(returnDateForm(date), forState: UIControlState.Normal)
+        date = NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate
+        m_b_PickDate.setTitle(returnDateForm(date), forState: UIControlState.Normal)
     }
     
     @IBAction func nextDayCL(sender: AnyObject) {
@@ -185,21 +186,10 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         m_b_PickDate.setTitle(returnDateForm(date), forState: UIControlState.Normal)
         
     }
-
+    
     
     
     @IBAction func saveCL(sender: AnyObject) {
-        
-        var managedObjectContext: NSManagedObjectContext? = {
-            let coordinator = self.appdel.persistentStoreCoordinator;
-            if coordinator == nil{
-                return nil
-            }
-            let managedObjectContext = NSManagedObjectContext()
-            managedObjectContext.persistentStoreCoordinator = coordinator
-            return managedObjectContext
-            
-            }()
         
         var alreadyExists = true
         var savePos : Int?
@@ -207,15 +197,15 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         dates = (try! appdel.managedObjectContext?.executeFetchRequest(request))  as! [Dates]
         
         
-            measures = (try! appdel.managedObjectContext?.executeFetchRequest(requestMeasures))  as! [Measurements]
+        measures = (try! appdel.managedObjectContext?.executeFetchRequest(requestMeasures))  as! [Measurements]
         
         
         
-   
-            date = NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate
-            
+        
+        date = NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate
         
         
+        //Check if data already exists
         for(var i = 0; i < dates.count ; i++){
             
             if(returnDateForm(dates[i].savedDate) == returnDateForm(date)){
@@ -224,8 +214,8 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
             }
             
         }
-
         
+        //Replace date
         if(alreadyExists){
             
             let newItem = NSEntityDescription.insertNewObjectForEntityForName("Dates", inManagedObjectContext: appdel.managedObjectContext!) as! Dates
@@ -233,18 +223,18 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
             
         }
         
-        
+        //Save data in correct way
         if(!editMode){
-        if(measures.count <= 0){
-           addNewMeasure()
-        }else{
-            let lastMeasure = measures[measures.count-1]
-            if(returnDateForm(lastMeasure.date) != returnDateForm(NSDate())){
-             addNewMeasure()
+            if(measures.count <= 0){
+                addNewMeasure()
             }else{
-                addMeasure(lastMeasure)
+                let lastMeasure = measures[measures.count-1]
+                if(returnDateForm(lastMeasure.date) != returnDateForm(NSDate())){
+                    addNewMeasure()
+                }else{
+                    addMeasure(lastMeasure)
+                }
             }
-        }
         }else{
             var measurementExists = false
             if(!alreadyExists){
@@ -260,7 +250,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
             if(!measurementExists){
                 addNewMeasure()
             }
-
+            
             
         }
         
@@ -274,13 +264,13 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
             
         }))
         
+        //Fabric - Analytic tool
         Answers.logContentViewWithName("Body Measurement",
             contentType: "Saved data",
             contentId: String(stringInterpolationSegment: editMode),
             customAttributes: [:])
         
         presentViewController(informUser, animated: true, completion: nil)
-        
         
         
     }
@@ -342,10 +332,11 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         
     }
     
+    //Resize background image to fit in view
     func imageResize (imageObj:UIImage, sizeChange:CGSize)-> UIImage{
         
         let hasAlpha = false
-        let scale: CGFloat = 0.0 // Automatically use scale factor of main screen
+        let scale: CGFloat = 0.0
         
         UIGraphicsBeginImageContextWithOptions(sizeChange, !hasAlpha, scale)
         imageObj.drawInRect(CGRect(origin: CGPointZero, size: sizeChange))
@@ -375,6 +366,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
     }
     
     
+    //Move view to always show the selected textfield
     
     func textFieldDidBeginEditing(textField: UITextField) {
         switch (textField){
@@ -418,6 +410,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
     }
     
     
+    //Setup textfield input settings
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
         
         
@@ -500,8 +493,6 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
     }
     func layoutAnimated(animated : Bool){
         
-        var contentFrame = self.view.bounds;
-        var bannerFrame = iAd.frame;
         if (iAd.bannerLoaded)
         {
             iAd.hidden = false
@@ -523,19 +514,17 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         
     }
     
- 
+    //Show correct background after rotation
     override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
         if(NSUserDefaults.standardUserDefaults().objectForKey("tutorialBodyMeasurements") == nil){
             hideTutorial()
         }
-
+        
         var backgroundIMG = UIImage(named: "Background2.png")
         backgroundIMG = imageResize(backgroundIMG!, sizeChange: size)
         self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
         
-        
-        
     }
-
+    
     
 }

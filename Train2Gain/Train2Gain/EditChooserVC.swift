@@ -22,6 +22,7 @@ class EditChooserVC: UIViewController, ADBannerViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //Handle iAd
         iAd.delegate = self
         iAd.hidden = true
         
@@ -30,10 +31,11 @@ class EditChooserVC: UIViewController, ADBannerViewDelegate {
         backButton.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "Chalkduster", size: 20)!], forState: UIControlState.Normal)
         navigationItem.backBarButtonItem = backButton
 
-        
+        //Set bordercolor of buttons
         bmButton.layer.borderColor = UIColor.whiteColor().CGColor
         moodButton.layer.borderColor = UIColor.whiteColor().CGColor
         
+        //Set title with correct chosen date
         let chosendate = NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate
         changeLabel.text = "Change data of \(returnDateForm(chosendate))"
         
@@ -42,19 +44,17 @@ class EditChooserVC: UIViewController, ADBannerViewDelegate {
         backgroundIMG = imageResize(backgroundIMG!, sizeChange: view.frame.size)
         self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
 
-        // Do any additional setup after loading the view.
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
-    
+    //Resize background image to fit in view
     func imageResize (imageObj:UIImage, sizeChange:CGSize)-> UIImage{
         
         let hasAlpha = false
-        let scale: CGFloat = 0.0 // Automatically use scale factor of main screen
+        let scale: CGFloat = 0.0
         
         UIGraphicsBeginImageContextWithOptions(sizeChange, !hasAlpha, scale)
         imageObj.drawInRect(CGRect(origin: CGPointZero, size: sizeChange))
@@ -109,8 +109,7 @@ class EditChooserVC: UIViewController, ADBannerViewDelegate {
     }
     func layoutAnimated(animated : Bool){
         
-        var contentFrame = self.view.bounds;
-        var bannerFrame = iAd.frame;
+
         if (iAd.bannerLoaded)
         {
             iAd.hidden = false
@@ -132,6 +131,7 @@ class EditChooserVC: UIViewController, ADBannerViewDelegate {
         
     }
 
+      //Show correct background after rotation
     override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
         var backgroundIMG = UIImage(named: "Background2.png")
         backgroundIMG = imageResize(backgroundIMG!, sizeChange: size)

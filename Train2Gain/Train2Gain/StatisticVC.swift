@@ -20,7 +20,7 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
     @IBOutlet weak var selectorsBG: UIView!
     
     @IBOutlet weak var pickerView: UIPickerView!
- 
+    
     @IBOutlet weak var exerciseButton: UIButton!
     
     @IBOutlet weak var monthButton: UIButton!
@@ -72,8 +72,6 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
     
     var setAmount = 0
     
-   // var monthDaysDict = NSDictionary(dictionary: ["Jan":31,"Feb":28,"Mar":31,"Apr":30,"May":31,"Jun":30,"Jul":31,"Aug":31,"Sep":30,"Oct":31,"Nov":30,"Dec":31])
-    
     var monthDateDict = NSDictionary(dictionary: ["Jan":1,"Feb":2,"Mar":3,"Apr":4,"May":5,"Jun":6,"Jul":7,"Aug":8,"Sep":9,"Oct":10,"Nov":11,"Dec":12])
     
     
@@ -85,10 +83,12 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         
         appDelegate.shouldRotate = true
         
+        //Set background
         var backgroundIMG = UIImage(named: "Background2.png")
         backgroundIMG = imageResize(backgroundIMG!, sizeChange: selectorsBG.frame.size)
         selectorsBG.backgroundColor = UIColor(patternImage: backgroundIMG!)
         
+        //Get current year
         let date = NSDate()
         let calendar = NSCalendar.currentCalendar()
         let components = calendar.components([.Year], fromDate: date)
@@ -106,8 +106,8 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         //Sort array by date
         doneEx.sortInPlace({ $0.date.compare($1.date) == NSComparisonResult.OrderedAscending })
         
+        //Get exercises
         var alreadyAddedEx:[String] = []
-        
         for(var i = 0; i < doneEx.count; i++){
             if(!alreadyAddedEx.contains(doneEx[i].name)){
                 alreadyAddedEx.append(doneEx[i].name)
@@ -126,6 +126,8 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         
         
         pickerData = []
+        
+        //Setup chartview
         
         chartView.delegate = self;
         
@@ -146,8 +148,6 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         chartView.legend.position = ChartLegend.ChartLegendPosition.BelowChartLeft
         
         chartView.legend.xOffset = -10
-       
-        
         
         let xAxis = chartView.xAxis;
         xAxis.labelFont =  UIFont(name:"HelveticaNeue-Light", size:12)!
@@ -155,7 +155,7 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         xAxis.drawGridLinesEnabled = false
         xAxis.drawAxisLineEnabled = false
         xAxis.spaceBetweenLabels = 1
-     
+        
         let leftAxis = chartView.leftAxis
         leftAxis.labelTextColor = UIColor(red:51/255, green:181/255, blue:229/255, alpha:1)
         leftAxis.customAxisMax = 100
@@ -165,20 +165,15 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         
         let rightAxis = chartView.rightAxis
         rightAxis.labelTextColor = UIColor.grayColor()
-          rightAxis.customAxisMax = 9
+        rightAxis.customAxisMax = 9
         rightAxis.startAtZeroEnabled = false
-         rightAxis.customAxisMin = 0
+        rightAxis.customAxisMin = 0
         rightAxis.drawGridLinesEnabled = false
         
         
         chartView.rightAxis.enabled = true
         
-    
-        
         setDataCount()
-        //  chartView.animate(xAxisDuration: )
-        
-        // Do any additional setup after loading the view.
     }
     
     
@@ -196,8 +191,6 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
             addEmptyDays(singleMonth)
         }
         
-     
-        
         var yVals:[ChartDataEntry] = []
         var yValsRight:[ChartDataEntry] = []
         var rightMax = 0.0
@@ -205,9 +198,7 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         
         var weight = 0.0
         
-        //Calculation for actual chosen unit
-
-        
+        //Get current day,month and year
         var date = NSDate()
         var calendar = NSCalendar.currentCalendar()
         var components = calendar.components([.Year, .Month,.Day], fromDate: date)
@@ -215,14 +206,13 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         var year = components.year
         var day = components.day
         
-        
-       
-        
+        //Loop to show single month or whole year
         for singleMonth in selectedMonths{
             
             var saveDays:[Int] = []
             for singleDoneEx in selectedDoneEx{
                 
+                //Get day, month and year
                 date = singleDoneEx.date
                 calendar = NSCalendar.currentCalendar()
                 components = calendar.components([.Year, .Month,.Day], fromDate: date)
@@ -230,35 +220,40 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
                 year = components.year
                 day = components.day
                 
+                //Get maximum for axis
                 if(singleDoneEx.weight.doubleValue > weight){
                     leftMax = singleDoneEx.weight.doubleValue
                     if(weightUnit == "lbs"){
                         leftMax = leftMax * 2.20462262185
                     }
-
+                    
                 }
                 
                 weight = singleDoneEx.weight.doubleValue
+                
+                //Only add correct data to chartview
                 if(year == Int(selectedYear) && month == monthDateDict.valueForKey(singleMonth) as! Int && weight != 0.0 ){
                     
                     setAmount = singleDoneEx.sets.integerValue
                     
-                    
+                    //Check unit
                     if(weightUnit == "lbs"){
                         weight = weight * 2.20462262185
                     }
+                    
                     if(singleDoneEx.setCounter.stringValue == selectedSet && !saveDays.contains(day)){
                         
+                        //Fullfill axis when whole year should show up
                         if(selectedMonths.count > 1){
                             
-                       
+                            
                             if (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0) && monthDateDict.valueForKey(singleMonth) as! Int > 2){
                                 //leap year
                                 
                                 day += 1
                             }
                             
-                            
+                            //Add days to set data to correct day in correct month
                             switch monthDateDict.valueForKey(singleMonth) as! Int{
                             case 2:
                                 day += 31
@@ -286,7 +281,7 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
                                 print("Month Error")
                             }
                         }
-                            
+                        
                         
                         yVals.append(ChartDataEntry(value: weight, xIndex: day - 1))
                         if(singleDoneEx.doneReps.doubleValue > rightMax){
@@ -294,8 +289,9 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
                         }
                         
                         yValsRight.append(ChartDataEntry(value: singleDoneEx.doneReps.doubleValue, xIndex: day - 1))
-                         saveDays.append(day)
+                        saveDays.append(day)
                         
+                        //For testing
                         /*
                         for(var i = 0; i < 365 ;i++){
                         let randNr = Double(arc4random_uniform(200))
@@ -329,6 +325,8 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
                 selectedSet = ""
             }
         }
+        
+        //Put in some space for better view
         leftMax += (leftMax/100) * 6
         rightMax += rightMax/10
         
@@ -343,10 +341,10 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         chartView.leftAxis.customAxisMax = leftMax
         chartView.rightAxis.customAxisMax = rightMax
         
-     
         
+        //Setup and show chartview
         if(xVals != [] && yVals != []){
-             chartView.leftAxis.enabled = true
+            chartView.leftAxis.enabled = true
             chartView.xAxis.enabled = true
             chartView.rightAxis.enabled = true
             selectedExercise = selectedExercise == "Exercise" ? "-" : selectedExercise
@@ -370,8 +368,8 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
             set2.drawCircleHoleEnabled = true
             set2.valueFont = UIFont(name:"HelveticaNeue-Light", size:9)!
             set2.fillAlpha = 255/255.0;
-         
-
+            
+            
             
             let dataSets = [set1,set2]
             
@@ -386,14 +384,15 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
             chartView.data?.clearValues()
         }
         chartView.notifyDataSetChanged()
-       
+        
         if(setAmount > 0){
-             setButton.enabled = true;
-              setButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+            setButton.enabled = true;
+            setButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         }
     }
     
     
+    //Add correct number of days for x-Axis
     func addEmptyDays(month:String){
         
         self.xVals.append("\(month)")
@@ -412,7 +411,7 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
             }
         case "Feb":
             
-          
+            
             for(var i = 2; i < 29; i++){
                 self.xVals.append(String(i));
             }
@@ -424,7 +423,7 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
                     self.xVals.append(String(29))
                 }
             }
-         
+            
             
         default:
             print("error addEmptyDay")
@@ -436,7 +435,6 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     //Fit background image to display size
@@ -471,7 +469,7 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         }
         pickerData = sets
         setupPickerView()
-
+        
         
     }
     
@@ -495,7 +493,6 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         pickerView.reloadAllComponents()
         
         blurView.frame = pickerBG.bounds
-        // 3
         
         blurView.translatesAutoresizingMaskIntoConstraints = false
         if( !pickerBG.subviews.contains(blurView)){
@@ -536,7 +533,7 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
     // The number of rows of data
     func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return pickerData.count
-    
+        
     }
     
     func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusingView view: UIView?) -> UIView {
@@ -546,16 +543,13 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         backVal.font = UIFont(name: "HelveticaNeue-Thin" , size: 22)
         backVal.textColor = UIColor.whiteColor()
         backVal.textAlignment = .Center
-        // Fill the label text here
-      
         backVal.text =  pickerData[row]
-       
-        
         
         return backVal
     }
     
     
+    //Animate the hiding of the pickerview, set data and set titles of the buttons
     @IBAction func finishCL(sender: AnyObject) {
         
         
@@ -580,7 +574,7 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
                 }
             }
             
-           
+            
         case "Month":
             let selectedText = self.pickerData[self.pickerView.selectedRowInComponent(0)]
             self.monthButton.setTitle(selectedText, forState: UIControlState.Normal)
@@ -630,23 +624,22 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         
     }
     
-
-    
+    //Highlight selected value 
     func chartValueSelected(chartView: ChartViewBase, entry: ChartDataEntry, dataSetIndex: Int, highlight: ChartHighlight) {
         selectedValueLabel.hidden = false
         if(dataSetIndex == 1){
             selectedValueLabel.textColor = UIColor(red:51/255, green:181/255, blue:229/255, alpha:1)
-        selectedValueLabel.text = NSString(format: "Val.:%.2f \(weightUnit)",entry.value ) as String
+            selectedValueLabel.text = NSString(format: "Val.:%.2f \(weightUnit)",entry.value ) as String
         }else{
-             selectedValueLabel.textColor = UIColor.grayColor()
-             selectedValueLabel.text = "Val.:\(entry.value) reps"
+            selectedValueLabel.textColor = UIColor.grayColor()
+            selectedValueLabel.text = "Val.:\(entry.value) reps"
         }
     }
     
     func chartValueNothingSelected(chartView: ChartViewBase) {
         selectedValueLabel.hidden = true
     }
-
+    
     
     
 }

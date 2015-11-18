@@ -22,13 +22,15 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
     @IBOutlet weak var iAd: ADBannerView!
     
     
-      var m_Password : String =  ""
+    var m_Password : String =  ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //Handle iAd
         iAd.delegate = self
         iAd.hidden = true
+        
         //Set background
         var backgroundIMG = UIImage(named: "Background2.png")
         backgroundIMG = imageResize(backgroundIMG!, sizeChange: view.frame.size)
@@ -42,14 +44,16 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
         lengthUnit.tintColor = UIColor.whiteColor()
         privacyMode.tintColor = UIColor.whiteColor()
         
+        //Get password
         if let pw = NSUserDefaults.standardUserDefaults().objectForKey("Password") as? String{
             m_Password = pw
         }
         
+        
         if(m_Password != ""){
             privacyMode.setOn(true, animated: false);
         }
-   
+        
         
     }
     
@@ -58,8 +62,9 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
         if let pw = NSUserDefaults.standardUserDefaults().objectForKey("Password") as? String{
             m_Password = pw
         }
-
+        
     }
+    
     //Fit background image to display size
     func imageResize (imageObj:UIImage, sizeChange:CGSize)-> UIImage{
         
@@ -106,9 +111,9 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
             
         }else{
             
-            var context = LAContext()
+            let context = LAContext()
             var error:NSError?
-            var messageText = "Scan your fingerprint"
+            let messageText = "Scan your fingerprint"
             
             do {
                 context.canEvaluatePolicy(LAPolicy.DeviceOwnerAuthenticationWithBiometrics, error: &error)
@@ -117,8 +122,8 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
                     
                     if success {
                         NSOperationQueue.mainQueue().addOperationWithBlock(){
-                             NSUserDefaults.standardUserDefaults().setObject("", forKey: "Password")
-                          
+                            NSUserDefaults.standardUserDefaults().setObject("", forKey: "Password")
+                            
                         }
                         
                     }
@@ -134,7 +139,7 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
                             
                         case LAError.UserCancel.rawValue :
                             
-                             self.privacyMode.setOn(true, animated: true)
+                            self.privacyMode.setOn(true, animated: true)
                             
                         case LAError.UserFallback.rawValue :
                             
@@ -149,16 +154,16 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
                     
                 })
                 //If touch id is not supported
-            } catch var error1 as NSError {
+            } catch var error1 as NSError { //TODO new do catch Swift 2.0
                 error = error1
                 // If the security policy cannot be evaluated then show a short message depending on the error.
                 switch error!.code{
                     
                 case LAError.TouchIDNotEnrolled.rawValue:
                     
-                  //  UIAlertView(title:"Error", message: "TouchID is not enrolled", delegate: self, cancelButtonTitle: "OK").show()
+                    //  UIAlertView(title:"Error", message: "TouchID is not enrolled", delegate: self, cancelButtonTitle: "OK").show()
                     
-                     self.callPWAlert("Enter your password", single: true)
+                    self.callPWAlert("Enter your password", single: true)
                     
                 case LAError.PasscodeNotSet.rawValue:
                     
@@ -169,19 +174,12 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
                     
                     self.callPWAlert("Enter your password", single: true)
                 }
-                
             }
-            
-            
-
-            
-            
         }
-        
-        
-        
     }
     
+    //Create password dialog: single = false for setup password
+    //                        single = true for entering password
     func callPWAlert(_Message:String, single:Bool){
         
         
@@ -189,22 +187,22 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
         let passwordPrompt = UIAlertController(title: "Enter Password", message: _Message, preferredStyle: UIAlertControllerStyle.Alert)
         passwordPrompt.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
             if(self.privacyMode.on){
-            self.privacyMode.setOn(false, animated: true)
+                self.privacyMode.setOn(false, animated: true)
             }else{
-                 self.privacyMode.setOn(true, animated: true)
+                self.privacyMode.setOn(true, animated: true)
             }
         }))
         passwordPrompt.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
-            
+            //Enter password
             if(single){
                 
-                let textField = passwordPrompt.textFields![0] 
+                let textField = passwordPrompt.textFields![0]
                 let password = textField.text
                 
                 
                 if(password == self.m_Password){
                     self.privacyMode.setOn(false, animated: true)
-                      NSUserDefaults.standardUserDefaults().setObject("", forKey: "Password")
+                    NSUserDefaults.standardUserDefaults().setObject("", forKey: "Password")
                     
                 }else{
                     
@@ -213,16 +211,17 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
                 }
                 
             }else{
-                var textField = passwordPrompt.textFields![0] 
+                //Setup password
+                var textField = passwordPrompt.textFields![0]
                 let password = textField.text
-                textField = passwordPrompt.textFields![1] 
+                textField = passwordPrompt.textFields![1]
                 let passwordConfirmend = textField.text
                 
                 if(password == passwordConfirmend && passwordConfirmend != ""){
                     self.m_Password = passwordConfirmend!
                     NSUserDefaults.standardUserDefaults().setObject(passwordConfirmend, forKey: "Password")
                 }else{
-                   
+                    
                     self.callPWAlert("Confirmed password was wrong or empty",single: false)
                 }
             }
@@ -246,26 +245,25 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
     }
     
     
+    //Reset tutorial user defaults and so show them again in views
     @IBAction func tutorialCL(sender: AnyObject) {
         
         let informUser = UIAlertController(title: "Tutorials", message:"Tutorials will be shown again in the views", preferredStyle: UIAlertControllerStyle.Alert)
         informUser.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
-          
+            
             NSUserDefaults.standardUserDefaults().setObject(nil, forKey: "tutorialAddExercise")
             
             NSUserDefaults.standardUserDefaults().setObject(nil, forKey: "tutorialMoods")
-          
+            
             NSUserDefaults.standardUserDefaults().setObject(nil, forKey: "tutorialBodyMeasurements")
-          
+            
             NSUserDefaults.standardUserDefaults().setObject(nil, forKey: "tutorialTrainingData")
-          
+            
             NSUserDefaults.standardUserDefaults().setObject(nil, forKey: "tutorialTrainingPlans")
             
-            
-            
         }))
-         presentViewController(informUser, animated: true, completion: nil)
-
+        presentViewController(informUser, animated: true, completion: nil)
+        
     }
     
     // iAd Handling
@@ -283,8 +281,6 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
     }
     func layoutAnimated(animated : Bool){
         
-        var contentFrame = self.view.bounds;
-        var bannerFrame = iAd.frame;
         if (iAd.bannerLoaded)
         {
             iAd.hidden = false
@@ -305,7 +301,8 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
         
         
     }
-
+    
+    //Show correct background after rotation
     override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
         var backgroundIMG = UIImage(named: "Background2.png")
         backgroundIMG = imageResize(backgroundIMG!, sizeChange: size)

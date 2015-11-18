@@ -474,7 +474,7 @@ public class LineChartRenderer: LineScatterCandleRadarChartRenderer
                         continue
                     }
                     
-                    var val = entries[j + minx].value
+                    let val = entries[j + minx].value
                     
                     
                     //Here are the labels for the values get set
