@@ -21,21 +21,23 @@ class PickDateVC: UIViewController, ADBannerViewDelegate{
         
         super.viewDidLoad()
         
+        //Handle iAd
         iAd.delegate = self
         iAd.hidden = true
         
         okButton.layer.borderColor = UIColor.whiteColor().CGColor
+        
         //Set background
         var backgroundIMG = UIImage(named: "Background2.png")
         backgroundIMG = imageResize(backgroundIMG!, sizeChange: view.frame.size)
         self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
 
 
-       self.navigationItem.hidesBackButton = true
+        self.navigationItem.hidesBackButton = true
         
         m_dp_DatePicker.setDate(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate, animated: true)
         
-        m_dp_DatePicker.viewForBaselineLayout()!.setValue(UIColor.whiteColor(), forKeyPath: "tintColor")
+        m_dp_DatePicker.viewForBaselineLayout().setValue(UIColor.whiteColor(), forKeyPath: "tintColor")
         
         for sub in m_dp_DatePicker.subviews{
             sub.setValue(UIColor.whiteColor(), forKeyPath: "textColor")
@@ -48,7 +50,7 @@ class PickDateVC: UIViewController, ADBannerViewDelegate{
    
 
     @IBAction func okCL(sender: AnyObject) {
-       //save date
+       //Save date
         NSUserDefaults.standardUserDefaults().setObject(m_dp_DatePicker.date,forKey: "dateUF")
         self.navigationController?.popViewControllerAnimated(true)
     }
@@ -57,7 +59,7 @@ class PickDateVC: UIViewController, ADBannerViewDelegate{
     func returnDateForm(date:NSDate) -> String{
         let dateFormatter = NSDateFormatter()
         
-        var theDateFormat = NSDateFormatterStyle.ShortStyle
+        let theDateFormat = NSDateFormatterStyle.ShortStyle
         let theTimeFormat = NSDateFormatterStyle.NoStyle
         
         dateFormatter.dateStyle = theDateFormat
@@ -98,8 +100,6 @@ class PickDateVC: UIViewController, ADBannerViewDelegate{
     }
     func layoutAnimated(animated : Bool){
         
-        var contentFrame = self.view.bounds;
-        var bannerFrame = iAd.frame;
         if (iAd.bannerLoaded)
         {
             iAd.hidden = false
@@ -120,6 +120,15 @@ class PickDateVC: UIViewController, ADBannerViewDelegate{
         
         
     }
+    
+    //Show correct background after rotation
+    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+        var backgroundIMG = UIImage(named: "Background2.png")
+        backgroundIMG = imageResize(backgroundIMG!, sizeChange: size)
+        self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
+        
+    }
+    
 
 
 }

@@ -22,7 +22,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
     let  requestMeasures = NSFetchRequest(entityName: "Measurements")
     
     var date : NSDate!
-
+    
     
     var appdel =  UIApplication.sharedApplication().delegate as! AppDelegate
     
@@ -46,7 +46,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
     
     @IBOutlet weak var m_b_PickDate: UIButton!
     
-     var tutorialView:UIImageView!
+    var tutorialView:UIImageView!
     
     
     var weightUnit: String! = NSUserDefaults.standardUserDefaults().objectForKey("weightUnit")! as! String
@@ -57,11 +57,18 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //Handle iAd
         iAd.delegate = self
         iAd.hidden = true
+        
+        //Set background
+        var backgroundIMG = UIImage(named: "Background2.png")
+        backgroundIMG = imageResize(backgroundIMG!, sizeChange: view.frame.size)
+        self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
+        
+        //Show tutorial
         if(NSUserDefaults.standardUserDefaults().objectForKey("tutorialBodyMeasurements") == nil){
             
-            self.view.backgroundColor = UIColor(red: 0/255, green: 185/255, blue: 1, alpha: 1)
             tutorialView = UIImageView(frame: self.view.frame)
             
             tutorialView.image = UIImage(named: "TutorialBodyMeasurements.png")
@@ -69,33 +76,28 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
             if(self.view.frame.size.height <= 490){
                 tutorialView.frame.size.height += 60
             }else{
-            tutorialView.frame.size.height -= 60
+                tutorialView.frame.size.height -= 60
             }
             tutorialView.userInteractionEnabled = true
-            var tap = UITapGestureRecognizer(target: self, action:"hideTutorial")
+            let tap = UITapGestureRecognizer(target: self, action:"hideTutorial")
             tutorialView.addGestureRecognizer(tap)
             self.view.addSubview(tutorialView)
             self.navigationController?.navigationBarHidden = true
             
-      
-        }else{
-            var backgroundIMG = UIImage(named: "Background2.png")
-            backgroundIMG = imageResize(backgroundIMG!, sizeChange: view.frame.size)
-            self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
             
         }
-
         
-      
-          date = NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate
+        
+        date = NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate
         m_tf_Weights.delegate = self
         m_tf_Chest.delegate = self
         m_tf_Arm.delegate = self
         m_tf_Waist.delegate = self
         m_tf_Leg.delegate = self
         
+        //Setup content of view
         if(editMode){
-            measures = appdel.managedObjectContext?.executeFetchRequest(requestMeasures, error: nil)  as! [Measurements]
+            measures = (try! appdel.managedObjectContext?.executeFetchRequest(requestMeasures))  as! [Measurements]
             
             for singleMeasure in measures{
                 if(returnDateForm(singleMeasure.date) ==  returnDateForm(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate)){
@@ -124,7 +126,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         var backgroundIMG = UIImage(named: "Background2.png")
         backgroundIMG = imageResize(backgroundIMG!, sizeChange: view.frame.size)
         self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
-
+        
         self.navigationController?.navigationBarHidden = false
         UIView.transitionWithView(self.view, duration: 1, options: UIViewAnimationOptions.CurveLinear, animations: {
             self.tutorialView.alpha = 0;
@@ -136,7 +138,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         })
         
     }
-
+    
     
     func getCorrectString(amount : Double) -> String{
         var returnString = "0"
@@ -148,7 +150,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         }else if(amount < 1000){
             returnString = NSString(format: "%.2f",amount) as String
         }
-      
+        
         if(amount == 0){
             returnString = "0"
         }
@@ -159,8 +161,8 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
     }
     
     override func viewDidAppear(animated: Bool) {
-          date = NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate
-         m_b_PickDate.setTitle(returnDateForm(date), forState: UIControlState.Normal)
+        date = NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate
+        m_b_PickDate.setTitle(returnDateForm(date), forState: UIControlState.Normal)
     }
     
     @IBAction func nextDayCL(sender: AnyObject) {
@@ -184,37 +186,26 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         m_b_PickDate.setTitle(returnDateForm(date), forState: UIControlState.Normal)
         
     }
-
+    
     
     
     @IBAction func saveCL(sender: AnyObject) {
         
-        var managedObjectContext: NSManagedObjectContext? = {
-            let coordinator = self.appdel.persistentStoreCoordinator;
-            if coordinator == nil{
-                return nil
-            }
-            var managedObjectContext = NSManagedObjectContext()
-            managedObjectContext.persistentStoreCoordinator = coordinator
-            return managedObjectContext
-            
-            }()
-        
         var alreadyExists = true
         var savePos : Int?
         let  request = NSFetchRequest(entityName: "Dates")
-        dates = appdel.managedObjectContext?.executeFetchRequest(request, error: nil)  as! [Dates]
+        dates = (try! appdel.managedObjectContext?.executeFetchRequest(request))  as! [Dates]
         
         
-            measures = appdel.managedObjectContext?.executeFetchRequest(requestMeasures, error: nil)  as! [Measurements]
+        measures = (try! appdel.managedObjectContext?.executeFetchRequest(requestMeasures))  as! [Measurements]
         
         
         
-   
-            date = NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate
-            
+        
+        date = NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate
         
         
+        //Check if data already exists
         for(var i = 0; i < dates.count ; i++){
             
             if(returnDateForm(dates[i].savedDate) == returnDateForm(date)){
@@ -223,8 +214,8 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
             }
             
         }
-
         
+        //Replace date
         if(alreadyExists){
             
             let newItem = NSEntityDescription.insertNewObjectForEntityForName("Dates", inManagedObjectContext: appdel.managedObjectContext!) as! Dates
@@ -232,18 +223,18 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
             
         }
         
-        
+        //Save data in correct way
         if(!editMode){
-        if(measures.count <= 0){
-           addNewMeasure()
-        }else{
-            var lastMeasure = measures[measures.count-1]
-            if(returnDateForm(lastMeasure.date) != returnDateForm(NSDate())){
-             addNewMeasure()
+            if(measures.count <= 0){
+                addNewMeasure()
             }else{
-                addMeasure(lastMeasure)
+                let lastMeasure = measures[measures.count-1]
+                if(returnDateForm(lastMeasure.date) != returnDateForm(NSDate())){
+                    addNewMeasure()
+                }else{
+                    addMeasure(lastMeasure)
+                }
             }
-        }
         }else{
             var measurementExists = false
             if(!alreadyExists){
@@ -259,20 +250,21 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
             if(!measurementExists){
                 addNewMeasure()
             }
-
+            
             
         }
         
         appdel.saveContext()
         
         
-        var informUser = UIAlertController(title: "Saved", message:"Your body measurements were saved", preferredStyle: UIAlertControllerStyle.Alert)
+        let informUser = UIAlertController(title: "Saved", message:"Your body measurements were saved", preferredStyle: UIAlertControllerStyle.Alert)
         informUser.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
             self.navigationController?.popViewControllerAnimated(true)
             
             
         }))
         
+        //Fabric - Analytic tool
         Answers.logContentViewWithName("Body Measurement",
             contentType: "Saved data",
             contentId: String(stringInterpolationSegment: editMode),
@@ -281,14 +273,13 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         presentViewController(informUser, animated: true, completion: nil)
         
         
-        
     }
     
     //Get date in a good format
     func returnDateForm(date:NSDate) -> String{
         let dateFormatter = NSDateFormatter()
         
-        var theDateFormat = NSDateFormatterStyle.ShortStyle
+        let theDateFormat = NSDateFormatterStyle.ShortStyle
         let theTimeFormat = NSDateFormatterStyle.NoStyle
         
         dateFormatter.dateStyle = theDateFormat
@@ -310,41 +301,42 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         
         _Object.date = date
         
-        value = (m_tf_Weights.text as NSString).doubleValue
+        value = (m_tf_Weights.text! as NSString).doubleValue
         if(weightUnit == "lbs"){
             value = value /  2.20462262185
         }
-        _Object.weight = NSDecimalNumber(string: !m_tf_Weights.text.isEmpty ? "\(value)" : "0")
+        _Object.weight = NSDecimalNumber(string: !m_tf_Weights.text!.isEmpty ? "\(value)" : "0")
         
         
-        value = (m_tf_Arm.text as NSString).doubleValue
+        value = (m_tf_Arm.text! as NSString).doubleValue
         if(lengthUnit == "inch"){
             value = value * 2.54
         }
-        _Object.arm = NSDecimalNumber(string: !m_tf_Arm.text.isEmpty ? "\(value)" : "0")
+        _Object.arm = NSDecimalNumber(string: !m_tf_Arm.text!.isEmpty ? "\(value)" : "0")
         
         
-        value = (m_tf_Chest.text as NSString).doubleValue
+        value = (m_tf_Chest.text! as NSString).doubleValue
         if(lengthUnit == "inch"){
             value = value * 2.54        }
-        _Object.chest = NSDecimalNumber(string: !m_tf_Chest.text.isEmpty ? "\(value)" : "0")
+        _Object.chest = NSDecimalNumber(string: !m_tf_Chest.text!.isEmpty ? "\(value)" : "0")
         
-        value = (m_tf_Waist.text as NSString).doubleValue
+        value = (m_tf_Waist.text! as NSString).doubleValue
         if(lengthUnit == "inch"){
             value = value * 2.54        }
-        _Object.waist = NSDecimalNumber(string: !m_tf_Waist.text.isEmpty ? "\(value)" : "0")
+        _Object.waist = NSDecimalNumber(string: !m_tf_Waist.text!.isEmpty ? "\(value)" : "0")
         
-        value = (m_tf_Leg.text as NSString).doubleValue
+        value = (m_tf_Leg.text! as NSString).doubleValue
         if(lengthUnit == "inch"){
             value = value * 2.54        }
-        _Object.leg = NSDecimalNumber(string: !m_tf_Leg.text.isEmpty ? "\(value)" : "0")
+        _Object.leg = NSDecimalNumber(string: !m_tf_Leg.text!.isEmpty ? "\(value)" : "0")
         
     }
     
+    //Resize background image to fit in view
     func imageResize (imageObj:UIImage, sizeChange:CGSize)-> UIImage{
         
         let hasAlpha = false
-        let scale: CGFloat = 0.0 // Automatically use scale factor of main screen
+        let scale: CGFloat = 0.0
         
         UIGraphicsBeginImageContextWithOptions(sizeChange, !hasAlpha, scale)
         imageObj.drawInRect(CGRect(origin: CGPointZero, size: sizeChange))
@@ -363,7 +355,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
     //Keyboard methods
     
     
-    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         //Close Keyboard when clicking outside
         m_tf_Weights.resignFirstResponder()
         m_tf_Chest.resignFirstResponder()
@@ -374,6 +366,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
     }
     
     
+    //Move view to always show the selected textfield
     
     func textFieldDidBeginEditing(textField: UITextField) {
         switch (textField){
@@ -417,6 +410,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
     }
     
     
+    //Setup textfield input settings
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
         
         
@@ -449,25 +443,24 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
             }
         }
         
-        var getDecimalNumbers = (textField.text as NSString).componentsSeparatedByString(".")
-        if getDecimalNumbers.count > 1 && (getDecimalNumbers[1] as! NSString).integerValue > 9 && string != ""  {
+        var getDecimalNumbers = (textField.text! as NSString).componentsSeparatedByString(".")
+        if getDecimalNumbers.count > 1 && (getDecimalNumbers[1] as NSString).integerValue > 9 && string != ""  {
             return false
         }
         
         
-        var myCharacterSet : NSCharacterSet?
-        let text = (textField.text as NSString).stringByReplacingCharactersInRange(range, withString: string)
+        let text = (textField.text! as NSString).stringByReplacingCharactersInRange(range, withString: string)
         
         
         
         let disallowedCharacterSet = NSCharacterSet(charactersInString: "0123456789.").invertedSet
         let replacementStringIsLegal = string.rangeOfCharacterFromSet(disallowedCharacterSet) == nil
         
-        let resultingStringLengthIsLegal =  (getDecimalNumbers.count > 1 || string == ".") ? count(text) <= 6 : count(text) <= 3
+        let resultingStringLengthIsLegal =  (getDecimalNumbers.count > 1 || string == ".") ? text.characters.count <= 6 : text.characters.count <= 3
         
         let scanner = NSScanner(string: text)
         let resultingTextIsNumeric = scanner.scanDecimal(nil) && scanner.atEnd
-        if(count(text) == 0 || (replacementStringIsLegal &&
+        if(text.characters.count == 0 || (replacementStringIsLegal &&
             resultingStringLengthIsLegal &&
             resultingTextIsNumeric) ){
                 
@@ -500,8 +493,6 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
     }
     func layoutAnimated(animated : Bool){
         
-        var contentFrame = self.view.bounds;
-        var bannerFrame = iAd.frame;
         if (iAd.bannerLoaded)
         {
             iAd.hidden = false
@@ -522,6 +513,18 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         
         
     }
-
+    
+    //Show correct background after rotation
+    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+        if(NSUserDefaults.standardUserDefaults().objectForKey("tutorialBodyMeasurements") == nil){
+            hideTutorial()
+        }
+        
+        var backgroundIMG = UIImage(named: "Background2.png")
+        backgroundIMG = imageResize(backgroundIMG!, sizeChange: size)
+        self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
+        
+    }
+    
     
 }

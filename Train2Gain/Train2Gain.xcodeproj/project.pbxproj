@@ -25,6 +25,8 @@
 		06FF57371AC633EB0059129D /* MeasureVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FF57361AC633EB0059129D /* MeasureVC.swift */; };
 		4628E8051AED99F300D9DDF5 /* DayIDChosenTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4628E8041AED99F300D9DDF5 /* DayIDChosenTVC.swift */; };
 		4628E8071AED9FB900D9DDF5 /* DayIDChosenCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4628E8061AED9FB900D9DDF5 /* DayIDChosenCell.swift */; };
+		462B2E081BC18A0D00EF3FE0 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 462B2E051BC18A0400EF3FE0 /* Charts.framework */; };
+		462B2E091BC18A0D00EF3FE0 /* Charts.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 462B2E051BC18A0400EF3FE0 /* Charts.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		463070001AEE21F600B19267 /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46306FFF1AEE21F600B19267 /* SettingsVC.swift */; };
 		4635A4621AED72E10017CE30 /* Mood.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4635A4611AED72E10017CE30 /* Mood.swift */; };
 		463D47721AED15FE0097E480 /* MoodCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463D47711AED15FE0097E480 /* MoodCVC.swift */; };
@@ -34,6 +36,7 @@
 		469121FF1AF7AB260097D22D /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 469121FE1AF7AB260097D22D /* LocalAuthentication.framework */; };
 		46C0DBB21B8EECAD007245E7 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46C0DBB01B8EECAD007245E7 /* Fabric.framework */; };
 		46C0DBB31B8EECAD007245E7 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46C0DBB11B8EECAD007245E7 /* Crashlytics.framework */; };
+		46C220B41BC168F30045940F /* StatisticVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C220B31BC168F30045940F /* StatisticVC.swift */; };
 		46CEDEFF1B6C137A00B6E7D0 /* EditChooserVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46CEDEFE1B6C137A00B6E7D0 /* EditChooserVC.swift */; };
 		46E50E581B6AF29D003F381E /* EditDayIDVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46E50E571B6AF29D003F381E /* EditDayIDVC.swift */; };
 		46EAAB021B8A40F900EB2919 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 46EAAB011B8A40F900EB2919 /* Images.xcassets */; };
@@ -47,7 +50,42 @@
 			remoteGlobalIDString = 06DF4D251AC59FEB00FA2A01;
 			remoteInfo = Train2Gain;
 		};
+		462B2E041BC18A0400EF3FE0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 462B2DFF1BC18A0400EF3FE0 /* Charts.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5BA8EC401A9D14DC00CE82E1;
+			remoteInfo = Charts;
+		};
+		462B2E061BC18A0400EF3FE0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 462B2DFF1BC18A0400EF3FE0 /* Charts.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A52C5C371BAC5CA400594CDD;
+			remoteInfo = ChartsTV;
+		};
+		462B2E0A1BC18A0D00EF3FE0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 462B2DFF1BC18A0400EF3FE0 /* Charts.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 5BA8EC3F1A9D14DC00CE82E1;
+			remoteInfo = Charts;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		46C220C91BC169C30045940F /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				462B2E091BC18A0D00EF3FE0 /* Charts.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		06034FC81AD7290300EAB2D6 /* Measurements.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Measurements.swift; path = Train2Gain/Measurements.swift; sourceTree = "<group>"; };
@@ -72,6 +110,7 @@
 		06FF57361AC633EB0059129D /* MeasureVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeasureVC.swift; sourceTree = "<group>"; };
 		4628E8041AED99F300D9DDF5 /* DayIDChosenTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayIDChosenTVC.swift; sourceTree = "<group>"; };
 		4628E8061AED9FB900D9DDF5 /* DayIDChosenCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayIDChosenCell.swift; sourceTree = "<group>"; };
+		462B2DFF1BC18A0400EF3FE0 /* Charts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Charts.xcodeproj; path = Charts/Charts.xcodeproj; sourceTree = "<group>"; };
 		46306FFF1AEE21F600B19267 /* SettingsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SettingsVC.swift; path = ../SettingsVC.swift; sourceTree = "<group>"; };
 		4635A4611AED72E10017CE30 /* Mood.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Mood.swift; path = Train2Gain/Mood.swift; sourceTree = "<group>"; };
 		463D47711AED15FE0097E480 /* MoodCVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoodCVC.swift; sourceTree = "<group>"; };
@@ -81,6 +120,7 @@
 		469121FE1AF7AB260097D22D /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
 		46C0DBB01B8EECAD007245E7 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
 		46C0DBB11B8EECAD007245E7 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		46C220B31BC168F30045940F /* StatisticVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatisticVC.swift; sourceTree = "<group>"; };
 		46CEDEFE1B6C137A00B6E7D0 /* EditChooserVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditChooserVC.swift; sourceTree = "<group>"; };
 		46E50E571B6AF29D003F381E /* EditDayIDVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditDayIDVC.swift; sourceTree = "<group>"; };
 		46EAAB011B8A40F900EB2919 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -93,6 +133,7 @@
 			files = (
 				46416C6D1B69A3990059B548 /* iAd.framework in Frameworks */,
 				469121FF1AF7AB260097D22D /* LocalAuthentication.framework in Frameworks */,
+				462B2E081BC18A0D00EF3FE0 /* Charts.framework in Frameworks */,
 				46C0DBB31B8EECAD007245E7 /* Crashlytics.framework in Frameworks */,
 				46C0DBB21B8EECAD007245E7 /* Fabric.framework in Frameworks */,
 			);
@@ -124,15 +165,16 @@
 		062F951E1ADBD6CE003D62A4 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
-				06FF572E1AC5B5AF0059129D /* ExercisesTVC.swift */,
 				06879C671ACB462E00C6FEE3 /* AddExerciseVC.swift */,
+				46CEDEFE1B6C137A00B6E7D0 /* EditChooserVC.swift */,
+				46E50E571B6AF29D003F381E /* EditDayIDVC.swift */,
 				0618BA701AC7A11A00BDFBC0 /* ExerciseChosenVC.swift */,
+				06FF572E1AC5B5AF0059129D /* ExercisesTVC.swift */,
 				06FF57361AC633EB0059129D /* MeasureVC.swift */,
 				065F32DF1AD6A7BE001FD9D0 /* PickDateVC.swift */,
 				46306FFF1AEE21F600B19267 /* SettingsVC.swift */,
+				46C220B31BC168F30045940F /* StatisticVC.swift */,
 				06197B6E1AD5F1C9002794A3 /* TrainingDataVC.swift */,
-				46E50E571B6AF29D003F381E /* EditDayIDVC.swift */,
-				46CEDEFE1B6C137A00B6E7D0 /* EditChooserVC.swift */,
 			);
 			name = ViewController;
 			sourceTree = "<group>";
@@ -156,6 +198,7 @@
 				06DF4D281AC59FEB00FA2A01 /* Train2Gain */,
 				06DF4D411AC59FEB00FA2A01 /* Train2GainTests */,
 				06DF4D271AC59FEB00FA2A01 /* Products */,
+				462B2DFF1BC18A0400EF3FE0 /* Charts.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
@@ -179,8 +222,8 @@
 				0618BA6A1AC771E600BDFBC0 /* LaunchScreen.xib */,
 				06DF4D8A1AC5A94800FA2A01 /* Main.storyboard */,
 				46EAAB011B8A40F900EB2919 /* Images.xcassets */,
-				463D47741AED17520097E480 /* Moods.swift */,
 				06DF4D2B1AC59FEB00FA2A01 /* AppDelegate.swift */,
+				463D47741AED17520097E480 /* Moods.swift */,
 				06DF4D2D1AC59FEB00FA2A01 /* Train2Gain.xcdatamodeld */,
 				06DF4D291AC59FEB00FA2A01 /* Supporting Files */,
 			);
@@ -212,11 +255,20 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		462B2E001BC18A0400EF3FE0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				462B2E051BC18A0400EF3FE0 /* Charts.framework */,
+				462B2E071BC18A0400EF3FE0 /* ChartsTV.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		463070011AEE3B8E00B19267 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
-				463D47761AED18180097E480 /* MoodCell.swift */,
 				4628E8061AED9FB900D9DDF5 /* DayIDChosenCell.swift */,
+				463D47761AED18180097E480 /* MoodCell.swift */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -240,10 +292,12 @@
 				06DF4D231AC59FEB00FA2A01 /* Frameworks */,
 				06DF4D241AC59FEB00FA2A01 /* Resources */,
 				46C0DBAF1B8EEBEA007245E7 /* ShellScript */,
+				46C220C91BC169C30045940F /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				462B2E0B1BC18A0D00EF3FE0 /* PBXTargetDependency */,
 			);
 			name = Train2Gain;
 			productName = Train2Gain;
@@ -274,6 +328,8 @@
 		06DF4D1E1AC59FEA00FA2A01 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0630;
 				ORGANIZATIONNAME = Temper;
 				TargetAttributes = {
@@ -298,6 +354,12 @@
 			mainGroup = 06DF4D1D1AC59FEA00FA2A01;
 			productRefGroup = 06DF4D271AC59FEB00FA2A01 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 462B2E001BC18A0400EF3FE0 /* Products */;
+					ProjectRef = 462B2DFF1BC18A0400EF3FE0 /* Charts.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				06DF4D251AC59FEB00FA2A01 /* Train2Gain */,
@@ -305,6 +367,23 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		462B2E051BC18A0400EF3FE0 /* Charts.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Charts.framework;
+			remoteRef = 462B2E041BC18A0400EF3FE0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		462B2E071BC18A0400EF3FE0 /* ChartsTV.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ChartsTV.framework;
+			remoteRef = 462B2E061BC18A0400EF3FE0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		06DF4D241AC59FEB00FA2A01 /* Resources */ = {
@@ -358,6 +437,7 @@
 				06197B6F1AD5F1C9002794A3 /* TrainingDataVC.swift in Sources */,
 				06DF4D2C1AC59FEB00FA2A01 /* AppDelegate.swift in Sources */,
 				46E50E581B6AF29D003F381E /* EditDayIDVC.swift in Sources */,
+				46C220B41BC168F30045940F /* StatisticVC.swift in Sources */,
 				463D47751AED17520097E480 /* Moods.swift in Sources */,
 				4635A4621AED72E10017CE30 /* Mood.swift in Sources */,
 				06879C681ACB462E00C6FEE3 /* AddExerciseVC.swift in Sources */,
@@ -387,6 +467,11 @@
 			isa = PBXTargetDependency;
 			target = 06DF4D251AC59FEB00FA2A01 /* Train2Gain */;
 			targetProxy = 06DF4D3F1AC59FEB00FA2A01 /* PBXContainerItemProxy */;
+		};
+		462B2E0B1BC18A0D00EF3FE0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Charts;
+			targetProxy = 462B2E0A1BC18A0D00EF3FE0 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -479,12 +564,14 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = Train2Gain/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -496,12 +583,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = Train2Gain/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

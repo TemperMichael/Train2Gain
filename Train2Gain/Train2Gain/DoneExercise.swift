@@ -25,13 +25,13 @@ class DoneExercise: NSManagedObject {
     
     convenience init() {
         
-        var appdel =  UIApplication.sharedApplication().delegate as! AppDelegate
+        let appdel =  UIApplication.sharedApplication().delegate as! AppDelegate
         var managedObjectContext: NSManagedObjectContext? = {
             let coordinator = appdel.persistentStoreCoordinator;
             if coordinator == nil{
                 return nil
             }
-            var managedObjectContext = NSManagedObjectContext()
+            let managedObjectContext = NSManagedObjectContext()
             managedObjectContext.persistentStoreCoordinator = coordinator
             return managedObjectContext
             
