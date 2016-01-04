@@ -233,8 +233,8 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
         
         
         //Inform user that data was saved
-        let informUser = UIAlertController(title: "Saved", message:"Your training was changed", preferredStyle: UIAlertControllerStyle.Alert)
-        informUser.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
+        let informUser = UIAlertController(title: NSLocalizedString("Saved", comment: "Saved"), message:NSLocalizedString("Your training was changed", comment: "Your training was changed"), preferredStyle: UIAlertControllerStyle.Alert)
+        informUser.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: UIAlertActionStyle.Default, handler: { (action) -> Void in
             self.navigationController?.popViewControllerAnimated(true)
             
             
@@ -325,7 +325,8 @@ class EditDayIDVC: UIViewController,UITextFieldDelegate, ADBannerViewDelegate{
                     
                     
                     m_tf_Reps.text = allExWithSets[userPos].doneReps == 0 ? "0" :String(stringInterpolationSegment: allExWithSets[userPos].doneReps)
-                    m_L_SetCounter.text = "\(setCounter[userPos]).Set"
+                    var translationSet = NSLocalizedString("Set", comment: "Set")
+                    m_L_SetCounter.text = "\(setCounter[userPos]).\(translationSet)"
                     m_L_ExerciseName.text = allExWithSets[userPos].name
                     
                     if((allExWithSets[userPos].reps as Int) < 10){

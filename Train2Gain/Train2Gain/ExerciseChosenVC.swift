@@ -274,8 +274,8 @@ class ExerciseChosenVC: UIViewController, UITextFieldDelegate, ADBannerViewDeleg
         }
         
         
-        let informUser = UIAlertController(title: "Saved", message:"Your training was saved", preferredStyle: UIAlertControllerStyle.Alert)
-        informUser.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
+        let informUser = UIAlertController(title: NSLocalizedString("Saved", comment: "Saved"), message:NSLocalizedString("Your training was saved", comment: "Your training was saved"), preferredStyle: UIAlertControllerStyle.Alert)
+        informUser.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: UIAlertActionStyle.Default, handler: { (action) -> Void in
             self.navigationController?.popViewControllerAnimated(true)
             
             
@@ -361,7 +361,8 @@ class ExerciseChosenVC: UIViewController, UITextFieldDelegate, ADBannerViewDeleg
                     }
                     
                     m_tf_Reps.text = allExWithSets[userPos].doneReps == 0 ? "" :String(stringInterpolationSegment: allExWithSets[userPos].doneReps)
-                    m_L_SetCounter.text = "\(setCounter[userPos]).Set"
+                    let translationSet = NSLocalizedString("Set", comment: "Set")
+                    m_L_SetCounter.text = "\(setCounter[userPos]).\(translationSet)"
                     m_L_ExerciseName.text = allExWithSets[userPos].name
                     
                     if((allExWithSets[userPos].reps as Int) < 10){

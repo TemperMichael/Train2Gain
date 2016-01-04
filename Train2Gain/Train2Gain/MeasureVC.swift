@@ -257,8 +257,8 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         appdel.saveContext()
         
         
-        let informUser = UIAlertController(title: "Saved", message:"Your body measurements were saved", preferredStyle: UIAlertControllerStyle.Alert)
-        informUser.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
+        let informUser = UIAlertController(title: NSLocalizedString("Saved", comment: "Saved"), message:NSLocalizedString("Your body measurements were saved", comment: "Your body measurements were saved"), preferredStyle: UIAlertControllerStyle.Alert)
+        informUser.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: UIAlertActionStyle.Default, handler: { (action) -> Void in
             self.navigationController?.popViewControllerAnimated(true)
             
             
@@ -470,8 +470,6 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
                     
                     return true
                 }
-                
-                
         }
         
         return false

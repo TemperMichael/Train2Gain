@@ -195,7 +195,7 @@ class ExercisesTVC: UIViewController ,UITableViewDelegate, UITableViewDataSource
         //Handle swipe to single tableview row
         
         //Handle the deletion of an row
-        let deleteAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Delete") { (action, index) -> Void in
+        let deleteAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: NSLocalizedString("Delete", comment: "Delete")) { (action, index) -> Void in
             
             let context:NSManagedObjectContext = self.appdel.managedObjectContext!
             
@@ -223,7 +223,7 @@ class ExercisesTVC: UIViewController ,UITableViewDelegate, UITableViewDataSource
         deleteAction.backgroundColor = UIColor(red:86/255 ,green:158/255, blue:197/255 ,alpha:1)
         
         //Handle the changings of the selected row item
-        let editAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Edit") { (action, index) -> Void in
+        let editAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: NSLocalizedString("Edit", comment: "Edit")) { (action, index) -> Void in
           
            
             for(var i = 0 ; i < self.exercises.count ; i++){

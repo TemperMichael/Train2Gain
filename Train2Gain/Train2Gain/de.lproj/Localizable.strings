@@ -1,0 +1,165 @@
+/* 
+  Localizable.strings
+  Train2Gain
+
+  Created by Michael Temper on 04.01.16.
+  Copyright © 2016 Temper. All rights reserved.
+*/
+
+
+
+// OVERVIEW
+
+"Training" = "Training";
+"Body measurements" = "Körpermaße";
+"Mood" = "Stimmung";
+"Training data" = "Trainingsdaten";
+"Statistic" = "Statistik";
+"Settings" = "Einstellungen";
+
+
+// DAYIDCHOSENTVC
+
+"Set" = "Satz";
+
+// MOODCVC
+
+"Normal" = "Normal";
+"Good" = "Gut";
+"Agressiv" = "Aggressiv";
+"Awesome" = "Spitze";
+"Sad" = "Traurig";
+"Irritated" = "Genervt";
+"Sick" = "Krank";
+"Tired" = "Müde";
+"Great" = "Großartig";
+"Stressed" = "Gestresst";
+"Fantastic" = "Fantastisch";
+"K.O." = "K.O.";
+
+
+
+// INFOALERT
+
+"Saved" = "Gespeichert";
+"Your body measurements were saved" = "Deine Körpermaße wurden gespeichert";
+"Your mood was saved" = "Deine Stimmung wurde gespeichert";
+"Your training plan was saved" = "Dein Trainingsplan wurde gespeichert";
+"Your training was changed" = "Dein Training wurde geändert";
+"Your training was saved" = "Dein Training wurde gespeichert";
+"OK" = "OK";
+
+// AddExerciseVC
+
+"Edit Training plan" = "Plan bearbeiten";
+"Enter something!" = "Ausfüllen!";
+"Enter sth.!" = "Ausfüllen!";
+
+//EditChooserVC
+
+"Change data of" = "Daten ändern vom";
+
+//EditDayIDVC
+
+// "Set" from above used
+
+// ExerciseChosenVC
+
+// "Set" from above used
+
+// Statistic
+
+"All" = "Alle";
+"January" = "Jänner";
+"February" = "Februar";
+"March" = "März";
+"April" = "April";
+"May" = "Mai";
+"June" = "Juni";
+"July" = "Juli";
+"August" = "August";
+"September" = "September";
+"October" = "Oktober";
+"November" = "November";
+"December" = "Dezember";
+
+"Jan" = "Jän";
+"Feb" = "Feb";
+"Mar" = "Mär";
+"Apr" = "Apr";
+"May" = "Mai";
+"Jun" = "Jun";
+"Jul" = "Jul";
+"Aug" = "Aug";
+"Sep" = "Sep";
+"Oct" = "Okt";
+"Nov" = "Nov";
+"Dec" = "Dez";
+
+"No exercises done yet!" = "Keine Übungen gemacht bisher!";
+"No data available for this setup!" = "Keine Daten für diese Einstellungen!";
+
+"Exercise" = "Übung";
+
+"Done Reps" = "Wdh. fertig";
+
+"Month" = "Monat";
+
+"Year" = "Jahr";
+
+"reps" = "Wdh";
+
+// Snapshot Alert
+
+"Snapshot" = "Aufnahme";
+
+"Do you want to take a snapshot of the chart?" = "Möchtest du eine Aufnahme des Diagramms machen?";
+
+// TrainingDataVC
+
+
+"Weight" = "Gewicht";
+"Arms" = "Arme";
+"Chest" = "Brust";
+"Waist" = "Becken";
+"Legs" = "Beine";
+
+"No entry at this date" = "Kein Eintrag";
+
+
+// Actions
+
+"Delete" = "Löschen";
+"Edit" = "Bearbeiten";
+
+// PW Alert
+
+"Cancel" = "Abbrechen";
+"Enter Password" = "Passwort eingeben";
+"Enter your password" = "Gib dein Passwort ein";
+"Scan your fingerprint" = "Fingerabdruck einscannen";
+"Error" = "Error";
+"Authentication was cancelled by the system" = "Authentikation vom System abgebrochen";
+"Password was wrong" = "Passwort war falsch";
+"Confirmed password was wrong or empty" = "Bestätigtes Passwort war falsch oder leer";
+"Confirm Password" = "Passwort bestätigen";
+"Password" = "Passwort";
+
+
+// Tutorial Alert
+
+"Tutorials" = "Tutorials";
+"Tutorials will be shown again in the views" = "Tutorials werden erneut in den Ansichten angezeigt";
+
+
+
+
+
+
+
+
+
+
+
+
+

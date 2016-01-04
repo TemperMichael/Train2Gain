@@ -268,7 +268,7 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         //Handle the deletion of an row
 
-        let deleteAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Delete") { (action, index) -> Void in
+        let deleteAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: NSLocalizedString("Delete", comment: "Delete")) { (action, index) -> Void in
             let context:NSManagedObjectContext = self.appdel.managedObjectContext!
             
             for(var i = 0; i < self.doneEx.count ; i++){
@@ -295,7 +295,7 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         deleteAction.backgroundColor = UIColor(red:86/255 ,green:158/255, blue:197/255 ,alpha:1)
         
         //Handle the changings of the selected row item
-        let editAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Edit") { (action, index) -> Void in
+        let editAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: NSLocalizedString("Edit", comment: "Edit")) { (action, index) -> Void in
   
             for(var i = 0 ; i < self.doneEx.count ; i++){
                 if(self.doneEx[i].dayID == self.dayIDs[indexPath.row] && self.returnDateForm(self.doneEx[i].date) == self.returnDateForm(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate)){
@@ -395,11 +395,19 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             
         }
         //Default text
-        m_L_Weight.text = "Weight: ---"
-        m_L_Arm.text = "Arms: ---"
-        m_L_Chest.text = "Chest: ---"
-        m_L_Waist.text = "Waist: ---"
-        m_L_Legs.text = "Legs: ---"
+        
+        let translationWeight = NSLocalizedString("Weight", comment: "Weight")
+        let translationArms = NSLocalizedString("Arms", comment: "Arms")
+        let translationChest = NSLocalizedString("Chest", comment: "Chest")
+        let translationWaist = NSLocalizedString("Waist", comment: "Waist")
+        let translationLegs = NSLocalizedString("Legs", comment: "Legs")
+        
+        
+        m_L_Weight.text = "\(translationWeight): ---"
+        m_L_Arm.text = "\(translationArms): ---"
+        m_L_Chest.text = "\(translationChest): ---"
+        m_L_Waist.text = "\(translationWaist): ---"
+        m_L_Legs.text = "\(translationLegs): ---"
         
         //Show data in right unit
         for checkMeasureExists in measurements {
@@ -411,32 +419,32 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
                 }
                 
                 dayHasContent = true
-                m_L_Weight.text = NSString(format:"Weight: %.2f \(weightUnit)",weight ) as String
+                m_L_Weight.text = NSString(format:"\(translationWeight): %.2f \(weightUnit)",weight ) as String
                 
                 var length = (checkMeasureExists.arm).doubleValue
                 if(lengthUnit == "inch"){
                     length = length/2.54
                 }
-                m_L_Arm.text =  NSString(format:"Arms: %.2f \(lengthUnit)",length ) as String
+                m_L_Arm.text =  NSString(format:"\(translationArms): %.2f \(lengthUnit)",length ) as String
                 
                 length = (checkMeasureExists.chest).doubleValue
                 if(lengthUnit == "inch"){
                     length = length/2.54
                 }
-                m_L_Chest.text =  NSString(format:"Chest: %.2f \(lengthUnit)",length ) as String
+                m_L_Chest.text =  NSString(format:"\(translationChest): %.2f \(lengthUnit)",length ) as String
                 
                 
                 length = (checkMeasureExists.waist).doubleValue
                 if(lengthUnit == "inch"){
                     length = length/2.54
                 }
-                m_L_Waist.text =  NSString(format:"Waist: %.2f \(lengthUnit)",length ) as String
+                m_L_Waist.text =  NSString(format:"\(translationWaist): %.2f \(lengthUnit)",length ) as String
                 
                 length = (checkMeasureExists.leg).doubleValue
                 if(lengthUnit == "inch"){
                     length = length/2.54
                 }
-                m_L_Legs.text =  NSString(format:"Legs: %.2f \(lengthUnit)",length ) as String
+                m_L_Legs.text =  NSString(format:"\(translationLegs): %.2f \(lengthUnit)",length ) as String
             }
             
         }
@@ -460,7 +468,7 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         m_tv_DayIds.reloadData()
         
         if(!dayHasContent){
-            m_L_Date.text = "No entry at this date"
+            m_L_Date.text = NSLocalizedString("No entry at this date", comment: "No entry at this date")
         }
         m_tv_DayIds.separatorColor = UIColor(red:22/255 ,green:204/255, blue:1.00 ,alpha:1.0)
         

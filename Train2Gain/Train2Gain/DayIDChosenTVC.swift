@@ -106,7 +106,9 @@ class DayIDChosenTVC: UITableViewController {
             
             cell.m_L_Weight.text = "0"
         }
-        cell.m_L_setCount.text = "\(setCountValues[indexPath.row]).Set"
+        
+        let translationSet = NSLocalizedString("Set", comment: "Set")
+        cell.m_L_setCount.text = "\(setCountValues[indexPath.row]).\(translationSet)"
         cell.m_L_WeightUnit.text = weightUnit
         
         //Set seperators to the left side

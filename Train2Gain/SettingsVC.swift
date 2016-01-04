@@ -107,13 +107,13 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
     @IBAction func privacyModeCL(sender: AnyObject) {
         
         if(privacyMode.on){
-            callPWAlert("Enter your password", single: false)
+            callPWAlert(NSLocalizedString("Enter your password", comment: "Enter your password"), single: false)
             
         }else{
             
             let context = LAContext()
             var error:NSError?
-            let messageText = "Scan your fingerprint"
+            let messageText = NSLocalizedString("Scan your fingerprint", comment: "Scan your fingerprint")
             
             do {
                 context.canEvaluatePolicy(LAPolicy.DeviceOwnerAuthenticationWithBiometrics, error: &error)
@@ -134,7 +134,7 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
                             
                         case LAError.SystemCancel.rawValue :
                             
-                            UIAlertView(title:"Error", message: "Authentication was cancelled by the system", delegate: self, cancelButtonTitle: "OK").show()
+                            UIAlertView(title:NSLocalizedString("Error", comment: "Error"), message: NSLocalizedString("Authentication was cancelled by the system", comment: "Authentication was cancelled by the system"), delegate: self, cancelButtonTitle: NSLocalizedString("OK", comment: "OK")).show()
                             
                             
                         case LAError.UserCancel.rawValue :
@@ -143,10 +143,10 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
                             
                         case LAError.UserFallback.rawValue :
                             
-                            self.callPWAlert("Enter your password", single: true)
+                            self.callPWAlert(NSLocalizedString("Enter your password", comment: "Enter your password"), single: true)
                             
                         default:
-                            self.callPWAlert("Enter your password", single: true)
+                            self.callPWAlert(NSLocalizedString("Enter your password", comment: "Enter your password"), single: true)
                             
                         }
                     }
@@ -163,16 +163,16 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
                     
                     //  UIAlertView(title:"Error", message: "TouchID is not enrolled", delegate: self, cancelButtonTitle: "OK").show()
                     
-                    self.callPWAlert("Enter your password", single: true)
+                    self.callPWAlert(NSLocalizedString("Enter your password", comment: "Enter your password"), single: true)
                     
                 case LAError.PasscodeNotSet.rawValue:
                     
-                    self.callPWAlert("Enter your password", single: true)
+                    self.callPWAlert(NSLocalizedString("Enter your password", comment: "Enter your password"), single: true)
                     
                     
                 default:
                     
-                    self.callPWAlert("Enter your password", single: true)
+                    self.callPWAlert(NSLocalizedString("Enter your password", comment: "Enter your password"), single: true)
                 }
             }
         }
@@ -184,15 +184,15 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
         
         
         var inputTextField: UITextField?
-        let passwordPrompt = UIAlertController(title: "Enter Password", message: _Message, preferredStyle: UIAlertControllerStyle.Alert)
-        passwordPrompt.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
+        let passwordPrompt = UIAlertController(title: NSLocalizedString("Enter Password", comment: "Enter Password"), message: _Message, preferredStyle: UIAlertControllerStyle.Alert)
+        passwordPrompt.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel"), style: UIAlertActionStyle.Default, handler: { (action) -> Void in
             if(self.privacyMode.on){
                 self.privacyMode.setOn(false, animated: true)
             }else{
                 self.privacyMode.setOn(true, animated: true)
             }
         }))
-        passwordPrompt.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
+        passwordPrompt.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: UIAlertActionStyle.Default, handler: { (action) -> Void in
             //Enter password
             if(single){
                 
@@ -206,7 +206,7 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
                     
                 }else{
                     
-                    self.callPWAlert("Password was wrong",single: true)
+                    self.callPWAlert(NSLocalizedString("Password was wrong", comment: "Password was wrong"),single: true)
                     
                 }
                 
@@ -222,19 +222,19 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
                     NSUserDefaults.standardUserDefaults().setObject(passwordConfirmend, forKey: "Password")
                 }else{
                     
-                    self.callPWAlert("Confirmed password was wrong or empty",single: false)
+                    self.callPWAlert(NSLocalizedString("Confirmed password was wrong or empty", comment: "Confirmed password was wrong or empty"),single: false)
                 }
             }
             
         }))
         passwordPrompt.addTextFieldWithConfigurationHandler({(textField: UITextField) in
-            textField.placeholder = "Password"
+            textField.placeholder = NSLocalizedString("Password", comment: "Password")
             textField.secureTextEntry = true
             inputTextField = textField
         })
         if(single == false){
             passwordPrompt.addTextFieldWithConfigurationHandler({(textField: UITextField) in
-                textField.placeholder = "Confirm Password"
+                textField.placeholder = NSLocalizedString("Confirm Password", comment: "Confirm Password")
                 textField.secureTextEntry = true
                 inputTextField = textField
             })
@@ -248,8 +248,8 @@ class SettingsVC: UIViewController,ADBannerViewDelegate {
     //Reset tutorial user defaults and so show them again in views
     @IBAction func tutorialCL(sender: AnyObject) {
         
-        let informUser = UIAlertController(title: "Tutorials", message:"Tutorials will be shown again in the views", preferredStyle: UIAlertControllerStyle.Alert)
-        informUser.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
+        let informUser = UIAlertController(title: NSLocalizedString("Tutorials", comment: "Tutorials"), message:NSLocalizedString("Tutorials will be shown again in the views", comment: "Tutorials will be shown again in the views"), preferredStyle: UIAlertControllerStyle.Alert)
+        informUser.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: UIAlertActionStyle.Default, handler: { (action) -> Void in
             
             NSUserDefaults.standardUserDefaults().setObject(nil, forKey: "tutorialAddExercise")
             

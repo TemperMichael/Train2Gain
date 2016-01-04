@@ -11,7 +11,7 @@ import LocalAuthentication
 
 class OverViewTVC: UITableViewController {
     
-    var m_string_MenuPoints : [String] = ["Training","Body measurements","Mood","Training data","Statistic","Settings"]
+    var m_string_MenuPoints : [String] = [NSLocalizedString("Training", comment: "Training"), NSLocalizedString("Body measurements", comment: "Body measurements"), NSLocalizedString("Mood", comment: "Mood"),NSLocalizedString("Training data", comment: "Training data"),NSLocalizedString("Statistic", comment: "Statistic"),NSLocalizedString("Settings", comment: "Settings")]
     
     var m_Password : String =  ""
     var selectedSection:String = ""

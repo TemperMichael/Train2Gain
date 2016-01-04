@@ -68,18 +68,18 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
         cvc.dataSource = self
         
         //Setup smileys for mood collection view
-        moods.append(Moods(_moodName: "Normal", _moodSmileyString: "SmileyNormal.png"))
-        moods.append(Moods(_moodName: "Good", _moodSmileyString: "SmileyGood.png"))
-        moods.append(Moods(_moodName: "Agressiv", _moodSmileyString: "SmileyAggressive.png"))
-        moods.append(Moods(_moodName: "Awesome", _moodSmileyString: "SmileyAwesome.png"))
-        moods.append(Moods(_moodName: "Sad", _moodSmileyString: "SmileySad.png"))
-        moods.append(Moods(_moodName: "Irritated", _moodSmileyString: "SmileyIrritated.png"))
-        moods.append(Moods(_moodName: "Sick", _moodSmileyString: "SmileySick.png"))
-        moods.append(Moods(_moodName: "Tired", _moodSmileyString: "SmileyTired.png"))
-        moods.append(Moods(_moodName: "Great", _moodSmileyString: "SmileyGreat.png"))
-        moods.append(Moods(_moodName: "Stressed", _moodSmileyString: "SmileyStressed.png"))
-        moods.append(Moods(_moodName: "Fantastic", _moodSmileyString: "SmileyFantastic.png"))
-        moods.append(Moods(_moodName: "K.O.", _moodSmileyString: "SmileyKO.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Normal", comment: "Normal"), _moodSmileyString: "SmileyNormal.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Good", comment: "Good"), _moodSmileyString: "SmileyGood.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Agressiv", comment: "Agressiv"), _moodSmileyString: "SmileyAggressive.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Awesome", comment: "Awesome"), _moodSmileyString: "SmileyAwesome.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Sad", comment: "Sad"), _moodSmileyString: "SmileySad.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Irritated", comment: "Irritated"), _moodSmileyString: "SmileyIrritated.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Sick", comment: "Sick"), _moodSmileyString: "SmileySick.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Tired", comment: "Tired"), _moodSmileyString: "SmileyTired.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Great", comment: "Great"), _moodSmileyString: "SmileyGreat.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Stressed", comment: "Stressed"), _moodSmileyString: "SmileyStressed.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Fantastic", comment: "Fantastic"), _moodSmileyString: "SmileyFantastic.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("K.O.", comment: "K.O."), _moodSmileyString: "SmileyKO.png"))
         
     }
     
@@ -175,8 +175,8 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
             
             //Go one view back
             
-            let informUser = UIAlertController(title: "Saved", message:"Your mood was saved", preferredStyle: UIAlertControllerStyle.Alert)
-            informUser.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
+            let informUser = UIAlertController(title: NSLocalizedString("Saved", comment: "Saved"), message:NSLocalizedString("Your mood was saved", comment: "Your mood was saved"), preferredStyle: UIAlertControllerStyle.Alert)
+            informUser.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: UIAlertActionStyle.Default, handler: { (action) -> Void in
                 self.navigationController?.popViewControllerAnimated(true)
                 
                 

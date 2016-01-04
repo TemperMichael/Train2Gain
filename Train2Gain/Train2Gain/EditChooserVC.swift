@@ -37,7 +37,9 @@ class EditChooserVC: UIViewController, ADBannerViewDelegate {
         
         //Set title with correct chosen date
         let chosendate = NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate
-        changeLabel.text = "Change data of \(returnDateForm(chosendate))"
+        
+        let translationChangeDataOf = NSLocalizedString("Change data of", comment: "Change data of")
+        changeLabel.text = "\(translationChangeDataOf) \(returnDateForm(chosendate))"
         
         //Set background
         var backgroundIMG = UIImage(named: "Background2.png")

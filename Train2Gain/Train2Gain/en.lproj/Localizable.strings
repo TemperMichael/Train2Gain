@@ -1,0 +1,163 @@
+/* 
+  Localizable.strings
+  Train2Gain
+
+  Created by Michael Temper on 04.01.16.
+  Copyright © 2016 Temper. All rights reserved.
+*/
+
+
+// Overview
+
+"Training" = "Training";
+"Body measurements" = "Body measurements";
+"Mood" = "Mood";
+"Training data" = "Training data";
+"Statistic" = "Statistic";
+"Settings" = "Settings";
+
+// DayIDChosenTVC
+
+"Set" = "Set";
+
+// MoodCVC
+
+"Normal" = "Normal";
+"Good" = "Good";
+"Agressiv" = "Agressiv";
+"Awesome" = "Awesome";
+"Sad" = "Sad";
+"Irritated" = "Irritated";
+"Sick" = "Sick";
+"Tired" = "Tired";
+"Great" = "Great";
+"Stressed" = "Stressed";
+"Fantastic" = "Fantastic";
+"K.O." = "K.O.";
+
+
+
+// Infoalert
+
+"Saved" = "Saved";
+"Your body measurements were saved" = "Your body measurements were saved";
+"Your mood was saved" = "Your mood was saved";
+"Your training plan was saved" = "Your training plan was saved";
+"Your training was changed" = "Your training was changed";
+"Your training was saved" = "Your training was saved";
+"OK" = "OK";
+
+// AddExerciseVC
+
+"Edit Training plan" = "Edit Training plan";
+"Enter something!" = "Enter something!";
+"Enter sth.!" = "Enter sth.!";
+
+//EditChooserVC
+
+"Change data of" = "Change data of";
+
+//EditDayIDVC
+
+// "Set" from above used
+
+// ExerciseChosenVC
+
+// "Set" from above used
+
+// Statistic
+
+"All" = "All";
+"January" = "January";
+"February" = "February";
+"March" = "March";
+"April" = "April";
+"May" = "May";
+"June" = "June";
+"July" = "July";
+"August" = "August";
+"September" = "September";
+"October" = "October";
+"November" = "November";
+"December" = "December";
+
+"Jan" = "Jan";
+"Feb" = "Feb";
+"Mar" = "Mar";
+"Apr" = "Apr";
+"May" = "May";
+"Jun" = "Jun";
+"Jul" = "Jul";
+"Aug" = "Aug";
+"Sep" = "Sep";
+"Oct" = "Oct";
+"Nov" = "Nov";
+"Dec" = "Dec";
+
+"No exercises done yet!" = "No exercises done yet!";
+"No data available for this setup!" = "No data available for this setup!";
+
+"Exercise" = "Exercise";
+
+"Done Reps" = "Done Reps";
+
+"Month" = "Month";
+
+"Year" = "Year";
+
+"reps" = "reps";
+
+// Snapshot Alert
+
+"Snapshot" = "Snapshot";
+
+"Do you want to take a snapshot of the chart?" = "Do you want to take a snapshot of the chart?";
+
+// TrainingDataVC
+
+
+"Weight" = "Weight";
+"Arms" = "Arms";
+"Chest" = "Chest";
+"Waist" = "Waist";
+"Legs" = "Legs";
+
+"No entry at this date" = "No entry at this date";
+
+// Actions
+
+"Delete" = "Delete";
+"Edit" = "Edit";
+
+// PW Alert
+
+"Cancel" = "Cancel";
+"Enter Password" = "Enter Password";
+"Enter your password" = "Enter your password";
+"Scan your fingerprint" = "Scan your fingerprint";
+"Error" = "Error";
+"Authentication was cancelled by the system" = "Authentication was cancelled by the system";
+"Password was wrong" = "Password was wrong";
+"Confirmed password was wrong or empty" = "Confirmed password was wrong or empty";
+"Confirm Password" = "Confirm Password";
+"Password" = "Password";
+
+
+// Tutorial Alert
+
+"Tutorials" = "Tutorials";
+"Tutorials will be shown again in the views" = "Tutorials will be shown again in the views";
+
+
+
+
+
+
+
+
+
+
+
+
+
+

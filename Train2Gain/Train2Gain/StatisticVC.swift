@@ -48,7 +48,7 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
     
     var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
-    var months = ["All","January","February","March","April","May","June","July","August","September","October","November","December"]
+    var months = [NSLocalizedString("All", comment: "All"),NSLocalizedString("January", comment: "January"),NSLocalizedString("February", comment: "February"),NSLocalizedString("March", comment: "March"),NSLocalizedString("April", comment: "April"),NSLocalizedString("May", comment: "May"),NSLocalizedString("June", comment: "June"),NSLocalizedString("July", comment: "July"),NSLocalizedString("August", comment: "August"),NSLocalizedString("September", comment: "September"),NSLocalizedString("October", comment: "October"),NSLocalizedString("November", comment: "November"),NSLocalizedString("December", comment: "December")]
     
     var years:[String] = []
     
@@ -72,7 +72,7 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
     
     var setAmount = 0
     
-    var monthDateDict = NSDictionary(dictionary: ["Jan":1,"Feb":2,"Mar":3,"Apr":4,"May":5,"Jun":6,"Jul":7,"Aug":8,"Sep":9,"Oct":10,"Nov":11,"Dec":12])
+    var monthDateDict = NSDictionary(dictionary: [NSLocalizedString("Jan", comment: "Jan"):1,NSLocalizedString("Feb", comment: "Feb"):2,NSLocalizedString("Mar", comment: "Mar"):3,NSLocalizedString("Apr", comment: "Apr"):4,NSLocalizedString("May", comment: "May"):5,NSLocalizedString("Jun", comment: "Jun"):6,NSLocalizedString("Jul", comment: "Jul"):7,NSLocalizedString("Aug", comment: "Aug"):8,NSLocalizedString("Sep", comment: "Sep"):9,NSLocalizedString("Oct", comment: "Oct"):10,NSLocalizedString("Nov", comment: "Nov"):11,NSLocalizedString("Dec", comment: "Dec"):12])
     
     
     override func viewWillDisappear(animated: Bool) {
@@ -116,7 +116,7 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         }
         
         if(exercises.count < 1){
-            exercises.append("No exercises done yet!")
+            exercises.append(NSLocalizedString("No exercises done yet!", comment: "No exercises done yet!"))
             
         }
         
@@ -132,7 +132,7 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         chartView.delegate = self;
         
         chartView.descriptionText = ""
-        chartView.noDataTextDescription = "No data available for this setup!"
+        chartView.noDataTextDescription = NSLocalizedString("No data available for this setup!", comment: "No data available for this setup!")
         
         chartView.highlightEnabled = true
         chartView.dragEnabled = true
@@ -321,7 +321,7 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         if let checkNumb = Int((self.setButton.titleLabel!.text! as NSString).substringToIndex(1)){
             
             if(checkNumb > self.setAmount){
-                self.setButton.setTitle("Set", forState: UIControlState.Normal)
+                self.setButton.setTitle(NSLocalizedString("Set", comment: "Set"), forState: UIControlState.Normal)
                 selectedSet = ""
             }
         }
@@ -347,9 +347,9 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
             chartView.leftAxis.enabled = true
             chartView.xAxis.enabled = true
             chartView.rightAxis.enabled = true
-            selectedExercise = selectedExercise == "Exercise" ? "-" : selectedExercise
+            selectedExercise = selectedExercise == NSLocalizedString("Exercise", comment: "Exercise") ? "-" : selectedExercise
             
-            let set1 = LineChartDataSet(yVals: yValsRight, label: "Done Reps")
+            let set1 = LineChartDataSet(yVals: yValsRight, label: NSLocalizedString("Done Reps", comment: "Done Reps"))
             set1.setColor(UIColor.lightGrayColor())
             set1.axisDependency = ChartYAxis.AxisDependency.Right
             set1.setCircleColor(UIColor.lightGrayColor())
@@ -398,18 +398,18 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         self.xVals.append("\(month)")
         
         switch(month){
-        case "Jan","Mar","May","Jul","Aug","Oct","Dec":
+        case NSLocalizedString("Jan", comment: "Jan"),NSLocalizedString("Mar", comment: "Mar"),NSLocalizedString("May", comment: "May"),NSLocalizedString("Jul", comment: "Jul"),NSLocalizedString("Aug", comment: "Aug"),NSLocalizedString("Oct", comment: "Oct"),NSLocalizedString("Dec", comment: "Dec"):
             
             for(var i = 2; i < 32; i++){
                 self.xVals.append(String(i));
             }
-        case "Apr","Jun","Sep","Nov":
+        case NSLocalizedString("Apr", comment: "Apr"),NSLocalizedString("Jun", comment: "Jun"),NSLocalizedString("Sep", comment: "Sep"),NSLocalizedString("Nov", comment: "Nov"):
             
             
             for(var i = 2; i < 31; i++){
                 self.xVals.append(String(i));
             }
-        case "Feb":
+        case NSLocalizedString("Feb", comment: "Feb"):
             
             
             for(var i = 2; i < 29; i++){
@@ -454,7 +454,7 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
     
     @IBAction func exerciseCL(sender: AnyObject) {
         
-        pickerTitle.text = "Exercise"
+        pickerTitle.text = NSLocalizedString("Exercise", comment: "Exercise")
         pickerData = exercises
         setupPickerView()
         
@@ -462,10 +462,11 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
     
     @IBAction func setCL(sender: AnyObject) {
         
-        pickerTitle.text = "Set"
+        let translationSet = NSLocalizedString("Set", comment: "Set")
+        pickerTitle.text = translationSet
         sets = []
         for(var i = 1; i <= setAmount; i++){
-            sets.append("\(i). Set")
+            sets.append("\(i). \(translationSet)")
         }
         pickerData = sets
         setupPickerView()
@@ -475,14 +476,14 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
     
     
     @IBAction func monthCL(sender: AnyObject) {
-        pickerTitle.text = "Month"
+        pickerTitle.text = NSLocalizedString("Month", comment: "Month")
         pickerData = months
         setupPickerView()
     }
     
     
     @IBAction func yearCL(sender: AnyObject) {
-        pickerTitle.text = "Year"
+        pickerTitle.text = NSLocalizedString("Year", comment: "Year")
         pickerData = years
         setupPickerView()
     }
@@ -562,7 +563,7 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         })
         
         switch(self.pickerTitle.text!){
-        case "Exercise":
+        case NSLocalizedString("Exercise", comment: "Exercise"):
             selectedDoneEx.removeAll()
             
             self.exerciseButton.setTitle(self.pickerData[self.pickerView.selectedRowInComponent(0)], forState: UIControlState.Normal)
@@ -575,25 +576,25 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
             }
             
             
-        case "Month":
+        case NSLocalizedString("Month", comment: "Month"):
             let selectedText = self.pickerData[self.pickerView.selectedRowInComponent(0)]
             self.monthButton.setTitle(selectedText, forState: UIControlState.Normal)
             
             
             selectedMonths.removeAll()
             
-            if(selectedText == "All"){
-                selectedMonths = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+            if(selectedText == NSLocalizedString("All", comment: "All")){
+                selectedMonths = [NSLocalizedString("Jan", comment: "Jan"),NSLocalizedString("Feb", comment: "Feb"),NSLocalizedString("Mar", comment: "Mar"),NSLocalizedString("Apr", comment: "Apr"),NSLocalizedString("May", comment: "May"),NSLocalizedString("Jun", comment: "Jun"),NSLocalizedString("Jul", comment: "Jul"),NSLocalizedString("Aug", comment: "Aug"),NSLocalizedString("Sep", comment: "Sep"),NSLocalizedString("Oct", comment: "Oct"),NSLocalizedString("Nov", comment: "Nov"),NSLocalizedString("Dec", comment: "Dec")]
             }else{
                 selectedMonths.append((selectedText as NSString).substringToIndex(3))
             }
             
-        case "Year":
+        case NSLocalizedString("Year", comment: "Year"):
             self.yearButton.setTitle(self.pickerData[self.pickerView.selectedRowInComponent(0)], forState: UIControlState.Normal)
             
             selectedYear = self.pickerData[self.pickerView.selectedRowInComponent(0)]
             
-        case "Set":
+        case NSLocalizedString("Set", comment: "Set"):
             
             self.setButton.setTitle(self.pickerData[self.pickerView.selectedRowInComponent(0)], forState: UIControlState.Normal)
             
@@ -610,9 +611,9 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
     
     
     @IBAction func snapshotCL(sender: AnyObject) {
-        let informUserSnapshot = UIAlertController(title: "Snapshot", message: "Do you want to take a snapshot of the chart?", preferredStyle: UIAlertControllerStyle.Alert)
-        informUserSnapshot.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: nil))
-        informUserSnapshot.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
+        let informUserSnapshot = UIAlertController(title: NSLocalizedString("Snapshot", comment: "Snapshot"), message: NSLocalizedString("Do you want to take a snapshot of the chart?", comment: "Do you want to take a snapshot of the chart?"), preferredStyle: UIAlertControllerStyle.Alert)
+        informUserSnapshot.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel"), style: UIAlertActionStyle.Default, handler: nil))
+        informUserSnapshot.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: UIAlertActionStyle.Default, handler: { (action) -> Void in
             
             self.chartView.saveToCameraRoll()
             
@@ -632,7 +633,8 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
             selectedValueLabel.text = NSString(format: "Val.:%.2f \(weightUnit)",entry.value ) as String
         }else{
             selectedValueLabel.textColor = UIColor.grayColor()
-            selectedValueLabel.text = "Val.:\(entry.value) reps"
+            let translationReps = NSLocalizedString("reps", comment: "reps")
+            selectedValueLabel.text = "Val.:\(entry.value) \(translationReps)"
         }
     }
     

@@ -86,7 +86,7 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
         
         //Prepare data if view was opened in edit mode
         if(editMode){
-            self.title = "Edit Training plan"
+            self.title = NSLocalizedString("Edit Training plan", comment: "Edit Training plan")
             editDayIDSaver = selectedExc[0].dayID
             var currentName = ""
             var prevName = ""
@@ -224,8 +224,8 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
                 
             }
             
-            let informUser = UIAlertController(title: "Saved", message:"Your training plan was saved", preferredStyle: UIAlertControllerStyle.Alert)
-            informUser.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
+            let informUser = UIAlertController(title: NSLocalizedString("Saved", comment: "Saved"), message:NSLocalizedString("Your training plan was saved", comment: "Your training plan was saved"), preferredStyle: UIAlertControllerStyle.Alert)
+            informUser.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: UIAlertActionStyle.Default, handler: { (action) -> Void in
                 self.navigationController?.popViewControllerAnimated(true)
                 
                 
@@ -233,14 +233,7 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
             
             presentViewController(informUser, animated: true, completion: nil)
             
-            
-            
-            
-            
-            
         }
-        
-        
     }
     
     //--------------------------------------------------------
@@ -265,24 +258,24 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
         
         if(m_tf_ListName.text == ""){
             m_tf_ListName.backgroundColor = UIColor(red:218/255 ,green:52/255, blue:60/255 ,alpha:1.0)
-            m_tf_ListName.placeholder = "Enter something!"
+            m_tf_ListName.placeholder = NSLocalizedString("Enter something!", comment: "Enter something!")
             check = false
         }
         if(m_tf_Reps.text == ""){
             m_tf_Reps.backgroundColor = UIColor(red:218/255 ,green:52/255, blue:60/255 ,alpha:1.0)
-            m_tf_Reps.placeholder = "Enter sth.!"
+            m_tf_Reps.placeholder = NSLocalizedString("Enter sth.!", comment: "Enter sth.!")
             check = false
         }
         
         if(m_tf_Name.text == ""){
             m_tf_Name.backgroundColor = UIColor(red:218/255 ,green:52/255, blue:60/255 ,alpha:1.0)
-            m_tf_Name.placeholder = "Enter sth.!"
+            m_tf_Name.placeholder = NSLocalizedString("Enter sth.!", comment: "Enter sth.!")
             check = false
         }
         
         if(m_tf_Sets.text == ""){
             m_tf_Sets.backgroundColor = UIColor(red:218/255 ,green:52/255, blue:60/255 ,alpha:1.0)
-            m_tf_Sets.placeholder = "Enter sth.!"
+            m_tf_Sets.placeholder = NSLocalizedString("Enter sth.!", comment: "Enter sth.!")
             check = false
         }
         return check
