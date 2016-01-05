@@ -45,7 +45,7 @@
 "7vK-4Q-ayA.normalTitle" = "<";
 
 /* Class = "UIButton"; normalTitle = "Stop"; ObjectID = "82p-Lb-7VO"; */
-"82p-Lb-7VO.normalTitle" = "Stop";
+"82p-Lb-7VO.normalTitle" = "Stopp";
 
 /* Class = "UINavigationItem"; title = "Maße"; ObjectID = "8a0-IH-n9v"; */
 "8a0-IH-n9v.title" = "Maße";
@@ -129,7 +129,7 @@
 "N9t-jn-bKP.title" = "Trainingsdaten";
 
 /* Class = "UIButton"; normalTitle = "Stop"; ObjectID = "NGy-j5-N8A"; */
-"NGy-j5-N8A.normalTitle" = "Stop";
+"NGy-j5-N8A.normalTitle" = "Stopp";
 
 /* Class = "UITextField"; placeholder = "e.g.: Chestday"; ObjectID = "NbY-wr-OzR"; */
 "NbY-wr-OzR.placeholder" = "z.B.: Brust";
