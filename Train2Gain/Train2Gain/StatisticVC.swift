@@ -565,8 +565,9 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         switch(self.pickerTitle.text!){
         case NSLocalizedString("Exercise", comment: "Exercise"):
             selectedDoneEx.removeAll()
-            
+            if(self.pickerData[self.pickerView.selectedRowInComponent(0)] != NSLocalizedString("No exercises done yet!", comment: "No exercises done yet!")){
             self.exerciseButton.setTitle(self.pickerData[self.pickerView.selectedRowInComponent(0)], forState: UIControlState.Normal)
+            }
             selectedExercise = self.pickerData[self.pickerView.selectedRowInComponent(0)]
             
             for(var i = 0; i < doneEx.count ; i++){

@@ -15,7 +15,7 @@ import iAd
 class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
     
     var editMode = false
-    
+
     var dates : [Dates] = []
     var measures : [Measurements] = []
     
@@ -101,11 +101,14 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
             
             for singleMeasure in measures{
                 if(returnDateForm(singleMeasure.date) ==  returnDateForm(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate)){
-                    m_tf_Weights.text = getCorrectString(singleMeasure.weight.doubleValue)
-                    m_tf_Arm.text = getCorrectString(singleMeasure.arm.doubleValue)
-                    m_tf_Leg.text = getCorrectString(singleMeasure.leg.doubleValue)
-                    m_tf_Chest.text = getCorrectString(singleMeasure.chest.doubleValue)
-                    m_tf_Waist.text = getCorrectString(singleMeasure.waist.doubleValue)
+                    
+                    
+                    m_tf_Weights.text = getCorrectString(singleMeasure.weight.doubleValue,id: 0)
+                    m_tf_Arm.text = getCorrectString(singleMeasure.arm.doubleValue,id: 1)
+                    m_tf_Leg.text = getCorrectString(singleMeasure.leg.doubleValue,id: 1)
+                    m_tf_Chest.text = getCorrectString(singleMeasure.chest.doubleValue,id: 1)
+                    m_tf_Waist.text = getCorrectString(singleMeasure.waist.doubleValue,id: 1)
+
                 }
                 
             }
@@ -120,7 +123,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         
         m_b_PickDate.setTitle(returnDateForm(date), forState: UIControlState.Normal)
     }
-    
+   
     
     func hideTutorial(){
         var backgroundIMG = UIImage(named: "Background2.png")
@@ -140,16 +143,31 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
     }
     
     
-    func getCorrectString(amount : Double) -> String{
-        var returnString = "0"
+    func getCorrectString(var amount : Double, id : Int) -> String{
         
+      
+        //Show as lbs
+        
+        
+        if(id == 0 && weightUnit == "lbs"){
+            amount = amount *  2.20462262185
+        }
+        
+        if(id == 1 && lengthUnit == "inch"){
+            amount = amount/2.54
+        }
+        
+        
+        var returnString = NSString(format:"%.2f",amount) as String
+ /*
         if(amount<10){
             returnString = NSString(format: "%.4f",amount) as String
         }else if(amount < 100){
             returnString =  NSString(format: "%.3f",amount) as String
-        }else if(amount < 1000){
+        }else if(amount < 10000){
             returnString = NSString(format: "%.2f",amount) as String
         }
+*/
         
         if(amount == 0){
             returnString = "0"
@@ -444,7 +462,9 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         }
         
         var getDecimalNumbers = (textField.text! as NSString).componentsSeparatedByString(".")
-        if getDecimalNumbers.count > 1 && (getDecimalNumbers[1] as NSString).integerValue > 9 && string != ""  {
+        
+        
+        if getDecimalNumbers.count > 1 && (getDecimalNumbers[1] as NSString).length > 1 && string != ""  {
             return false
         }
         
@@ -455,8 +475,10 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         
         let disallowedCharacterSet = NSCharacterSet(charactersInString: "0123456789.").invertedSet
         let replacementStringIsLegal = string.rangeOfCharacterFromSet(disallowedCharacterSet) == nil
-        
+
+     
         let resultingStringLengthIsLegal =  (getDecimalNumbers.count > 1 || string == ".") ? text.characters.count <= 6 : text.characters.count <= 3
+        
         
         let scanner = NSScanner(string: text)
         let resultingTextIsNumeric = scanner.scanDecimal(nil) && scanner.atEnd

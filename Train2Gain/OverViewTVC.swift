@@ -184,7 +184,7 @@ class OverViewTVC: UITableViewController {
         let context = LAContext()
         var error:NSError?
         
-        let messageText = "Scan your fingerprint"
+        let messageText = NSLocalizedString("Scan your fingerprint", comment: "Scan your fingerprint")
         
         do {
            context.canEvaluatePolicy(LAPolicy.DeviceOwnerAuthenticationWithBiometrics, error: &error)
@@ -211,7 +211,7 @@ class OverViewTVC: UITableViewController {
                         
                     case LAError.SystemCancel.rawValue :
                         
-                        UIAlertView(title:"Error", message: "Authentication was cancelled by the system", delegate: self, cancelButtonTitle: "OK").show()
+                        UIAlertView(title:"Error", message: NSLocalizedString("Authentication was cancelled by the system", comment: "Authentication was cancelled by the system"), delegate: self, cancelButtonTitle: "OK").show()
                         
                         
                     case LAError.UserCancel.rawValue :
@@ -220,10 +220,10 @@ class OverViewTVC: UITableViewController {
                         
                     case LAError.UserFallback.rawValue :
                         
-                        self.callPWAlert("Enter your password", single: true)
+                        self.callPWAlert(NSLocalizedString("Enter your password", comment: "Enter your password"), single: true)
                         
                     default:
-                        self.callPWAlert("Enter your password", single: true)
+                        self.callPWAlert(NSLocalizedString("Enter your password", comment: "Enter your password"), single: true)
                         
                     }
                 }
@@ -238,16 +238,16 @@ class OverViewTVC: UITableViewController {
                 
             case LAError.TouchIDNotEnrolled.rawValue:
                 
-                self.callPWAlert("Enter your password", single: true)
+                self.callPWAlert(NSLocalizedString("Enter your password", comment: "Enter your password"), single: true)
                 
             case LAError.PasscodeNotSet.rawValue:
                 
-                self.callPWAlert("Enter your password", single: true)
+                self.callPWAlert(NSLocalizedString("Enter your password", comment: "Enter your password"), single: true)
                 
                 
             default:
                 
-                self.callPWAlert("Enter your password", single: true)
+                self.callPWAlert(NSLocalizedString("Enter your password", comment: "Enter your password"), single: true)
             }
             
         }
@@ -261,9 +261,9 @@ class OverViewTVC: UITableViewController {
         
         
         var inputTextField: UITextField?
-        let passwordPrompt = UIAlertController(title: "Enter Password", message: _Message, preferredStyle: UIAlertControllerStyle.Alert)
-        passwordPrompt.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: nil))
-        passwordPrompt.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
+        let passwordPrompt = UIAlertController(title: NSLocalizedString("Enter Password", comment: "Enter Password"), message: _Message, preferredStyle: UIAlertControllerStyle.Alert)
+        passwordPrompt.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel"), style: UIAlertActionStyle.Default, handler: nil))
+        passwordPrompt.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: UIAlertActionStyle.Default, handler: { (action) -> Void in
             //Enter password
             if(single){
                 
@@ -276,7 +276,7 @@ class OverViewTVC: UITableViewController {
 
                 }else{
                     
-                    self.callPWAlert("Password was wrong",single: true)
+                    self.callPWAlert(NSLocalizedString("Password was wrong", comment: "Password was wrong"),single: true)
                 }
                 
             }else{
@@ -291,19 +291,19 @@ class OverViewTVC: UITableViewController {
                     NSUserDefaults.standardUserDefaults().setObject(passwordConfirmend, forKey: "Password")
                 }else{
                     
-                    self.callPWAlert("Confirmed password was wrong",single: false)
+                    self.callPWAlert(NSLocalizedString("Confirmed password was wrong or empty", comment: "Confirmed password was wrong or empty"),single: false)
                 }
             }
             
         }))
         passwordPrompt.addTextFieldWithConfigurationHandler({(textField: UITextField) in
-            textField.placeholder = "Password"
+            textField.placeholder = NSLocalizedString("Password", comment: "Password")
             textField.secureTextEntry = true
             inputTextField = textField
         })
         if(single == false){
             passwordPrompt.addTextFieldWithConfigurationHandler({(textField: UITextField) in
-                textField.placeholder = "Confirm Password"
+                textField.placeholder = NSLocalizedString("Confirm Password", comment: "Confirm Password")
                 textField.secureTextEntry = true
                 inputTextField = textField
             })

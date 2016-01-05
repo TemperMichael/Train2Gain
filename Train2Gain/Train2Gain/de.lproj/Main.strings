@@ -1,0 +1,354 @@
+
+/* Class = "UILabel"; text = "Your training plans"; ObjectID = "0gD-kK-aeb"; */
+"0gD-kK-aeb.text" = "Deine Trainingspläne";
+
+/* Class = "UINavigationItem"; title = "Statistic"; ObjectID = "1Xl-u6-QlH"; */
+"1Xl-u6-QlH.title" = "Statistik";
+
+/* Class = "UILabel"; text = "Exercise 01"; ObjectID = "1nr-37-omB"; */
+"1nr-37-omB.text" = "Übung 01";
+
+/* Class = "UILabel"; text = "Chest Day"; ObjectID = "2CO-6v-V7d"; */
+"2CO-6v-V7d.text" = "Übung";
+
+/* Class = "UILabel"; text = "Disabled"; ObjectID = "2gJ-EF-A9P"; */
+"2gJ-EF-A9P.text" = "Aus";
+
+/* Class = "UILabel"; text = "No entry at this date"; ObjectID = "3Ab-G9-gdk"; */
+"3Ab-G9-gdk.text" = "Kein Eintrag";
+
+/* Class = "UIBarButtonItem"; title = "Save"; ObjectID = "3ON-vc-jo8"; */
+"3ON-vc-jo8.title" = "Sichern";
+
+/* Class = "UILabel"; text = "Exercise Name : "; ObjectID = "3dG-9s-8TT"; */
+"3dG-9s-8TT.text" = "Name der Übung : ";
+
+/* Class = "UINavigationItem"; title = "Overview"; ObjectID = "3kh-6a-CNk"; */
+"3kh-6a-CNk.title" = "Übersicht";
+
+/* Class = "UILabel"; text = "/ 15"; ObjectID = "47S-oK-6gH"; */
+"47S-oK-6gH.text" = "/ 15";
+
+/* Class = "UIButton"; normalTitle = ">"; ObjectID = "562-qd-a1n"; */
+"562-qd-a1n.normalTitle" = ">";
+
+/* Class = "UILabel"; text = "Number of Reps :"; ObjectID = "6SR-Wx-v3b"; */
+"6SR-Wx-v3b.text" = "Wiederholungen :";
+
+/* Class = "UILabel"; text = "Val.:666666 lbs"; ObjectID = "6sW-QV-t0j"; */
+"6sW-QV-t0j.text" = "Val.:666666 lbs";
+
+/* Class = "UILabel"; text = "Chest: 000.00"; ObjectID = "7NI-0o-rw1"; */
+"7NI-0o-rw1.text" = "Brust: ---";
+
+/* Class = "UIButton"; normalTitle = "<"; ObjectID = "7vK-4Q-ayA"; */
+"7vK-4Q-ayA.normalTitle" = "<";
+
+/* Class = "UIButton"; normalTitle = "Stop"; ObjectID = "82p-Lb-7VO"; */
+"82p-Lb-7VO.normalTitle" = "Stop";
+
+/* Class = "UINavigationItem"; title = "Measurement"; ObjectID = "8a0-IH-n9v"; */
+"8a0-IH-n9v.title" = "Maße";
+
+/* Class = "UIButton"; normalTitle = "Pick date"; ObjectID = "8sm-BN-umy"; */
+"8sm-BN-umy.normalTitle" = "Datum wählen";
+
+/* Class = "UIButton"; normalTitle = "Set"; ObjectID = "9am-Mg-wLB"; */
+"9am-Mg-wLB.normalTitle" = "Satz";
+
+/* Class = "UINavigationItem"; title = "Add Training Plan"; ObjectID = "Bc3-Y8-r6w"; */
+"Bc3-Y8-r6w.title" = "Plan hinzufügen";
+
+/* Class = "UILabel"; text = "00:00:00"; ObjectID = "Bol-Te-XOf"; */
+"Bol-Te-XOf.text" = "00:00:00";
+
+/* Class = "UIButton"; normalTitle = "Mood"; ObjectID = "DZa-dg-yFc"; */
+"DZa-dg-yFc.normalTitle" = "Stimmung";
+
+/* Class = "UILabel"; text = "------"; ObjectID = "E1I-OM-j67"; */
+"E1I-OM-j67.text" = "------";
+
+/* Class = "UILabel"; text = "cm"; ObjectID = "EdS-LN-epO"; */
+"EdS-LN-epO.text" = "cm";
+
+/* Class = "UILabel"; text = "1.Set"; ObjectID = "EfI-Zh-xMy"; */
+"EfI-Zh-xMy.text" = "1.Satz";
+
+/* Class = "UIViewController"; title = "Settings"; ObjectID = "ExF-F6-hBr"; */
+"ExF-F6-hBr.title" = "Einstellungen";
+
+/* Class = "UIButton"; normalTitle = "<"; ObjectID = "EyC-67-aVm"; */
+"EyC-67-aVm.normalTitle" = "<";
+
+/* Class = "UINavigationItem"; title = "Training"; ObjectID = "Fwr-zg-nBP"; */
+"Fwr-zg-nBP.title" = "Training";
+
+/* Class = "UIBarButtonItem"; title = "Save"; ObjectID = "GO2-Cx-qqf"; */
+"GO2-Cx-qqf.title" = "Sichern";
+
+/* Class = "UIBarButtonItem"; title = "Save"; ObjectID = "GoG-5u-MBv"; */
+"GoG-5u-MBv.title" = "Sichern";
+
+/* Class = "UILabel"; text = "Training plan name :"; ObjectID = "HAb-Z0-odN"; */
+"HAb-Z0-odN.text" = "Name des Plans :";
+
+/* Class = "UIButton"; normalTitle = ">"; ObjectID = "HtT-NH-aNa"; */
+"HtT-NH-aNa.normalTitle" = ">";
+
+/* Class = "UIBarButtonItem"; title = "Save"; ObjectID = "IBA-rM-Vrc"; */
+"IBA-rM-Vrc.title" = "Sichern";
+
+/* Class = "UILabel"; text = "Change data from "; ObjectID = "IrE-aB-Cjm"; */
+"IrE-aB-Cjm.text" = "Daten ändern vom ";
+
+/* Class = "UILabel"; text = "Done Reps :"; ObjectID = "Irl-mJ-1Ld"; */
+"Irl-mJ-1Ld.text" = "Wdh. fertig :";
+
+/* Class = "UIViewController"; title = "Training Data"; ObjectID = "JUQ-nm-1zm"; */
+"JUQ-nm-1zm.title" = "Trainingsdaten";
+
+/* Class = "UILabel"; text = "00:00:00"; ObjectID = "JX9-pU-oF8"; */
+"JX9-pU-oF8.text" = "00:00:00";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "JwG-Gn-7lo"; */
+"JwG-Gn-7lo.text" = "Label";
+
+/* Class = "UILabel"; text = "Exercise 01"; ObjectID = "Krj-aD-1ao"; */
+"Krj-aD-1ao.text" = "Übung 01";
+
+/* Class = "UITextField"; placeholder = "Add more at bottom with '+'"; ObjectID = "LEV-Ib-wfp"; */
+"LEV-Ib-wfp.placeholder" = "Übung hinzufügen mit '+'";
+
+/* Class = "UILabel"; text = "/ 15"; ObjectID = "Ljd-La-W1f"; */
+"Ljd-La-W1f.text" = "/ 15";
+
+/* Class = "UIButton"; normalTitle = "Break"; ObjectID = "MOW-cZ-WHZ"; */
+"MOW-cZ-WHZ.normalTitle" = "Pause";
+
+/* Class = "UILabel"; text = "1.Set"; ObjectID = "Mwe-bu-FzL"; */
+"Mwe-bu-FzL.text" = "1.Satz";
+
+/* Class = "UILabel"; text = "Number of Sets :"; ObjectID = "N2l-9b-XaA"; */
+"N2l-9b-XaA.text" = "Sätze :";
+
+/* Class = "UINavigationItem"; title = "Training Data"; ObjectID = "N9t-jn-bKP"; */
+"N9t-jn-bKP.title" = "Trainingsdaten";
+
+/* Class = "UIButton"; normalTitle = "Stop"; ObjectID = "NGy-j5-N8A"; */
+"NGy-j5-N8A.normalTitle" = "Stop";
+
+/* Class = "UITextField"; placeholder = "e.g.: Chestday"; ObjectID = "NbY-wr-OzR"; */
+"NbY-wr-OzR.placeholder" = "z.B.: Brust";
+
+/* Class = "UILabel"; text = "Waist:  000.00"; ObjectID = "Nzu-jw-3jO"; */
+"Nzu-jw-3jO.text" = "Becken:  ---";
+
+/* Class = "UILabel"; text = "lbs"; ObjectID = "Oad-FU-kSk"; */
+"Oad-FU-kSk.text" = "lbs";
+
+/* Class = "UIButton"; normalTitle = "<"; ObjectID = "PKc-SB-sVD"; */
+"PKc-SB-sVD.normalTitle" = "<";
+
+/* Class = "UIButton"; normalTitle = ">"; ObjectID = "PX5-KU-mC1"; */
+"PX5-KU-mC1.normalTitle" = ">";
+
+/* Class = "UIViewController"; title = "Pick date"; ObjectID = "Rf4-zc-Cks"; */
+"Rf4-zc-Cks.title" = "Datum wählen";
+
+/* Class = "UINavigationItem"; title = "Training"; ObjectID = "SOC-5T-UPJ"; */
+"SOC-5T-UPJ.title" = "Training";
+
+/* Class = "UILabel"; text = "Reps :"; ObjectID = "T4u-ih-YR8"; */
+"T4u-ih-YR8.text" = "Wdh. :";
+
+/* Class = "UILabel"; text = "Weight : "; ObjectID = "ULD-Rg-qk5"; */
+"ULD-Rg-qk5.text" = "Gewicht : ";
+
+/* Class = "UILabel"; text = "Set units"; ObjectID = "Uaq-3C-YGj"; */
+"Uaq-3C-YGj.text" = "Einheiten wählen";
+
+/* Class = "UILabel"; text = "lbs"; ObjectID = "UhQ-kZ-YK8"; */
+"UhQ-kZ-YK8.text" = "lbs";
+
+/* Class = "UIButton"; normalTitle = "Break"; ObjectID = "V8E-Mt-WzF"; */
+"V8E-Mt-WzF.normalTitle" = "Pause";
+
+/* Class = "UILabel"; text = "kg"; ObjectID = "VBo-nE-gY4"; */
+"VBo-nE-gY4.text" = "kg";
+
+/* Class = "UIButton"; normalTitle = "<"; ObjectID = "VKR-Gl-XWK"; */
+"VKR-Gl-XWK.normalTitle" = "<";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "VWs-Us-bmb"; */
+"VWs-Us-bmb.text" = "Label";
+
+/* Class = "UILabel"; text = "lbs"; ObjectID = "VZh-7l-uKE"; */
+"VZh-7l-uKE.text" = "lbs";
+
+/* Class = "UILabel"; text = "---"; ObjectID = "W1Q-sT-TrF"; */
+"W1Q-sT-TrF.text" = "---";
+
+/* Class = "UIButton"; normalTitle = "<"; ObjectID = "X3q-Zl-bUn"; */
+"X3q-Zl-bUn.normalTitle" = "<";
+
+/* Class = "UILabel"; text = "Exercises"; ObjectID = "XTd-Do-fSa"; */
+"XTd-Do-fSa.text" = "Übungen";
+
+/* Class = "UILabel"; text = "Enter your body measurements "; ObjectID = "YkX-h6-TZw"; */
+"YkX-h6-TZw.text" = "Gib deine Körpermaße ein ";
+
+/* Class = "UIButton"; normalTitle = "Exercise"; ObjectID = "ZH4-h2-Z4G"; */
+"ZH4-h2-Z4G.normalTitle" = "Übung";
+
+/* Class = "UILabel"; text = "Weight :"; ObjectID = "Zzn-h2-exX"; */
+"Zzn-h2-exX.text" = "Gewicht :";
+
+/* Class = "UINavigationItem"; title = "Mood"; ObjectID = "aVS-SU-IZo"; */
+"aVS-SU-IZo.title" = "Stimmung";
+
+/* Class = "UIButton"; normalTitle = "Start"; ObjectID = "asu-ga-C0g"; */
+"asu-ga-C0g.normalTitle" = "Start";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "bC9-eV-E4B"; */
+"bC9-eV-E4B.text" = "Label";
+
+/* Class = "UILabel"; text = "100.Set"; ObjectID = "bEy-bg-SmE"; */
+"bEy-bg-SmE.text" = "100.Satz";
+
+/* Class = "UILabel"; text = "Legs :"; ObjectID = "bQ0-fG-0oy"; */
+"bQ0-fG-0oy.text" = "Beine :";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "bop-g7-i41"; */
+"bop-g7-i41.text" = "Label";
+
+/* Class = "UIButton"; normalTitle = "OK"; ObjectID = "c0z-UM-hcT"; */
+"c0z-UM-hcT.normalTitle" = "OK";
+
+/* Class = "UILabel"; text = "Legs:   000.00"; ObjectID = "cfq-Rd-dxn"; */
+"cfq-Rd-dxn.text" = "Beine:   ---";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "cuw-Pd-yqw"; */
+"cuw-Pd-yqw.text" = "Label";
+
+/* Class = "UILabel"; text = "lbs"; ObjectID = "dKZ-U7-Fap"; */
+"dKZ-U7-Fap.text" = "lbs";
+
+/* Class = "UIButton"; normalTitle = "Year"; ObjectID = "dX6-Bl-sCw"; */
+"dX6-Bl-sCw.normalTitle" = "Jahr";
+
+/* Class = "UILabel"; text = "Weight :"; ObjectID = "f6z-U3-NgE"; */
+"f6z-U3-NgE.text" = "Gewicht :";
+
+/* Class = "UILabel"; text = "0"; ObjectID = "gGx-g9-1iM"; */
+"gGx-g9-1iM.text" = "0";
+
+/* Class = "UILabel"; text = "Weight :"; ObjectID = "gp9-LR-Eoj"; */
+"gp9-LR-Eoj.text" = "Gewicht :";
+
+/* Class = "UIButton"; normalTitle = "Pick date"; ObjectID = "gvq-Zz-xr7"; */
+"gvq-Zz-xr7.normalTitle" = "Datum wählen";
+
+/* Class = "UILabel"; text = "Number of Reps :"; ObjectID = "hG7-0M-5w5"; */
+"hG7-0M-5w5.text" = "Wiederholungen :";
+
+/* Class = "UIButton"; normalTitle = ">"; ObjectID = "iK9-0R-KOF"; */
+"iK9-0R-KOF.normalTitle" = ">";
+
+/* Class = "UITableViewController"; title = "Train2Gain"; ObjectID = "iVH-Ak-oNh"; */
+"iVH-Ak-oNh.title" = "Train2Gain";
+
+/* Class = "UILabel"; text = "Arms :"; ObjectID = "jMp-df-7Xx"; */
+"jMp-df-7Xx.text" = "Arme :";
+
+/* Class = "UIButton"; normalTitle = "Show Tutorial in Views"; ObjectID = "kSP-fx-1fD"; */
+"kSP-fx-1fD.normalTitle" = "Tutorial erneut anzeigen";
+
+/* Class = "UIButton"; normalTitle = ">"; ObjectID = "kqs-rI-j5K"; */
+"kqs-rI-j5K.normalTitle" = ">";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "lUM-pq-mda"; */
+"lUM-pq-mda.text" = "Label";
+
+/* Class = "UIViewController"; title = "Edit"; ObjectID = "lXD-fx-6nt"; */
+"lXD-fx-6nt.title" = "Bearbeiten";
+
+/* Class = "UILabel"; text = "Waist :"; ObjectID = "mGx-rg-HsI"; */
+"mGx-rg-HsI.text" = "Becken :";
+
+/* Class = "UILabel"; text = "Number of Reps :"; ObjectID = "maa-ck-s2b"; */
+"maa-ck-s2b.text" = "Wiederholungen :";
+
+/* Class = "UIButton"; normalTitle = "Select"; ObjectID = "nCy-8J-ZEK"; */
+"nCy-8J-ZEK.normalTitle" = "Auswählen";
+
+/* Class = "UIButton"; normalTitle = "<"; ObjectID = "nge-Ee-zhf"; */
+"nge-Ee-zhf.normalTitle" = "<";
+
+/* Class = "UILabel"; text = "inch"; ObjectID = "oPh-MD-eX2"; */
+"oPh-MD-eX2.text" = "inch";
+
+/* Class = "UILabel"; text = "0"; ObjectID = "oW8-DR-Zkj"; */
+"oW8-DR-Zkj.text" = "0";
+
+/* Class = "UILabel"; text = "Chest :"; ObjectID = "pOn-gh-ldZ"; */
+"pOn-gh-ldZ.text" = "Brust :";
+
+/* Class = "UIViewController"; title = "Statistic"; ObjectID = "pwE-sf-q0a"; */
+"pwE-sf-q0a.title" = "Statistik";
+
+/* Class = "UIButton"; normalTitle = "+"; ObjectID = "qLt-8n-y1B"; */
+"qLt-8n-y1B.normalTitle" = "+";
+
+/* Class = "UIButton"; normalTitle = "Month"; ObjectID = "qXI-vl-EvS"; */
+"qXI-vl-EvS.normalTitle" = "Monat";
+
+/* Class = "UINavigationItem"; title = "Edit"; ObjectID = "rBa-yQ-lzN"; */
+"rBa-yQ-lzN.title" = "Bearbeiten";
+
+/* Class = "UILabel"; text = "Set privacy mode"; ObjectID = "rD6-pl-FSS"; */
+"rD6-pl-FSS.text" = "Privater Modus";
+
+/* Class = "UILabel"; text = "Chest Day"; ObjectID = "rUe-A3-q1q"; */
+"rUe-A3-q1q.text" = "Brust";
+
+/* Class = "UIButton"; normalTitle = ">"; ObjectID = "tHG-j4-1mo"; */
+"tHG-j4-1mo.normalTitle" = ">";
+
+/* Class = "UIButton"; normalTitle = ">"; ObjectID = "tm3-Bn-Ydb"; */
+"tm3-Bn-Ydb.normalTitle" = ">";
+
+/* Class = "UIViewController"; title = "Edit"; ObjectID = "unX-kP-CIF"; */
+"unX-kP-CIF.title" = "Bearbeiten";
+
+/* Class = "UIButton"; normalTitle = "Body Measurements"; ObjectID = "vNs-NL-3S1"; */
+"vNs-NL-3S1.normalTitle" = "Körpermaße";
+
+/* Class = "UILabel"; text = "Weight: 000.00"; ObjectID = "vx7-yp-D2n"; */
+"vx7-yp-D2n.text" = "Gewicht: ---";
+
+/* Class = "UIButton"; normalTitle = "Start"; ObjectID = "wAx-PP-Rpz"; */
+"wAx-PP-Rpz.normalTitle" = "Start";
+
+/* Class = "UILabel"; text = "Name :"; ObjectID = "wer-xR-mec"; */
+"wer-xR-mec.text" = "Name :";
+
+/* Class = "UILabel"; text = "------"; ObjectID = "xEu-p0-Z5Y"; */
+"xEu-p0-Z5Y.text" = "------";
+
+/* Class = "UIButton"; normalTitle = "Pick date"; ObjectID = "xhr-Sl-VLh"; */
+"xhr-Sl-VLh.normalTitle" = "Datum wählen";
+
+/* Class = "UILabel"; text = "Enabled"; ObjectID = "xu7-XU-86f"; */
+"xu7-XU-86f.text" = "An";
+
+/* Class = "UIBarButtonItem"; title = "Save"; ObjectID = "y4G-a7-5b2"; */
+"y4G-a7-5b2.title" = "Sichern";
+
+/* Class = "UIButton"; normalTitle = "Pick date"; ObjectID = "yJH-k8-gwt"; */
+"yJH-k8-gwt.normalTitle" = "Datum wählen";
+
+/* Class = "UILabel"; text = "Arms:  000.00"; ObjectID = "yTi-MF-uRb"; */
+"yTi-MF-uRb.text" = "Arme:  ---";
+
+/* Class = "UIButton"; normalTitle = "<"; ObjectID = "zn6-G3-Zn8"; */
+"zn6-G3-Zn8.normalTitle" = "<";

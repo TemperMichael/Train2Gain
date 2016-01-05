@@ -34,6 +34,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             shouldRotate = true
         }
         
+        if(NSUserDefaults.standardUserDefaults().objectForKey("firstStart") == nil){
+            
+            NSUserDefaults.standardUserDefaults().setObject(false, forKey: "tutorialAddExercise")
+            
+            NSUserDefaults.standardUserDefaults().setObject(false, forKey: "tutorialMoods")
+            
+            NSUserDefaults.standardUserDefaults().setObject(false, forKey: "tutorialBodyMeasurements")
+            
+            NSUserDefaults.standardUserDefaults().setObject(false, forKey: "tutorialTrainingData")
+            
+            NSUserDefaults.standardUserDefaults().setObject(false, forKey: "tutorialTrainingPlans")
+            
+            NSUserDefaults.standardUserDefaults().setObject(false, forKey: "tutorialAddExercise")
+            
+            NSUserDefaults.standardUserDefaults().setObject(false, forKey: "firstStart")
+
+        }
+        
 
         
         
