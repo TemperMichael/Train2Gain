@@ -10,209 +10,155 @@ import UIKit
 import CoreData
 import Charts
 
-
-
 class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
     
-    
-    @IBOutlet weak var chartView: LineChartView!
-    
-    @IBOutlet weak var selectorsBG: UIView!
-    
-    @IBOutlet weak var pickerView: UIPickerView!
-    
-    @IBOutlet weak var exerciseButton: UIButton!
-    
-    @IBOutlet weak var monthButton: UIButton!
-    
-    @IBOutlet weak var yearButton: UIButton!
-    
-    @IBOutlet weak var pickerBG: UIView!
-    
-    @IBOutlet weak var finishButton: UIButton!
-    
-    @IBOutlet weak var setButton: UIButton!
-    
-    @IBOutlet weak var pickerTitle: UILabel!
-    
-    @IBOutlet weak var selectedValueLabel: UILabel!
-    
-    
     var weightUnit: String! = NSUserDefaults.standardUserDefaults().objectForKey("weightUnit")! as! String
-    
+    var xVals: [String] = []
+    var pickerData: [String] = [String]()
+    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    var months = [NSLocalizedString("All", comment: "All"),NSLocalizedString("January", comment: "January"),NSLocalizedString("February", comment: "February"),NSLocalizedString("March", comment: "March"),NSLocalizedString("April", comment: "April"),NSLocalizedString("May", comment: "May"),NSLocalizedString("June", comment: "June"),NSLocalizedString("July", comment: "July"),NSLocalizedString("August", comment: "August"),NSLocalizedString("September", comment: "September"),NSLocalizedString("October", comment: "October"),NSLocalizedString("November", comment: "November"),NSLocalizedString("December", comment: "December")]
+    var years: [String] = []
+    var exercises: [String] = []
+    var sets: [String] = ["1. Set", "2. Set", "3. Set"]
+    var appdel = UIApplication.sharedApplication().delegate as! AppDelegate
+    var doneEx: [DoneExercise] = []
+    var selectedMonths: [String] = []
+    var selectedExercise = "Exercise"
+    var selectedYear = ""
+    var selectedSet = ""
+    var selectedDoneEx: [DoneExercise] = []
+    var setAmount = 0
+    var monthDateDict = NSDictionary(dictionary: [NSLocalizedString("Jan", comment: "Jan"):1,NSLocalizedString("Feb", comment: "Feb"):2,NSLocalizedString("Mar", comment: "Mar"):3,NSLocalizedString("Apr", comment: "Apr"):4,NSLocalizedString("May", comment: "May"):5,NSLocalizedString("Jun", comment: "Jun"):6,NSLocalizedString("Jul", comment: "Jul"):7,NSLocalizedString("Aug", comment: "Aug"):8,NSLocalizedString("Sep", comment: "Sep"):9,NSLocalizedString("Oct", comment: "Oct"):10,NSLocalizedString("Nov", comment: "Nov"):11,NSLocalizedString("Dec", comment: "Dec"):12])
+
     let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.Dark))
     
-    var xVals:[String] = []
-    
-    var pickerData: [String] = [String]()
-    
-    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-    
-    var months = [NSLocalizedString("All", comment: "All"),NSLocalizedString("January", comment: "January"),NSLocalizedString("February", comment: "February"),NSLocalizedString("March", comment: "March"),NSLocalizedString("April", comment: "April"),NSLocalizedString("May", comment: "May"),NSLocalizedString("June", comment: "June"),NSLocalizedString("July", comment: "July"),NSLocalizedString("August", comment: "August"),NSLocalizedString("September", comment: "September"),NSLocalizedString("October", comment: "October"),NSLocalizedString("November", comment: "November"),NSLocalizedString("December", comment: "December")]
-    
-    var years:[String] = []
-    
-    var exercises:[String] = []
-    
-    var sets:[String] = ["1. Set","2. Set","3. Set"]
-    
-    var appdel = UIApplication.sharedApplication().delegate as! AppDelegate
-    
-    var doneEx:[DoneExercise] = []
-    
-    var selectedMonths:[String] = []
-    
-    var selectedExercise = "Exercise"
-    
-    var selectedYear = ""
-    
-    var selectedSet = ""
-    
-    var selectedDoneEx:[DoneExercise] = []
-    
-    var setAmount = 0
-    
-    var monthDateDict = NSDictionary(dictionary: [NSLocalizedString("Jan", comment: "Jan"):1,NSLocalizedString("Feb", comment: "Feb"):2,NSLocalizedString("Mar", comment: "Mar"):3,NSLocalizedString("Apr", comment: "Apr"):4,NSLocalizedString("May", comment: "May"):5,NSLocalizedString("Jun", comment: "Jun"):6,NSLocalizedString("Jul", comment: "Jul"):7,NSLocalizedString("Aug", comment: "Aug"):8,NSLocalizedString("Sep", comment: "Sep"):9,NSLocalizedString("Oct", comment: "Oct"):10,NSLocalizedString("Nov", comment: "Nov"):11,NSLocalizedString("Dec", comment: "Dec"):12])
-    
+    // MARK: IBOutlets & IBActions
+    @IBOutlet weak var chartView: LineChartView!
+    @IBOutlet weak var selectorsBG: UIView!
+    @IBOutlet weak var pickerView: UIPickerView!
+    @IBOutlet weak var exerciseButton: UIButton!
+    @IBOutlet weak var monthButton: UIButton!
+    @IBOutlet weak var yearButton: UIButton!
+    @IBOutlet weak var pickerBG: UIView!
+    @IBOutlet weak var finishButton: UIButton!
+    @IBOutlet weak var setButton: UIButton!
+    @IBOutlet weak var pickerTitle: UILabel!
+    @IBOutlet weak var selectedValueLabel: UILabel!
+
     
     override func viewWillDisappear(animated: Bool) {
-        appDelegate.shouldRotate = false
-    }
-    override func viewDidLoad() {
-        super.viewDidLoad()
         
+        appDelegate.shouldRotate = false
+        
+    }
+    
+    override func viewDidLoad() {
+        
+        super.viewDidLoad()
         appDelegate.shouldRotate = true
         
-        //Set background
+        // Set background
         var backgroundIMG = UIImage(named: "Background2.png")
         backgroundIMG = imageResize(backgroundIMG!, sizeChange: selectorsBG.frame.size)
         selectorsBG.backgroundColor = UIColor(patternImage: backgroundIMG!)
         
-        //Get current year
+        // Get current year
         let date = NSDate()
         let calendar = NSCalendar.currentCalendar()
         let components = calendar.components([.Year], fromDate: date)
-        
         let year =  components.year
-        
-        for(var i = year ; i > 1979; i--){
+        for var i = year ; i > 1979; i-- {
             years.append("\(i)")
         }
+        let requestDoneEx = NSFetchRequest(entityName: "DoneExercise")
+        doneEx = (try! appdel.managedObjectContext?.executeFetchRequest(requestDoneEx)) as! [DoneExercise]
         
+        // Sort array by date
+        doneEx.sortInPlace({ $0.date.compare($1.date) == NSComparisonResult.OrderedAscending})
         
-        let  requestDoneEx = NSFetchRequest(entityName: "DoneExercise")
-        doneEx = (try! appdel.managedObjectContext?.executeFetchRequest(requestDoneEx))  as! [DoneExercise]
-        
-        //Sort array by date
-        doneEx.sortInPlace({ $0.date.compare($1.date) == NSComparisonResult.OrderedAscending })
-        
-        //Get exercises
-        var alreadyAddedEx:[String] = []
-        for(var i = 0; i < doneEx.count; i++){
-            if(!alreadyAddedEx.contains(doneEx[i].name)){
+        // Get exercises
+        var alreadyAddedEx: [String] = []
+        for var i = 0 ; i < doneEx.count ; i++ {
+            if !alreadyAddedEx.contains(doneEx[i].name) {
                 alreadyAddedEx.append(doneEx[i].name)
                 exercises.append(doneEx[i].name)
             }
         }
-        
-        if(exercises.count < 1){
+   
+        if exercises.count < 1 {
             exercises.append(NSLocalizedString("No exercises done yet!", comment: "No exercises done yet!"))
-            
         }
-        
         pickerView.delegate = self
         pickerView.dataSource = self
-        
-        
-        
         pickerData = []
         
         //Setup chartview
-        
-        chartView.delegate = self;
-        
+        chartView.delegate = self
         chartView.descriptionText = ""
         chartView.noDataTextDescription = NSLocalizedString("No data available for this setup!", comment: "No data available for this setup!")
-        
         chartView.highlightEnabled = true
         chartView.dragEnabled = true
         chartView.setScaleEnabled(true)
         chartView.drawGridBackgroundEnabled = false
         chartView.pinchZoomEnabled = true
-        
         chartView.backgroundColor = UIColor.whiteColor()
-        
-        
         chartView.legend.enabled = true
-        chartView.legend.font = UIFont(name:"HelveticaNeue-Light", size:11)!
+        chartView.legend.font = UIFont(name:"HelveticaNeue-Light", size: 11)!
         chartView.legend.position = ChartLegend.ChartLegendPosition.BelowChartLeft
-        
         chartView.legend.xOffset = -10
-        
         let xAxis = chartView.xAxis;
-        xAxis.labelFont =  UIFont(name:"HelveticaNeue-Light", size:12)!
-        xAxis.labelTextColor = UIColor(red:51/255, green:181/255, blue:229/255, alpha:1)
+        xAxis.labelFont =  UIFont(name: "HelveticaNeue-Light", size: 12)!
+        xAxis.labelTextColor = UIColor(red: 51 / 255, green: 181 / 255, blue: 229 / 255, alpha: 1)
         xAxis.drawGridLinesEnabled = false
         xAxis.drawAxisLineEnabled = false
         xAxis.spaceBetweenLabels = 1
-        
         let leftAxis = chartView.leftAxis
         leftAxis.labelTextColor = UIColor(red:51/255, green:181/255, blue:229/255, alpha:1)
         leftAxis.customAxisMax = 100
         leftAxis.customAxisMin = 0
         leftAxis.drawGridLinesEnabled = false
-        
-        
         let rightAxis = chartView.rightAxis
         rightAxis.labelTextColor = UIColor.grayColor()
         rightAxis.customAxisMax = 9
         rightAxis.startAtZeroEnabled = false
         rightAxis.customAxisMin = 0
         rightAxis.drawGridLinesEnabled = false
-        
-        
         chartView.rightAxis.enabled = true
-        
         setDataCount()
+        
     }
+
+    // MARK: My Methods
     
-    
-    func setDataCount(){
+    func setDataCount() {
         
         setAmount = 0
-        
         setButton.enabled = false
         setButton.setTitleColor(UIColor.lightTextColor(), forState: UIControlState.Disabled)
-        
-        
         xVals = []
-        
-        for singleMonth in selectedMonths{
+        for singleMonth in selectedMonths {
             addEmptyDays(singleMonth)
         }
-        
-        var yVals:[ChartDataEntry] = []
-        var yValsRight:[ChartDataEntry] = []
+        var yVals: [ChartDataEntry] = []
+        var yValsRight: [ChartDataEntry] = []
         var rightMax = 0.0
         var leftMax = 0.0
-        
         var weight = 0.0
         
-        //Get current day,month and year
+        // Get current day,month and year
         var date = NSDate()
         var calendar = NSCalendar.currentCalendar()
-        var components = calendar.components([.Year, .Month,.Day], fromDate: date)
+        var components = calendar.components([.Year, .Month, .Day], fromDate: date)
         var month = components.month
         var year = components.year
         var day = components.day
         
-        //Loop to show single month or whole year
-        for singleMonth in selectedMonths{
-            
-            var saveDays:[Int] = []
-            for singleDoneEx in selectedDoneEx{
+        // Loop to show single month or whole year
+        for singleMonth in selectedMonths {
+            var saveDays: [Int] = []
+            for singleDoneEx in selectedDoneEx {
                 
-                //Get day, month and year
+                // Get day, month and year
                 date = singleDoneEx.date
                 calendar = NSCalendar.currentCalendar()
                 components = calendar.components([.Year, .Month,.Day], fromDate: date)
@@ -220,135 +166,115 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
                 year = components.year
                 day = components.day
                 
-                //Get maximum for axis
-                if(singleDoneEx.weight.doubleValue > weight){
+                // Get maximum for axis
+                if singleDoneEx.weight.doubleValue > weight {
                     leftMax = singleDoneEx.weight.doubleValue
-                    if(weightUnit == "lbs"){
+                    if weightUnit == "lbs" {
                         leftMax = leftMax * 2.20462262185
                     }
-                    
                 }
-                
                 weight = singleDoneEx.weight.doubleValue
                 
-                //Only add correct data to chartview
-                if(year == Int(selectedYear) && month == monthDateDict.valueForKey(singleMonth) as! Int && weight != 0.0 ){
-                    
+                // Only add correct data to chartview
+                if year == Int(selectedYear) && month == monthDateDict.valueForKey(singleMonth) as! Int && weight != 0.0 {
                     setAmount = singleDoneEx.sets.integerValue
                     
                     //Check unit
-                    if(weightUnit == "lbs"){
+                    if weightUnit == "lbs" {
                         weight = weight * 2.20462262185
                     }
-                    
-                    if(singleDoneEx.setCounter.stringValue == selectedSet && !saveDays.contains(day)){
+                    if singleDoneEx.setCounter.stringValue == selectedSet && !saveDays.contains(day) {
                         
                         //Fullfill axis when whole year should show up
-                        if(selectedMonths.count > 1){
+                        if selectedMonths.count > 1 {
                             
                             
-                            if (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0) && monthDateDict.valueForKey(singleMonth) as! Int > 2){
-                                //leap year
+                            if ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0) && monthDateDict.valueForKey(singleMonth) as! Int > 2 {
                                 
+                                // Leap year
                                 day += 1
                             }
                             
-                            //Add days to set data to correct day in correct month
-                            switch monthDateDict.valueForKey(singleMonth) as! Int{
-                            case 2:
-                                day += 31
-                            case 3:
-                                day += 59
-                            case 4:
-                                day += 90
-                            case 5:
-                                day += 120
-                            case 6:
-                                day += 151
-                            case 7:
-                                day += 181
-                            case 8:
-                                day += 212
-                            case 9:
-                                day += 243
-                            case 10:
-                                day += 273
-                            case 11:
-                                day += 304
-                            case 12:
-                                day += 334
-                            default:
-                                print("Month Error")
+                            // Add days to set data to correct day in correct month
+                            switch monthDateDict.valueForKey(singleMonth) as! Int {
+                                case 2 :
+                                    day += 31
+                                case 3 :
+                                    day += 59
+                                case 4 :
+                                    day += 90
+                                case 5 :
+                                    day += 120
+                                case 6 :
+                                    day += 151
+                                case 7 :
+                                    day += 181
+                                case 8 :
+                                    day += 212
+                                case 9 :
+                                    day += 243
+                                case 10 :
+                                    day += 273
+                                case 11 :
+                                    day += 304
+                                case 12 :
+                                    day += 334
+                                default :
+                                    print("Month Error")
                             }
                         }
-                        
-                        
                         yVals.append(ChartDataEntry(value: weight, xIndex: day - 1))
-                        if(singleDoneEx.doneReps.doubleValue > rightMax){
+                        if singleDoneEx.doneReps.doubleValue > rightMax {
                             rightMax = singleDoneEx.doneReps.doubleValue
                         }
-                        
                         yValsRight.append(ChartDataEntry(value: singleDoneEx.doneReps.doubleValue, xIndex: day - 1))
                         saveDays.append(day)
                         
-                        //For testing
+                        // For testing
                         /*
-                        for(var i = 0; i < 365 ;i++){
-                        let randNr = Double(arc4random_uniform(200))
-                        
-                        if(randNr > leftMax){
-                        leftMax = randNr
-                        }
-                        let randNrRight =  Double(arc4random_uniform(10))
-                        if(randNrRight > rightMax){
-                        rightMax = randNrRight
-                        }
-                        yVals.append(ChartDataEntry(value: randNr, xIndex: i))
-                        
-                        
-                        yValsRight.append(ChartDataEntry(value: randNrRight, xIndex: i))
+                        for var i = 0 ; i < 365 ; i++ {
+                            let randNr = Double(arc4random_uniform(200))
+                            if randNr > leftMax {
+                                leftMax = randNr
+                            }
+                            let randNrRight =  Double(arc4random_uniform(10))
+                            if randNrRight > rightMax {
+                                rightMax = randNrRight
+                            }
+                            yVals.append(ChartDataEntry(value: randNr, xIndex: i))
+                            yValsRight.append(ChartDataEntry(value: randNrRight, xIndex: i))
                         }
                         */
-                        
-                        
                     }
-                    
                 }
             }
         }
-        
-        
-        if let checkNumb = Int((self.setButton.titleLabel!.text! as NSString).substringToIndex(1)){
-            
-            if(checkNumb > self.setAmount){
+
+        if let checkNumb = Int((self.setButton.titleLabel!.text! as NSString).substringToIndex(1)) {
+            if checkNumb > self.setAmount {
                 self.setButton.setTitle(NSLocalizedString("Set", comment: "Set"), forState: UIControlState.Normal)
                 selectedSet = ""
             }
         }
         
-        //Put in some space for better view
-        leftMax += (leftMax/100) * 6
-        rightMax += rightMax/10
-        
-        
-        if(leftMax == 0){
+        // Put in some space for better view
+        leftMax += (leftMax / 100) * 6
+        rightMax += rightMax / 10
+        if leftMax == 0 {
             leftMax = 1
         }
-        if(rightMax == 0){
+        if rightMax == 0 {
             rightMax = 1
         }
-        
         chartView.leftAxis.customAxisMax = leftMax
         chartView.rightAxis.customAxisMax = rightMax
         
-        
-        //Setup and show chartview
-        if(xVals != [] && yVals != []){
+        // Setup and show chartview
+        if xVals != [] && yVals != [] {
             chartView.leftAxis.enabled = true
             chartView.xAxis.enabled = true
             chartView.rightAxis.enabled = true
             selectedExercise = selectedExercise == NSLocalizedString("Exercise", comment: "Exercise") ? "-" : selectedExercise
-            
             let set1 = LineChartDataSet(yVals: yValsRight, label: NSLocalizedString("Done Reps", comment: "Done Reps"))
             set1.setColor(UIColor.lightGrayColor())
             set1.axisDependency = ChartYAxis.AxisDependency.Right
@@ -356,27 +282,21 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
             set1.lineWidth = 2
             set1.circleRadius = 1.5
             set1.drawCircleHoleEnabled = true
-            set1.valueFont = UIFont(name:"HelveticaNeue-Light", size:9)!
-            set1.fillAlpha = 255/255.0;
-            
+            set1.valueFont = UIFont(name: "HelveticaNeue-Light", size:9)!
+            set1.fillAlpha = 255 / 255.0
             let set2 = LineChartDataSet(yVals: yVals, label: "\(selectedExercise) in \(weightUnit) \(selectedYear)")
             set2.axisDependency = ChartYAxis.AxisDependency.Left
-            set2.setColor(UIColor(red:51/255, green:181/255, blue:229/255, alpha:1))
-            set2.setCircleColor(UIColor(red:51/255, green:181/255, blue:229/255, alpha:1))
+            set2.setColor(UIColor(red: 51  / 255, green: 181 / 255, blue: 229 / 255, alpha: 1))
+            set2.setCircleColor(UIColor(red: 51 / 255, green: 181 / 255, blue: 229 / 255, alpha: 1))
             set2.lineWidth = 2
             set2.circleRadius = 1.5
             set2.drawCircleHoleEnabled = true
-            set2.valueFont = UIFont(name:"HelveticaNeue-Light", size:9)!
-            set2.fillAlpha = 255/255.0;
-            
-            
-            
-            let dataSets = [set1,set2]
-            
+            set2.valueFont = UIFont(name: "HelveticaNeue-Light", size: 9)!
+            set2.fillAlpha = 255/255.0
+            let dataSets = [set1, set2]
             let data = LineChartData(xVals: xVals, dataSets: dataSets)
-            
-            chartView.data = data;
-        }else{
+            chartView.data = data
+        } else {
             chartView.leftAxis.enabled = false
             chartView.xAxis.enabled = false
             chartView.rightAxis.enabled = false
@@ -384,73 +304,57 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
             chartView.data?.clearValues()
         }
         chartView.notifyDataSetChanged()
-        
-        if(setAmount > 0){
+        if setAmount > 0 {
             setButton.enabled = true;
             setButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         }
     }
     
-    
-    //Add correct number of days for x-Axis
-    func addEmptyDays(month:String){
+    // Add correct number of days for x-Axis
+    func addEmptyDays(month: String) {
         
         self.xVals.append("\(month)")
         
-        switch(month){
-        case NSLocalizedString("Jan", comment: "Jan"),NSLocalizedString("Mar", comment: "Mar"),NSLocalizedString("May", comment: "May"),NSLocalizedString("Jul", comment: "Jul"),NSLocalizedString("Aug", comment: "Aug"),NSLocalizedString("Oct", comment: "Oct"),NSLocalizedString("Dec", comment: "Dec"):
+        switch month {
+        case NSLocalizedString("Jan", comment: "Jan"),NSLocalizedString("Mar", comment: "Mar"),NSLocalizedString("May", comment: "May"),NSLocalizedString("Jul", comment: "Jul"),NSLocalizedString("Aug", comment: "Aug"),NSLocalizedString("Oct", comment: "Oct"),NSLocalizedString("Dec", comment: "Dec") :
             
             for(var i = 2; i < 32; i++){
                 self.xVals.append(String(i));
             }
-        case NSLocalizedString("Apr", comment: "Apr"),NSLocalizedString("Jun", comment: "Jun"),NSLocalizedString("Sep", comment: "Sep"),NSLocalizedString("Nov", comment: "Nov"):
+        case NSLocalizedString("Apr", comment: "Apr"),NSLocalizedString("Jun", comment: "Jun"),NSLocalizedString("Sep", comment: "Sep"),NSLocalizedString("Nov", comment: "Nov") :
             
             
             for(var i = 2; i < 31; i++){
                 self.xVals.append(String(i));
             }
-        case NSLocalizedString("Feb", comment: "Feb"):
-            
-            
-            for(var i = 2; i < 29; i++){
-                self.xVals.append(String(i));
+        case NSLocalizedString("Feb", comment: "Feb") :
+            for var i = 2 ; i < 29 ; i++ {
+                self.xVals.append(String(i))
             }
-            
-            if let year = Int(selectedYear){
-                if (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)){
-                    //leap year
+            if let year = Int(selectedYear) {
+                if ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0) {
                     
+                    //Leap year
                     self.xVals.append(String(29))
                 }
             }
-            
-            
-        default:
-            print("error addEmptyDay")
+            default:
+                print("Error addEmptyDay")
         }
-        
-        
     }
     
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-    }
-    
-    //Fit background image to display size
-    func imageResize (imageObj:UIImage, sizeChange:CGSize)-> UIImage{
+    // Fit background image to display size
+    func imageResize(imageObj: UIImage, sizeChange: CGSize) -> UIImage {
         
         let hasAlpha = false
         let scale: CGFloat = 0.0 // Automatically use scale factor of main screen
-        
         UIGraphicsBeginImageContextWithOptions(sizeChange, !hasAlpha, scale)
         imageObj.drawInRect(CGRect(origin: CGPointZero, size: sizeChange))
-        
         let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
         return scaledImage
+        
     }
-    
-    
+
     
     @IBAction func exerciseCL(sender: AnyObject) {
         
@@ -471,9 +375,7 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         pickerData = sets
         setupPickerView()
         
-        
     }
-    
     
     @IBAction func monthCL(sender: AnyObject) {
         pickerTitle.text = NSLocalizedString("Month", comment: "Month")
@@ -489,50 +391,43 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
     }
     
     
-    
-    func setupPickerView(){
+
+    // MARK: PickerView
+    func setupPickerView() {
+        
         pickerView.reloadAllComponents()
-        
         blurView.frame = pickerBG.bounds
-        
         blurView.translatesAutoresizingMaskIntoConstraints = false
-        if( !pickerBG.subviews.contains(blurView)){
+        if !pickerBG.subviews.contains(blurView) {
             pickerBG.addSubview(blurView)
-            
             pickerBG.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: pickerBG, attribute: NSLayoutAttribute.Top, multiplier: 1.0, constant: 0.0))
             pickerBG.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: pickerBG, attribute: NSLayoutAttribute.Leading, multiplier: 1.0, constant: 0.0))
-            
             pickerBG.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: pickerBG, attribute: NSLayoutAttribute.Bottom, multiplier: 1.0, constant: 0.0))
-            
             pickerBG.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.Trailing, relatedBy: NSLayoutRelation.Equal, toItem: pickerBG, attribute: NSLayoutAttribute.Trailing, multiplier: 1.0, constant: 0.0))
         }
-        
         pickerBG.alpha = 0
         pickerBG.hidden = false
         self.view.bringSubviewToFront(pickerBG)
         pickerBG.bringSubviewToFront(pickerView)
         pickerBG.bringSubviewToFront(finishButton)
         pickerBG.bringSubviewToFront(pickerTitle)
-        
-        
-        
         UIView.animateWithDuration(0.5, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
             self.pickerBG.alpha = 1
-            
-            
             }, completion: { finished in
-                
         })
         
     }
     
     // The number of columns of data
     func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+        
         return 1
+        
     }
     
     // The number of rows of data
     func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        
         return pickerData.count
         
     }
@@ -540,13 +435,12 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
     func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusingView view: UIView?) -> UIView {
         
         let backVal = UILabel(frame: CGRectMake(0, 0, self.view.bounds.size.width, 100))
-        
         backVal.font = UIFont(name: "HelveticaNeue-Thin" , size: 22)
         backVal.textColor = UIColor.whiteColor()
         backVal.textAlignment = .Center
         backVal.text =  pickerData[row]
-        
         return backVal
+        
     }
     
     
@@ -642,7 +536,4 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
     func chartValueNothingSelected(chartView: ChartViewBase) {
         selectedValueLabel.hidden = true
     }
-    
-    
-    
 }

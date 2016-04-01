@@ -10,131 +10,289 @@ import UIKit
 import CoreData
 import iAd
 
-class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate{
+class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
+
+    var exercises: [[String]] = [["", "", ""]]
+    var dayId: String = ""
+    var userPos: Int = 0
+    var deleteOn: Bool = false
+    var appdel = UIApplication.sharedApplication().delegate as! AppDelegate
+    var editMode = false
+    var editDayIDSaver = ""
+    var selectedExc: [Exercise] = []
+    var tutorialView: UIImageView!
     
+    // MARK: IBOutles & IBActions
     @IBOutlet weak var m_tf_ListName: UITextField!
     @IBOutlet weak var m_tf_Reps: UITextField!
     @IBOutlet weak var m_tf_Sets: UITextField!
     @IBOutlet weak var m_tf_Name: UITextField!
-    
-    
     @IBOutlet weak var previousExButton: UIButton!
-    
     @IBOutlet weak var iAd: ADBannerView!
-    
     @IBOutlet weak var deleteExButton: UIButton!
-    
     @IBOutlet weak var nextExButton: UIButton!
-
     @IBOutlet weak var addExButton: UIButton!
     
-    var exercises : [[String]] = [["","",""]]
-    var dayId : String = ""
-    var userPos : Int = 0
-    var deleteOn : Bool = false
+    // Add a new exercise
+    @IBAction func AddExButtonCL(sender: AnyObject) {
+        
+        if allFilled() {
+            exercises[userPos] = [m_tf_Name.text!, m_tf_Reps.text!, m_tf_Sets.text!]
+            exercises.insert(["", "", ""], atIndex: userPos+1)
+            filterSpecificView(false)
+            clearDetails()
+        }
+        
+    }
     
-    var appdel =  UIApplication.sharedApplication().delegate as! AppDelegate
+    // Delete actual exercise
+    @IBAction func deleteExButtonCL(sender: AnyObject) {
+        
+        exercises.removeAtIndex(userPos)
+        deleteOn = true
+        if userPos > 0 {
+            filterSpecificView(true)
+        } else {
+            filterSpecificView(false)
+        }
+        
+    }
     
-    var editMode = false
-    var editDayIDSaver = ""
+    // Show previous exercise
+    @IBAction func previousExButtonCL(sender: AnyObject) {
+        
+        exercises[userPos] = [m_tf_Name.text!, m_tf_Reps.text!, m_tf_Sets.text!]
+        filterSpecificView(true)
+        
+    }
     
-    var selectedExc : [Exercise] = []
-    var tutorialView:UIImageView!
+    // Show next exercise
+    @IBAction func nextExButtonCL(sender: AnyObject) {
+        
+        exercises[userPos] = [m_tf_Name.text!, m_tf_Reps.text!, m_tf_Sets.text!]
+        filterSpecificView(false)
+        
+    }
     
-    
-    //--------------------------------------------------------
-    // View Methods
-    
+    @IBAction func saveClickListener(sender: AnyObject) {
+        
+        // Save all created exercises
+        if allFilled() {
+            dayId = m_tf_ListName.text!
+            exercises[userPos] = [m_tf_Name.text!, m_tf_Reps.text!, m_tf_Sets.text!]
+            let request = NSFetchRequest(entityName: "Exercise")
+            let exercisesCD = (try! appdel.managedObjectContext?.executeFetchRequest(request)) as! [Exercise]
+            
+            // In edit mode remove old saved exercises and add the new edited one
+            if editMode {
+                for singleExCD in exercisesCD {
+                    if singleExCD.dayID == editDayIDSaver {
+                        appdel.managedObjectContext!.deleteObject(singleExCD as NSManagedObject)
+                    }
+                }
+            }
+            appdel.saveContext()
+            for checkCells in self.exercises {
+                let newItem = NSEntityDescription.insertNewObjectForEntityForName("Exercise", inManagedObjectContext: appdel.managedObjectContext!) as! Exercise
+                newItem.dayID = dayId
+                print(checkCells[0])
+                newItem.name = checkCells[0]
+                newItem.reps = Int(checkCells[1])!
+                newItem.sets = Int(checkCells[2])!
+                appdel.saveContext()
+            }
+            let informUser = UIAlertController(title: "Saved", message: "Your training plan was saved", preferredStyle: UIAlertControllerStyle.Alert)
+            informUser.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
+                self.navigationController?.popViewControllerAnimated(true)
+            }))
+            presentViewController(informUser, animated: true, completion: nil)
+        }
+        
+    }
+
+
+    // MARK: View Methods
     override func viewDidLoad() {
+        
         super.viewDidLoad()
         
-        //Handle iAd
+        // Handle iAd
         iAd.delegate = self
         iAd.hidden = true
         
-        //Set background
+        // Set background
         var backgroundIMG = UIImage(named: "Background2.png")
         backgroundIMG = imageResize(backgroundIMG!, sizeChange: view.frame.size)
         self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
         
-        //Show tutorial
-        if(NSUserDefaults.standardUserDefaults().objectForKey("tutorialAddExercise") == nil){
+        // Show tutorial
+        if NSUserDefaults.standardUserDefaults().objectForKey("tutorialAddExercise") == nil {
             tutorialView = UIImageView(frame: self.view.frame)
-            
             tutorialView.image = UIImage(named: "TutorialAddExercise.png")
             tutorialView.frame.origin.y += 18
-            if(self.view.frame.size.height <= 490){
+            if self.view.frame.size.height <= 490 {
                 tutorialView.frame.size.height -= 10
-            }else{
+            } else {
                 tutorialView.frame.size.height -= 60
             }
-
             tutorialView.userInteractionEnabled = true
-            let tap = UITapGestureRecognizer(target: self, action:"hideTutorial")
+            let tap = UITapGestureRecognizer(target: self, action: "hideTutorial")
             tutorialView.addGestureRecognizer(tap)
             self.view.addSubview(tutorialView)
             self.navigationController?.navigationBarHidden = true
-            
         }
 
-        //Set delegates of textfields
+        // Set delegates of textfields
         m_tf_Reps.delegate = self
         m_tf_Sets.delegate = self
         m_tf_Name.delegate = self
         m_tf_ListName.delegate = self
         
         
-        //Prepare data if view was opened in edit mode
-        if(editMode){
+         //Prepare data if view was opened in edit mode
+        if editMode {
             self.title = NSLocalizedString("Edit Training plan", comment: "Edit Training plan")
             editDayIDSaver = selectedExc[0].dayID
             var currentName = ""
             var prevName = ""
             var first = true
-            
-            for singleEx in selectedExc{
-                
+            for singleEx in selectedExc {
                 prevName = currentName
                 currentName = singleEx.name
-                
-                if(prevName != currentName){
-                    if(first){
-                        exercises[userPos] = [singleEx.name,"\(singleEx.reps)","\(singleEx.sets)"]
+                if prevName != currentName {
+                    if first {
+                        exercises[userPos] = [singleEx.name, "\(singleEx.reps)", "\(singleEx.sets)"]
                         m_tf_ListName.text = singleEx.dayID
                         first = false
-                    }else{
-                        exercises.append([singleEx.name,"\(singleEx.reps)","\(singleEx.sets)"])
+                    } else {
+                        exercises.append([singleEx.name, "\(singleEx.reps)", "\(singleEx.sets)"])
                     }
                     m_tf_Name.text = exercises[userPos][0]
                     m_tf_Reps.text = exercises[userPos][1]
                     m_tf_Sets.text = exercises[userPos][2]
                 }
-                
-                
-                
-                
             }
-            
         }
-        if(exercises.count <= 1){
+        
+        if exercises.count <= 1 {
             deleteExButton.enabled = false
             nextExButton.enabled = false
             nextExButton.setTitle("", forState: UIControlState.Normal)
         }
-        
-        
         previousExButton.enabled = false
         previousExButton.setTitle("", forState: UIControlState.Normal)
         
     }
     
+    override func viewWillDisappear(animated: Bool) {
+        
+        self.navigationController?.setToolbarHidden(true, animated: true)
+        
+    }
     
-    func hideTutorial(){
+    // Show correct background after rotation
+    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+        
+        if NSUserDefaults.standardUserDefaults().objectForKey("tutorialAddExercise") == nil {
+            hideTutorial()
+        }
+        var backgroundIMG = UIImage(named: "Background2.png")
+        backgroundIMG = imageResize(backgroundIMG!, sizeChange: size)
+        self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
+        
+    }
+    
+    // MARK: Keyboard Methods
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        
+        // Close Keyboard when clicking outside
+        m_tf_Name.resignFirstResponder()
+        m_tf_Sets.resignFirstResponder()
+        m_tf_Reps.resignFirstResponder()
+        m_tf_ListName.resignFirstResponder()
+        
+    }
+    
+    func textFieldDidBeginEditing(textField: UITextField) {
+        
+        // Push up view to see what you are actual entering
+        switch textField {
+        case m_tf_Reps :
+            self.view.frame.origin.y -= 80
+        case m_tf_Sets :
+            self.view.frame.origin.y -= 80
+        case m_tf_Name :
+            self.view.frame.origin.y -= 20
+        default :
+            print("Error keyboard")
+        }
+        
+    }
+    
+    func textFieldDidEndEditing(textField: UITextField) {
+        
+        // Put view back down after entering in text fields
+        switch textField {
+        case m_tf_Reps :
+            self.view.frame.origin.y += 80
+        case m_tf_Sets :
+            self.view.frame.origin.y += 80
+        case m_tf_Name :
+            self.view.frame.origin.y += 20
+        default :
+            print("Error keyboard")
+        }
+        
+    }
+    
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+        
+        // Jump to next textfield by clicking on "next" button
+        if string == "\n" {
+            textField.endEditing(true)
+            switch textField {
+            case m_tf_ListName :
+                m_tf_Name.becomeFirstResponder()
+            case m_tf_Name :
+                m_tf_Sets.becomeFirstResponder()
+            default :
+                print("Error keyboard")
+            }
+            return true
+        }
+        textField.backgroundColor = UIColor.whiteColor()
+        textField.placeholder = ""
+        let text = (textField.text! as NSString).stringByReplacingCharactersInRange(range, withString: string)
+        
+        // Setup input settings
+        let newLength = textField.text!.characters.count + string.characters.count - range.length
+        var back = 0
+        if textField == m_tf_Reps {
+            back = 2
+            if newLength <= back && ((Int(text) > 0 && Int(text) < 100) || text == "") {
+                return true
+            } else {
+                return false
+            }
+        } else if textField == m_tf_Sets {
+            back = 1
+            if newLength <= back && ((Int(text) > 0 && Int(text) < 10) || text == "") {
+                return true
+            } else {
+                return false
+            }
+        } else {
+            back = 13
+        }
+        return newLength <= back
+    }
+    
+    // MARK: My Methods
+    func hideTutorial() {
       
         self.navigationController?.navigationBarHidden = false
         UIView.transitionWithView(self.view, duration: 1, options: UIViewAnimationOptions.CurveLinear, animations: {
             self.tutorialView.alpha = 0;
-            
             }, completion:{ finished in
                  NSUserDefaults.standardUserDefaults().setObject(false, forKey: "tutorialAddExercise")
                 self.tutorialView.removeFromSuperview()
@@ -142,139 +300,39 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
         
     }
     
-    override func viewWillDisappear(animated: Bool) {
-        self.navigationController?.setToolbarHidden(true, animated: true)
-        
-    }
-    
-    
-    //--------------------------------------------------------
-    //Click Listener
-    
-    //Add a new exercise
-    @IBAction func AddExButtonCL(sender: AnyObject) {
-        if(allFilled()){
-            
-            exercises[userPos] = [m_tf_Name.text!,m_tf_Reps.text!,m_tf_Sets.text!]
-            exercises.insert(["","",""], atIndex: userPos+1)
-            filterSpecificView(false)
-            clearDetails()
-            
-        }
-    }
-    
-    //Delte actual exercise
-    @IBAction func deleteExButtonCL(sender: AnyObject) {
-        
-        exercises.removeAtIndex(userPos)
-        deleteOn = true
-     
-        if (userPos > 0){
-            filterSpecificView(true)
-        }else{
-            filterSpecificView(false)
-        }
-        
-    }
-    
-    
-    //Show previous exercise
-    @IBAction func previousExButtonCL(sender: AnyObject) {
-        exercises[userPos] = [m_tf_Name.text!,m_tf_Reps.text!,m_tf_Sets.text!]
-        filterSpecificView(true)
-    }
-    //Show next exercise
-    @IBAction func nextExButtonCL(sender: AnyObject) {
-        exercises[userPos] = [m_tf_Name.text!,m_tf_Reps.text!,m_tf_Sets.text!]
-        filterSpecificView(false)
-        
-    }
-    
-    @IBAction func saveClickListener(sender: AnyObject) {
-        //Save all created exercises
-        if(allFilled()){
-            dayId = m_tf_ListName.text!
-            exercises[userPos] = [m_tf_Name.text!,m_tf_Reps.text!,m_tf_Sets.text!]
-            
-            
-            let  request = NSFetchRequest(entityName: "Exercise")
-            let exercisesCD = (try! appdel.managedObjectContext?.executeFetchRequest(request))  as! [Exercise]
-            
-            //In edit mode remove old saved exercises and add the new edited one
-            
-            if(editMode){
-                for singleExCD in exercisesCD{
-                    if(singleExCD.dayID == editDayIDSaver){
-                        appdel.managedObjectContext!.deleteObject(singleExCD as NSManagedObject)
-                    }
-                }
-            }
-            appdel.saveContext()
-            
-            for checkCells in self.exercises{
-
-                let newItem = NSEntityDescription.insertNewObjectForEntityForName("Exercise", inManagedObjectContext: appdel.managedObjectContext!) as! Exercise
-                newItem.dayID = dayId
-                print(checkCells[0])
-                newItem.name = checkCells[0]
-                newItem.reps = Int(checkCells[1])!
-                newItem.sets = Int(checkCells[2])!
-   
-                appdel.saveContext();
-                
-            }
-            
-            let informUser = UIAlertController(title: NSLocalizedString("Saved", comment: "Saved"), message:NSLocalizedString("Your training plan was saved", comment: "Your training plan was saved"), preferredStyle: UIAlertControllerStyle.Alert)
-            informUser.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: UIAlertActionStyle.Default, handler: { (action) -> Void in
-                self.navigationController?.popViewControllerAnimated(true)
-                
-                
-            }))
-            
-            presentViewController(informUser, animated: true, completion: nil)
-            
-        }
-    }
-    
-    //--------------------------------------------------------
-    // Own Methods
-    
-    //Fit background image to display size
-    func imageResize (imageObj:UIImage, sizeChange:CGSize)-> UIImage{
+    // Fit background image to display size
+    func imageResize(imageObj: UIImage, sizeChange: CGSize) -> UIImage {
         
         let hasAlpha = false
         let scale: CGFloat = 0.0 // Automatically use scale factor of main screen
-        
         UIGraphicsBeginImageContextWithOptions(sizeChange, !hasAlpha, scale)
         imageObj.drawInRect(CGRect(origin: CGPointZero, size: sizeChange))
-        
         let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
         return scaledImage
+        
     }
     
-    //Check if everything was entered
-    func allFilled() -> Bool{
-        var check = true;
+    // Check if everything was entered
+    func allFilled() -> Bool {
         
-        if(m_tf_ListName.text == ""){
-            m_tf_ListName.backgroundColor = UIColor(red:218/255 ,green:52/255, blue:60/255 ,alpha:1.0)
+        var check = true
+        if m_tf_ListName.text == "" {
+            m_tf_ListName.backgroundColor = UIColor(red: 218 / 255, green: 52 / 255, blue: 60 / 255, alpha: 1.0)
             m_tf_ListName.placeholder = NSLocalizedString("Enter something!", comment: "Enter something!")
             check = false
         }
-        if(m_tf_Reps.text == ""){
-            m_tf_Reps.backgroundColor = UIColor(red:218/255 ,green:52/255, blue:60/255 ,alpha:1.0)
+        if m_tf_Reps.text == "" {
+            m_tf_Reps.backgroundColor = UIColor(red: 218 / 255 , green: 52 / 255, blue: 60 / 255, alpha: 1.0)
             m_tf_Reps.placeholder = NSLocalizedString("Enter sth.!", comment: "Enter sth.!")
             check = false
         }
-        
-        if(m_tf_Name.text == ""){
-            m_tf_Name.backgroundColor = UIColor(red:218/255 ,green:52/255, blue:60/255 ,alpha:1.0)
+        if m_tf_Name.text == "" {
+            m_tf_Name.backgroundColor = UIColor(red: 218 / 255, green: 52 / 255, blue: 60 / 255, alpha: 1.0)
             m_tf_Name.placeholder = NSLocalizedString("Enter sth.!", comment: "Enter sth.!")
             check = false
         }
-        
-        if(m_tf_Sets.text == ""){
-            m_tf_Sets.backgroundColor = UIColor(red:218/255 ,green:52/255, blue:60/255 ,alpha:1.0)
+        if m_tf_Sets.text == "" {
+            m_tf_Sets.backgroundColor = UIColor(red: 218 / 255, green: 52 / 255, blue: 60 / 255, alpha: 1.0)
             m_tf_Sets.placeholder = NSLocalizedString("Enter sth.!", comment: "Enter sth.!")
             check = false
         }
@@ -283,172 +341,65 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
     }
     
     func clearDetails(){
+        
         m_tf_Name.text = ""
         m_tf_Reps.text = ""
         m_tf_Sets.text = ""
+        
     }
     
-    func filterSpecificView(animationDirection: Bool){
-        if(deleteOn || allFilled()){
+    func filterSpecificView(animationDirection: Bool) {
+        
+        if deleteOn || allFilled() {
             dayId = m_tf_ListName.text!
-            for _view in self.view.subviews{
-                if let view = _view as? UIView{
-                    if( view.tag == 123){
+            for _view in self.view.subviews {
+                if let view = _view as? UIView {
+                    if view.tag == 123 {
+                
+                        // Start animation
+                        slideIn(1, completionDelegate: _view, direction: animationDirection)
                         
-                        //Start animation
-                        slideIn(1, completionDelegate: _view,direction: animationDirection)
-                        
-                        //Load in next exercise
-                        if(deleteOn && !animationDirection){
+                        // Load in next exercise
+                        if deleteOn && !animationDirection {
                             userPos = 0
                         }
                         m_tf_Name.text = exercises[userPos][0]
                         m_tf_Reps.text = exercises[userPos][1]
                         m_tf_Sets.text = exercises[userPos][2]
                         
-                        //Enable/Disable buttons
-                        if(userPos > 0){
+                        // Enable/Disable buttons
+                        if userPos > 0 {
                             previousExButton.enabled = true
                             previousExButton.setTitle("<", forState: UIControlState.Normal)
                             deleteExButton.enabled = true
-                        }else{
+                        } else {
                             previousExButton.enabled = false
                             previousExButton.setTitle("", forState: UIControlState.Normal)
-                            
                         }
-                        if(exercises.count <= 1){
+                        if exercises.count <= 1 {
                             deleteExButton.enabled = false
                         }
-                        if(userPos+1 < exercises.count){
-                            
+                        if userPos + 1 < exercises.count {
                             nextExButton.enabled = true
                             nextExButton.setTitle(">", forState: UIControlState.Normal)
-                        }else{
+                        } else {
                             nextExButton.enabled = false
                             nextExButton.setTitle("", forState: UIControlState.Normal)
                         }
-                        
-                        
                     }
                 }
             }
             deleteOn = false
         }
-    }
-    
-    
-    //--------------------------------------------------------
-    // Keyboard methods
-    
-    
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        //Close Keyboard when clicking outside
-        m_tf_Name.resignFirstResponder()
-        m_tf_Sets.resignFirstResponder()
-        m_tf_Reps.resignFirstResponder()
-        m_tf_ListName.resignFirstResponder()
-    }
-    
-    
-    
-    func textFieldDidBeginEditing(textField: UITextField) {
-        //Push up view to see what you are actual entering
-        switch(textField){
-        case m_tf_Reps:
-            self.view.frame.origin.y -= 80
-            break;
-        case m_tf_Sets:
-            self.view.frame.origin.y -= 80
-            break;
-        case m_tf_Name:
-            self.view.frame.origin.y -= 20
-            
-            break;
-        default: break;
-        }
         
     }
-    
-    
-    func textFieldDidEndEditing(textField: UITextField) {
-        //Put view back down after entering in text fields
-        switch(textField){
-        case m_tf_Reps:
-            self.view.frame.origin.y += 80
-            break;
-        case m_tf_Sets:
-            self.view.frame.origin.y += 80
-            break;
-        case m_tf_Name:
-            self.view.frame.origin.y += 20
-            break;
-        default: break;
-        }
-        
-        
-    }
-    
-    
-    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        
-        //Jump to next textfield by clicking on "next" button
-        if(string == "\n"){
-            textField.endEditing(true)
-            switch (textField){
-            case m_tf_ListName:
-                
-                m_tf_Name.becomeFirstResponder()
-                break;
-                
-            case m_tf_Name:
-                m_tf_Sets.becomeFirstResponder()
-                break;
-            default:
-                break;
-                
-            }
-            return true
-        }
-        
-        textField.backgroundColor = UIColor.whiteColor()
-        textField.placeholder = ""
-        
-        let text = (textField.text! as NSString).stringByReplacingCharactersInRange(range, withString: string)
-        
-        //Setup input settings
-        let newLength = textField.text!.characters.count + string.characters.count - range.length
-        var back = 0
-        if(textField == m_tf_Reps){
-            back = 2
-            
-            if (newLength <= back && ((Int(text) > 0 && Int(text) < 100) || text == "")) {
-                return true
-            } else {
-                return false
-            }
-        }else if(textField == m_tf_Sets){
-            back = 1
-            if (newLength <= back && ((Int(text) > 0 && Int(text) < 10) || text == "")) {
-                return true
-            } else {
-                return false
-            }
-            
-        }else{
-            back = 13
-        }
-        return newLength <= back
-        
-    }
-    
-    //--------------------------------------------------------
-    //Animation
-    
-    
+
     func slideIn(duration: NSTimeInterval = 1.0, completionDelegate: AnyObject? = nil, direction:Bool) {
+        
         m_tf_Name.backgroundColor = UIColor.whiteColor()
         m_tf_Sets.backgroundColor = UIColor.whiteColor()
         m_tf_Reps.backgroundColor = UIColor.whiteColor()
+        
         // Create a CATransition animation
         let slideInTransition = CATransition()
         
@@ -459,10 +410,10 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
         
         // Customize the animation's properties
         slideInTransition.type = kCATransitionMoveIn
-        if(direction){
+        if direction {
             userPos--
             slideInTransition.subtype = kCATransitionFromLeft
-        }else{
+        } else {
             userPos++
             slideInTransition.subtype = kCATransitionFromRight
         }
@@ -472,31 +423,35 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
         
         // Add the animation to the View's layer
         (completionDelegate as! UIView).layer.addAnimation(slideInTransition, forKey: "slideInTransition")
+        
     }
     
-    // iAd Handling
-    
+    // MARK: iAd
     func bannerViewDidLoadAd(banner: ADBannerView!) {
+        
         self.layoutAnimated(true)
+        
     }
     
     func bannerView(banner: ADBannerView!, didFailToReceiveAdWithError error: NSError!) {
+        
         self.layoutAnimated(true)
+        
     }
     
     func bannerViewActionShouldBegin(banner: ADBannerView!, willLeaveApplication willLeave: Bool) -> Bool {
+        
         return true
+        
     }
-    func layoutAnimated(animated : Bool){
+    
+    func layoutAnimated(animated: Bool) {
 
-        if (iAd.bannerLoaded)
-        {
+        if iAd.bannerLoaded {
             iAd.hidden = false
             UIView.animateWithDuration(animated ? 0.25 : 0.0, animations: {
-                
                 self.iAd.alpha = 1;
             })
-            
         } else {
             UIView.animateWithDuration(animated ? 0.25 : 0.0, animations: {
                 self.iAd.alpha = 0
@@ -504,23 +459,7 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
                     (value: Bool) in
                     self.iAd.hidden = true
             })
-            
         }
         
-        
     }
-    
-    //Show correct background after rotation
-    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-         if(NSUserDefaults.standardUserDefaults().objectForKey("tutorialAddExercise") == nil){
-        hideTutorial()
-        }
-        var backgroundIMG = UIImage(named: "Background2.png")
-        backgroundIMG = imageResize(backgroundIMG!, sizeChange: size)
-        self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
-        
-    }
-    
-
-    
 }

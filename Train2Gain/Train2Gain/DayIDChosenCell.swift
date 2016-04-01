@@ -10,17 +10,11 @@ import UIKit
 
 class DayIDChosenCell: UITableViewCell {
     
-    
     @IBOutlet weak var m_L_Name: UILabel!
-    
     @IBOutlet weak var m_L_Reps: UILabel!
-    
     @IBOutlet weak var m_L_DoneReps: UILabel!
-    
     @IBOutlet weak var m_L_Weight: UILabel!
-    
     @IBOutlet weak var m_L_setCount: UILabel!
- 
     @IBOutlet weak var m_L_WeightUnit: UILabel!
     
 }

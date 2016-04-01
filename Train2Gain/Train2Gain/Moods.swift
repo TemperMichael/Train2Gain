@@ -10,16 +10,13 @@ import UIKit
 
 class Moods: NSObject {
     
-    var moodSmiley:UIImage;
-    var moodName:String;
+    var moodSmiley: UIImage
+    var moodName: String
     
-    
-     init(_moodName:String,_moodSmileyString :String){
-       
-        moodName = _moodName;
+    init(_moodName: String, _moodSmileyString: String){
         
-        moodSmiley = UIImage(named: _moodSmileyString)!;
-        
+        moodName = _moodName
+        moodSmiley = UIImage(named: _moodSmileyString)!
         
     }
    

@@ -17,131 +17,98 @@ import iAd
 
 class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSource, ADBannerViewDelegate {
     
-    @IBOutlet weak var m_b_prevDate: UIButton!
-    
-    @IBOutlet weak var m_b_nextDate: UIButton!
-    
-    @IBOutlet weak var m_b_PickDate: UIButton!
-    
-    @IBOutlet weak var m_L_Date: UILabel!
-    
-    @IBOutlet weak var m_L_Arm: UILabel!
-    
-    @IBOutlet weak var m_L_Chest: UILabel!
-    
-    @IBOutlet weak var m_L_Waist: UILabel!
-    
-    @IBOutlet weak var m_L_Legs: UILabel!
-    
-    @IBOutlet weak var m_L_Weight: UILabel!
-    
-    @IBOutlet weak var m_tv_DayIds: UITableView!
-    
-    @IBOutlet weak var m_L_moodName: UILabel!
-    
-    @IBOutlet weak var m_IV_moodImage: UIImageView!
-    
-    
-    @IBOutlet weak var iAd: ADBannerView!
-    
-    var dayIDs :[String] = []
-    
-    var doneExercises : [DoneExercise] = []
-    
-    var measurements : [Measurements] = []
-    
-    var moods : [Mood] = []
-    
-    var selectedDayDetails : [String] = []
-    
-    var  selectedDoneExc : [DoneExercise] = []
-    
+    var dayIDs: [String] = []
+    var doneExercises: [DoneExercise] = []
+    var measurements: [Measurements] = []
+    var moods: [Mood] = []
+    var selectedDayDetails: [String] = []
+    var selectedDoneExc: [DoneExercise] = []
     var appdel = UIApplication.sharedApplication().delegate as! AppDelegate
-    
     var weightUnit: String! = NSUserDefaults.standardUserDefaults().objectForKey("weightUnit")! as! String
+    var lengthUnit: String! = NSUserDefaults.standardUserDefaults().objectForKey("lengthUnit")! as! String
+    var doneEx: [DoneExercise]!
+    var tutorialView: UIImageView!
+    var showTutorial2 = true
+    let requestDoneEx = NSFetchRequest(entityName: "DoneExercise")
     
-    var lengthUnit:String! = NSUserDefaults.standardUserDefaults().objectForKey("lengthUnit")! as! String
-    
-    let  requestDoneEx = NSFetchRequest(entityName: "DoneExercise")
-    
-    var doneEx:[DoneExercise]!
-    
-    var tutorialView:UIImageView!
-    
-    var showTutorial2 = true;
-    
+    @IBOutlet weak var m_b_prevDate: UIButton!
+    @IBOutlet weak var m_b_nextDate: UIButton!
+    @IBOutlet weak var m_b_PickDate: UIButton!
+    @IBOutlet weak var m_L_Date: UILabel!
+    @IBOutlet weak var m_L_Arm: UILabel!
+    @IBOutlet weak var m_L_Chest: UILabel!
+    @IBOutlet weak var m_L_Waist: UILabel!
+    @IBOutlet weak var m_L_Legs: UILabel!
+    @IBOutlet weak var m_L_Weight: UILabel!
+    @IBOutlet weak var m_tv_DayIds: UITableView!
+    @IBOutlet weak var m_L_moodName: UILabel!
+    @IBOutlet weak var m_IV_moodImage: UIImageView!
+    @IBOutlet weak var iAd: ADBannerView!
     
     @IBAction func nextDayCL(sender: AnyObject) {
         
-        var date : NSDate = NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate
-        //Go to next day
-        date = date.dateByAddingTimeInterval(60*60*24)
-        NSUserDefaults.standardUserDefaults().setObject(date ,forKey: "dateUF")
+        var date: NSDate = NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate
         
+        // Go to next day
+        date = date.dateByAddingTimeInterval(60 * 60 * 24)
+        NSUserDefaults.standardUserDefaults().setObject(date, forKey: "dateUF")
         viewDidAppear(true)
         
     }
     
     @IBAction func prevDayCL(sender: AnyObject) {
         
-        var date : NSDate = NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate
-        //Go to prevoius day
-        date = date.dateByAddingTimeInterval(-60*60*24)
-        NSUserDefaults.standardUserDefaults().setObject(date ,forKey: "dateUF")
+        var date: NSDate = NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate
         
+        // Go to prevoius day
+        date = date.dateByAddingTimeInterval(-60 * 60 * 24)
+        NSUserDefaults.standardUserDefaults().setObject(date, forKey: "dateUF")
         viewDidAppear(true)
         
     }
     
+    // MARK: View Methods
     override func viewDidLoad() {
         
         super.viewDidLoad()
         
-        //Handle iAd
+        // Handle iAd
         iAd.delegate = self
         iAd.hidden = true
         
-        //Set background
+        // Set background
         var backgroundIMG = UIImage(named: "Background2.png")
         backgroundIMG = imageResize(backgroundIMG!, sizeChange: view.frame.size)
         self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
         
-        //Show tutorial
-        if(NSUserDefaults.standardUserDefaults().objectForKey("tutorialTrainingData") == nil){
+        // Show tutorial
+        if NSUserDefaults.standardUserDefaults().objectForKey("tutorialTrainingData") == nil {
             tutorialView = UIImageView(frame: self.view.frame)
-            
             tutorialView.image = UIImage(named: "TutorialTrainingData1.png")
             tutorialView.frame.origin.y += 18
-            if(self.view.frame.size.height <= 490){
+            if self.view.frame.size.height <= 490 {
                 tutorialView.frame.size.height += 60
-            }else{
+            } else {
                 tutorialView.frame.size.height -= 60
             }
-            
             tutorialView.userInteractionEnabled = true
             let tap = UITapGestureRecognizer(target: self, action:"hideTutorial")
             tutorialView.addGestureRecognizer(tap)
             self.view.addSubview(tutorialView)
             self.navigationController?.navigationBarHidden = true
-            
         }
         
-        
-        //Hide empty cells
+        // Hide empty cells
         let backgroundView = UIView(frame: CGRectZero)
-        
         self.m_tv_DayIds.tableFooterView = backgroundView
-        
-        self.m_tv_DayIds.backgroundColor = UIColor(red:86/255 ,green:158/255, blue:197/255 ,alpha:0)
-        
+        self.m_tv_DayIds.backgroundColor = UIColor(red: 86 / 255, green: 158 / 255, blue: 197 / 255, alpha: 0)
         selectedDoneExc = []
-        //Remove text from back button
+        
+        // Remove text from back button
         let backButton = UIBarButtonItem(title: " ", style: UIBarButtonItemStyle.Plain, target: self, action: nil)
         backButton.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "Chalkduster", size: 20)!], forState: UIControlState.Normal)
         navigationItem.backBarButtonItem = backButton
-        
         m_b_PickDate.titleLabel?.text = returnDateForm(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate)
-        
         m_tv_DayIds.dataSource = self
         m_tv_DayIds.delegate = self
         
@@ -150,34 +117,56 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             contentType: "Saved data",
             contentId: "Training data",
             customAttributes: [:])
-        
-        
         doneEx = (try! appdel.managedObjectContext?.executeFetchRequest(requestDoneEx))  as! [DoneExercise]
+        
     }
     
-    func hideTutorial(){
+    override func viewWillDisappear(animated: Bool) {
         
+        self.navigationController?.setToolbarHidden(true, animated: true)
         
-        if !showTutorial2{
+    }
+ 
+    
+    // Show correct background after rotation
+    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+        
+        if NSUserDefaults.standardUserDefaults().objectForKey("tutorialTrainingData") == nil {
+            hideTutorial()
+            if NSUserDefaults.standardUserDefaults().objectForKey("tutorialTrainingData") == nil {
+                hideTutorial()
+                self.navigationController?.navigationBarHidden = false
+            }
+        }
+        var backgroundIMG = UIImage(named: "Background2.png")
+        backgroundIMG = imageResize(backgroundIMG!, sizeChange: size)
+        self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
+        
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        
+        returnDateForm(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate)
+        
+    }
+    
+    // MARK: My Methods
+    func hideTutorial() {
+        
+        if !showTutorial2 {
             var backgroundIMG = UIImage(named: "Background2.png")
             backgroundIMG = imageResize(backgroundIMG!, sizeChange: view.frame.size)
             self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
-            
             self.navigationController?.navigationBarHidden = false
         }
-        
         UIView.transitionWithView(self.view, duration: 1, options: UIViewAnimationOptions.CurveLinear, animations: {
-            if self.showTutorial2{
-                
+            if self.showTutorial2 {
                 self.tutorialView.image = UIImage(named: "TutorialTrainingData2.png")
-                
-            }else{
+            } else {
                 self.tutorialView.alpha = 0
             }
-            
             }, completion:{ finished in
-                
-                if !self.showTutorial2{
+                if !self.showTutorial2 {
                     NSUserDefaults.standardUserDefaults().setObject(false, forKey: "tutorialTrainingData")
                     self.tutorialView.removeFromSuperview()
                 }
@@ -185,72 +174,60 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         })
         
     }
-    
-    
-    
-    
-    
-    //Fit background image to display size
-    func imageResize (imageObj:UIImage, sizeChange:CGSize)-> UIImage{
+
+    // Fit background image to display size
+    func imageResize(imageObj: UIImage, sizeChange: CGSize) -> UIImage {
         
         let hasAlpha = false
         let scale: CGFloat = 0.0 // Automatically use scale factor of main screen
-        
         UIGraphicsBeginImageContextWithOptions(sizeChange, !hasAlpha, scale)
         imageObj.drawInRect(CGRect(origin: CGPointZero, size: sizeChange))
-        
         let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
         return scaledImage
+        
     }
     
-    override func viewWillDisappear(animated: Bool) {
-        self.navigationController?.setToolbarHidden(true, animated: true)
+    // Get date in a good format
+    func returnDateForm(date: NSDate) -> String {
         
-    }
-    //Get date in a good format
-    func returnDateForm(date:NSDate) -> String{
         let dateFormatter = NSDateFormatter()
-        
         let theDateFormat = NSDateFormatterStyle.ShortStyle
         let theTimeFormat = NSDateFormatterStyle.NoStyle
-        
         dateFormatter.dateStyle = theDateFormat
         dateFormatter.timeStyle = theTimeFormat
-        
         return dateFormatter.stringFromDate(date)
+        
     }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-    }
-    
+
+    // MARK: TableView
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        
         return 1
+        
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return dayIDs.count
+        
     }
     
     func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
         
-        selectedDayDetails.append(dayIDs[indexPath.row]);
-        selectedDayDetails.append(m_L_Date.text!);
-        
+        selectedDayDetails.append(dayIDs[indexPath.row])
+        selectedDayDetails.append(m_L_Date.text!)
         return indexPath
         
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
         //Save chosen exercise day
-        if(segue.identifier == "DayIDChosen"){
+        if segue.identifier == "DayIDChosen" {
             let vc = segue.destinationViewController as! DayIDChosenTVC
             vc.selectedDayDetails = selectedDayDetails
-            
         }
-        
-        if(segue.identifier == "editSegue"){
+        if segue.identifier == "editSegue" {
             let vc = segue.destinationViewController as! EditDayIDVC
             vc.selectedExc = selectedDoneExc
         }
@@ -258,57 +235,42 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        //Has to stand here so custom action can be used
+        // Has to stand here so custom action can be used
     }
     
-    
     func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
-        
-        //Handle swipe to single tableview row
-        
-        //Handle the deletion of an row
 
+        //Handle swipe to single tableview row
+        //Handle the deletion of an row
         let deleteAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: NSLocalizedString("Delete", comment: "Delete")) { (action, index) -> Void in
             let context:NSManagedObjectContext = self.appdel.managedObjectContext!
-            
-            for(var i = 0; i < self.doneEx.count ; i++){
-                
-                if(self.doneEx[i].dayID == self.dayIDs[indexPath.row] && self.returnDateForm(self.doneEx[i].date) == self.returnDateForm(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate)){
-                    
-                    
+            for var i = 0; i < self.doneEx.count ; i++ {
+                if self.doneEx[i].dayID == self.dayIDs[indexPath.row] && self.returnDateForm(self.doneEx[i].date) == self.returnDateForm(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate) {
                     context.deleteObject(self.doneEx[i] as NSManagedObject)
                     self.doneEx.removeAtIndex(i)
-                    
-                    i--;
+                    i--
                 }
             }
-            
             self.dayIDs.removeAtIndex(indexPath.row)
-            
             do {
                 try context.save()
             } catch _ {
             }
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-            
         }
-        deleteAction.backgroundColor = UIColor(red:86/255 ,green:158/255, blue:197/255 ,alpha:1)
+        deleteAction.backgroundColor = UIColor(red: 86 / 255 , green: 158 / 255, blue: 197 / 255 , alpha: 1)
         
-        //Handle the changings of the selected row item
+
+        // Handle the changings of the selected row item
         let editAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: NSLocalizedString("Edit", comment: "Edit")) { (action, index) -> Void in
-  
-            for(var i = 0 ; i < self.doneEx.count ; i++){
-                if(self.doneEx[i].dayID == self.dayIDs[indexPath.row] && self.returnDateForm(self.doneEx[i].date) == self.returnDateForm(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate)){
+            for var i = 0 ; i < self.doneEx.count ; i++ {
+                if self.doneEx[i].dayID == self.dayIDs[indexPath.row] && self.returnDateForm(self.doneEx[i].date) == self.returnDateForm(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate) {
                     self.selectedDoneExc.append(self.doneEx[i])
                 }
             }
-            
             self.performSegueWithIdentifier("editSegue", sender: nil)
-            
         }
-        
-        editAction.backgroundColor = UIColor(red:112/255 ,green:188/255, blue:224/255 ,alpha:1)
-        
+        editAction.backgroundColor = UIColor(red: 112 / 255, green: 188 / 255, blue: 224 / 255 , alpha: 1)
         return [deleteAction,editAction]
         
     }
@@ -317,19 +279,17 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         let cell = tableView.dequeueReusableCellWithIdentifier("TrainingDataCell", forIndexPath: indexPath)
         
-        //Set Seperator left to zero
+        // Set Seperator left to zero
         cell.separatorInset = UIEdgeInsetsZero
         cell.preservesSuperviewLayoutMargins = false
         cell.layoutMargins = UIEdgeInsetsZero
-        
         cell.textLabel?.text = dayIDs[indexPath.row]
-        
         cell.textLabel?.font = UIFont(name: "HelveticaNeue-Light", size: 18)
-        cell.textLabel?.textColor = UIColor(red:22/255 ,green:204/255, blue:1.00 ,alpha:1.0)
+        cell.textLabel?.textColor = UIColor(red: 22 / 255 , green: 204 / 255, blue: 1.00 , alpha: 1.0)
         cell.textLabel?.textAlignment = .Center
         cell.backgroundColor = UIColor.whiteColor()
-        
         return cell
+
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -474,34 +434,32 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         
     }
     
-    override func viewWillAppear(animated: Bool) {
-        returnDateForm(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate)
-        
-    }
-    
-    // iAd Handling
-    
+    // MARK: iAd
     func bannerViewDidLoadAd(banner: ADBannerView!) {
+        
         self.layoutAnimated(true)
+        
     }
     
     func bannerView(banner: ADBannerView!, didFailToReceiveAdWithError error: NSError!) {
+        
         self.layoutAnimated(true)
+        
     }
     
     func bannerViewActionShouldBegin(banner: ADBannerView!, willLeaveApplication willLeave: Bool) -> Bool {
-        return true
-    }
-    func layoutAnimated(animated : Bool){
         
-        if (iAd.bannerLoaded)
-        {
+        return true
+        
+    }
+    
+    func layoutAnimated(animated: Bool) {
+        
+        if iAd.bannerLoaded {
             iAd.hidden = false
             UIView.animateWithDuration(animated ? 0.25 : 0.0, animations: {
-                
                 self.iAd.alpha = 1;
             })
-            
         } else {
             UIView.animateWithDuration(animated ? 0.25 : 0.0, animations: {
                 self.iAd.alpha = 0
@@ -509,31 +467,8 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
                     (value: Bool) in
                     self.iAd.hidden = true
             })
-            
         }
         
-        
     }
-    
-    
-    //Show correct background after rotation
-    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-        if(NSUserDefaults.standardUserDefaults().objectForKey("tutorialTrainingData") == nil){
-            hideTutorial()
-            if(NSUserDefaults.standardUserDefaults().objectForKey("tutorialTrainingData") == nil){
-                hideTutorial()
-                
-                self.navigationController?.navigationBarHidden = false
-            }
-        }
-        
-        var backgroundIMG = UIImage(named: "Background2.png")
-        backgroundIMG = imageResize(backgroundIMG!, sizeChange: size)
-        self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
-        
-    }
-    
-    
-    
 }
 
