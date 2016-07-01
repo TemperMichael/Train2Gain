@@ -15,8 +15,7 @@ import Crashlytics
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    
-    
+    var disableTutorial = true
     var shouldRotate = false
 
 
@@ -34,6 +33,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.LightContent, animated: true)
         Fabric.with([Crashlytics.self()])
+        
+        if disableTutorial {
+            NSUserDefaults.standardUserDefaults().setObject(disableTutorial, forKey: "tutorialAddExercise")
+            NSUserDefaults.standardUserDefaults().setObject(disableTutorial, forKey: "tutorialMoods")
+            NSUserDefaults.standardUserDefaults().setObject(disableTutorial, forKey: "tutorialBodyMeasurements")
+            NSUserDefaults.standardUserDefaults().setObject(disableTutorial, forKey: "tutorialTrainingData")
+            NSUserDefaults.standardUserDefaults().setObject(disableTutorial, forKey: "tutorialTrainingPlans")
+        }
+        
         return true
         
     }

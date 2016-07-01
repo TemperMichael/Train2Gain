@@ -30,6 +30,7 @@ class ExerciseChosenVC: UIViewController, UITextFieldDelegate, ADBannerViewDeleg
     var savedEnteredExercises: [[String]] = []
     var weightUnit: String! = NSUserDefaults.standardUserDefaults().objectForKey("weightUnit")! as! String
     var lengthUnit: String! = NSUserDefaults.standardUserDefaults().objectForKey("lengthUnit")! as! String
+    let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.Dark))
 
     // MARK: IBOutlets & IBActions
     @IBOutlet weak var iAd: ADBannerView!
@@ -44,6 +45,10 @@ class ExerciseChosenVC: UIViewController, UITextFieldDelegate, ADBannerViewDeleg
     @IBOutlet weak var m_b_PickDate: UIButton!
     @IBOutlet weak var nextExButton: UIButton!
     @IBOutlet weak var previousExButton: UIButton!
+    @IBOutlet weak var finishButton: UIButton!
+    @IBOutlet weak var pickerTitle: UILabel!
+    @IBOutlet weak var pickerView: UIDatePicker!
+    @IBOutlet weak var pickerBG: UIView!
     
     @IBAction func nextDayCL(sender: AnyObject) {
         
@@ -98,6 +103,11 @@ class ExerciseChosenVC: UIViewController, UITextFieldDelegate, ADBannerViewDeleg
         
     }
     
+    @IBAction func pickDateClicked(sender: AnyObject) {
+        
+        setupPickerView()
+        
+    }
     
     @IBAction func previousExButtonCL(sender: AnyObject) {
         
@@ -185,6 +195,20 @@ class ExerciseChosenVC: UIViewController, UITextFieldDelegate, ADBannerViewDeleg
         
     }
     
+    @IBAction func finishCL(sender: AnyObject) {
+        
+        // Save date
+        date = pickerView.date
+        NSUserDefaults.standardUserDefaults().setObject(pickerView.date,forKey: "dateUF")
+        UIView.animateWithDuration(0.5, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
+            self.pickerBG.alpha = 0
+            }, completion: { finished in
+                self.pickerBG.hidden = true
+        })
+        m_b_PickDate.setTitle(returnDateForm(date), forState: UIControlState.Normal)
+    }
+
+    
     // MARK: View Methods
     override func viewDidLoad() {
         
@@ -238,6 +262,15 @@ class ExerciseChosenVC: UIViewController, UITextFieldDelegate, ADBannerViewDeleg
         //Set delegate of textfields
         m_tf_Reps.delegate = self
         m_tf_Weights.delegate = self
+        
+        pickerView.setDate(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate, animated: true)
+        pickerView.viewForBaselineLayout().setValue(UIColor.whiteColor(), forKeyPath: "tintColor")
+        for sub in pickerView.subviews {
+            sub.setValue(UIColor.whiteColor(), forKeyPath: "textColor")
+            sub.setValue(UIColor.whiteColor(), forKey: "tintColor")
+        }
+        
+        pickerTitle.text = "Choose a Date"
         
     }
     
@@ -418,6 +451,31 @@ class ExerciseChosenVC: UIViewController, UITextFieldDelegate, ADBannerViewDeleg
         (completionDelegate as! UIView).layer.addAnimation(slideInTransition, forKey: "slideInTransition")
         
     }
+    
+    func setupPickerView() {
+        
+        blurView.frame = pickerBG.bounds
+        blurView.translatesAutoresizingMaskIntoConstraints = false
+        if !pickerBG.subviews.contains(blurView) {
+            pickerBG.addSubview(blurView)
+            pickerBG.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: pickerBG, attribute: NSLayoutAttribute.Top, multiplier: 1.0, constant: 0.0))
+            pickerBG.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: pickerBG, attribute: NSLayoutAttribute.Leading, multiplier: 1.0, constant: 0.0))
+            pickerBG.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: pickerBG, attribute: NSLayoutAttribute.Bottom, multiplier: 1.0, constant: 0.0))
+            pickerBG.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.Trailing, relatedBy: NSLayoutRelation.Equal, toItem: pickerBG, attribute: NSLayoutAttribute.Trailing, multiplier: 1.0, constant: 0.0))
+        }
+        pickerBG.alpha = 0
+        pickerBG.hidden = false
+        self.view.bringSubviewToFront(pickerBG)
+        pickerBG.bringSubviewToFront(pickerView)
+        pickerBG.bringSubviewToFront(finishButton)
+        pickerBG.bringSubviewToFront(pickerTitle)
+        UIView.animateWithDuration(0.5, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
+            self.pickerBG.alpha = 1
+            }, completion: { finished in
+        })
+        
+    }
+
     
     // MARK: Keyboard methods
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {

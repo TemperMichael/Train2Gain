@@ -22,6 +22,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
     var tutorialView: UIImageView!
     var weightUnit: String! = NSUserDefaults.standardUserDefaults().objectForKey("weightUnit")! as! String
     var lengthUnit: String! = NSUserDefaults.standardUserDefaults().objectForKey("lengthUnit")! as! String
+    let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.Dark))
     let requestMeasures = NSFetchRequest(entityName: "Measurements")
     
     // MARK: IBOutles & IBActions
@@ -34,7 +35,11 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
     @IBOutlet weak var m_L_WeightUnit: UILabel!
     @IBOutlet weak var m_b_PickDate: UIButton!
     @IBOutlet var m_L_LengthUnit: [UILabel]!
+    @IBOutlet weak var pickerBG: UIView!
     
+    @IBOutlet weak var pickerView: UIDatePicker!
+    @IBOutlet weak var pickerTitle: UILabel!
+    @IBOutlet weak var finishButton: UIButton!
     @IBAction func nextDayCL(sender: AnyObject) {
         
         // Go to next day
@@ -52,7 +57,27 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         m_b_PickDate.setTitle(returnDateForm(date), forState: UIControlState.Normal)
         
     }
+
+       
+    @IBAction func finishCL(sender: AnyObject) {
+        
+        // Save date
+        date = pickerView.date
+        NSUserDefaults.standardUserDefaults().setObject(pickerView.date,forKey: "dateUF")
+        UIView.animateWithDuration(0.5, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
+            self.pickerBG.alpha = 0
+            }, completion: { finished in
+                self.pickerBG.hidden = true
+        })
+        m_b_PickDate.setTitle(returnDateForm(date), forState: UIControlState.Normal)
+    }
     
+    @IBAction func pickDateClicked(sender: AnyObject) {
+        
+        setupPickerView()
+        
+    }
+
     // MARK: View Methods
     override func viewDidLoad() {
         
@@ -108,6 +133,16 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         }
         m_L_WeightUnit.text = weightUnit
         m_b_PickDate.setTitle(returnDateForm(date), forState: UIControlState.Normal)
+        
+        pickerView.setDate(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate, animated: true)
+        pickerView.viewForBaselineLayout().setValue(UIColor.whiteColor(), forKeyPath: "tintColor")
+        for sub in pickerView.subviews {
+            sub.setValue(UIColor.whiteColor(), forKeyPath: "textColor")
+            sub.setValue(UIColor.whiteColor(), forKey: "tintColor")
+        }
+        
+        pickerTitle.text = "Choose a Date"
+
         
     }
     
@@ -295,6 +330,30 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
         imageObj.drawInRect(CGRect(origin: CGPointZero, size: sizeChange))
         let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
         return scaledImage
+        
+    }
+    
+    func setupPickerView() {
+        
+        blurView.frame = pickerBG.bounds
+        blurView.translatesAutoresizingMaskIntoConstraints = false
+        if !pickerBG.subviews.contains(blurView) {
+            pickerBG.addSubview(blurView)
+            pickerBG.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: pickerBG, attribute: NSLayoutAttribute.Top, multiplier: 1.0, constant: 0.0))
+            pickerBG.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: pickerBG, attribute: NSLayoutAttribute.Leading, multiplier: 1.0, constant: 0.0))
+            pickerBG.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: pickerBG, attribute: NSLayoutAttribute.Bottom, multiplier: 1.0, constant: 0.0))
+            pickerBG.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.Trailing, relatedBy: NSLayoutRelation.Equal, toItem: pickerBG, attribute: NSLayoutAttribute.Trailing, multiplier: 1.0, constant: 0.0))
+        }
+        pickerBG.alpha = 0
+        pickerBG.hidden = false
+        self.view.bringSubviewToFront(pickerBG)
+        pickerBG.bringSubviewToFront(pickerView)
+        pickerBG.bringSubviewToFront(finishButton)
+        pickerBG.bringSubviewToFront(pickerTitle)
+        UIView.animateWithDuration(0.5, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
+            self.pickerBG.alpha = 1
+            }, completion: { finished in
+        })
         
     }
     

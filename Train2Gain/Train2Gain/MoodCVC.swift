@@ -22,63 +22,25 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
     var imagePaths: [String] = ["SmileyNormal.png", "SmileyNormal.png", "SmileyGood.png", "SmileyAggressive.png", "SmileyAwesome.png", "SmileySad.png", "SmileyIrritated.png", "SmileySick.png", "SmileyTired.png", "SmileyGreat.png", "SmileyStressed.png", "SmileyFantastic.png", "SmileyKO.png"]
     var tutorialView: UIImageView!
     let reuseIdentifier = "MoodCell"
+    let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.Dark))
     
     // MARK: IBOutlets & IBActions
     @IBOutlet weak var cvc: UICollectionView!
     @IBOutlet weak var m_b_PickDate: UIButton!
     @IBOutlet weak var iAd: ADBannerView!
+    @IBOutlet weak var pickerView: UIDatePicker!
+    @IBOutlet weak var finishButton: UIButton!
+    @IBOutlet weak var pickerTitle: UILabel!
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        //Handle iAd
-        iAd.delegate = self
-        iAd.hidden = true
-        
-        //Show Tutorial
-        if(NSUserDefaults.standardUserDefaults().objectForKey("tutorialMoods") == nil){
-            tutorialView = UIImageView(frame: self.view.frame)
-           
-            tutorialView.image = UIImage(named: "TutorialMood.png")
-             tutorialView.frame.origin.y += 15
-            if(self.view.frame.size.height <= 490){
-                tutorialView.frame.size.height += 60
-            }else{
-                tutorialView.frame.size.height -= 60
-            }
-
-            tutorialView.userInteractionEnabled = true
-            let tap = UITapGestureRecognizer(target: self, action:"hideTutorial")
-            tutorialView.addGestureRecognizer(tap)
-            self.view.addSubview(tutorialView)
-            self.navigationController?.navigationBarHidden = true
-            
-        }
-        
-        cvc.delegate = self
-        cvc.dataSource = self
-        
-        //Setup smileys for mood collection view
-        moods.append(Moods(_moodName: NSLocalizedString("Normal", comment: "Normal"), _moodSmileyString: "SmileyNormal.png"))
-        moods.append(Moods(_moodName: NSLocalizedString("Good", comment: "Good"), _moodSmileyString: "SmileyGood.png"))
-        moods.append(Moods(_moodName: NSLocalizedString("Agressiv", comment: "Agressiv"), _moodSmileyString: "SmileyAggressive.png"))
-        moods.append(Moods(_moodName: NSLocalizedString("Awesome", comment: "Awesome"), _moodSmileyString: "SmileyAwesome.png"))
-        moods.append(Moods(_moodName: NSLocalizedString("Sad", comment: "Sad"), _moodSmileyString: "SmileySad.png"))
-        moods.append(Moods(_moodName: NSLocalizedString("Irritated", comment: "Irritated"), _moodSmileyString: "SmileyIrritated.png"))
-        moods.append(Moods(_moodName: NSLocalizedString("Sick", comment: "Sick"), _moodSmileyString: "SmileySick.png"))
-        moods.append(Moods(_moodName: NSLocalizedString("Tired", comment: "Tired"), _moodSmileyString: "SmileyTired.png"))
-        moods.append(Moods(_moodName: NSLocalizedString("Great", comment: "Great"), _moodSmileyString: "SmileyGreat.png"))
-        moods.append(Moods(_moodName: NSLocalizedString("Stressed", comment: "Stressed"), _moodSmileyString: "SmileyStressed.png"))
-        moods.append(Moods(_moodName: NSLocalizedString("Fantastic", comment: "Fantastic"), _moodSmileyString: "SmileyFantastic.png"))
-        moods.append(Moods(_moodName: NSLocalizedString("K.O.", comment: "K.O."), _moodSmileyString: "SmileyKO.png"))
-        
-    }
 
     override func viewDidAppear(animated: Bool) {
         date = NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate
         m_b_PickDate.setTitle(returnDateForm(date), forState: UIControlState.Normal)
     }
     
+
+    @IBOutlet weak var pickerBG: UIView!
+
     @IBAction func SaveCL(sender: AnyObject) {
         
         if selectedIndexPath != nil {
@@ -175,7 +137,86 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
         m_b_PickDate.setTitle(returnDateForm(date), forState: UIControlState.Normal)
         
     }
+
+    @IBAction func pickDateClicked(sender: AnyObject) {
+        
+        setupPickerView()
+        
+    }
     
+    
+    @IBAction func finishCL(sender: AnyObject) {
+        
+        // Save date
+        date = pickerView.date
+        NSUserDefaults.standardUserDefaults().setObject(pickerView.date,forKey: "dateUF")
+        UIView.animateWithDuration(0.5, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
+            self.pickerBG.alpha = 0
+            }, completion: { finished in
+                self.pickerBG.hidden = true
+        })
+        m_b_PickDate.setTitle(returnDateForm(date), forState: UIControlState.Normal)
+    }
+    
+    // MARK: View methods
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        //Handle iAd
+        iAd.delegate = self
+        iAd.hidden = true
+        
+        //Show Tutorial
+        if NSUserDefaults.standardUserDefaults().objectForKey("tutorialMoods") == nil {
+            tutorialView = UIImageView(frame: self.view.frame)
+            
+            tutorialView.image = UIImage(named: "TutorialMood.png")
+            tutorialView.frame.origin.y += 15
+            
+            if self.view.frame.size.height <= 490 {
+                tutorialView.frame.size.height += 60
+            } else {
+                tutorialView.frame.size.height -= 60
+            }
+            
+            tutorialView.userInteractionEnabled = true
+            let tap = UITapGestureRecognizer(target: self, action: "hideTutorial")
+            tutorialView.addGestureRecognizer(tap)
+            self.view.addSubview(tutorialView)
+            self.navigationController?.navigationBarHidden = true
+            
+            
+        }
+        
+        cvc.delegate = self
+        cvc.dataSource = self
+        
+        //Setup smileys for mood collection view
+        moods.append(Moods(_moodName: NSLocalizedString("Normal", comment: "Normal"), _moodSmileyString: "SmileyNormal.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Good", comment: "Good"), _moodSmileyString: "SmileyGood.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Agressiv", comment: "Agressiv"), _moodSmileyString: "SmileyAggressive.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Awesome", comment: "Awesome"), _moodSmileyString: "SmileyAwesome.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Sad", comment: "Sad"), _moodSmileyString: "SmileySad.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Irritated", comment: "Irritated"), _moodSmileyString: "SmileyIrritated.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Sick", comment: "Sick"), _moodSmileyString: "SmileySick.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Tired", comment: "Tired"), _moodSmileyString: "SmileyTired.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Great", comment: "Great"), _moodSmileyString: "SmileyGreat.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Stressed", comment: "Stressed"), _moodSmileyString: "SmileyStressed.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Fantastic", comment: "Fantastic"), _moodSmileyString: "SmileyFantastic.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("K.O.", comment: "K.O."), _moodSmileyString: "SmileyKO.png"))
+        
+        pickerView.setDate(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate, animated: true)
+            pickerView.viewForBaselineLayout().setValue(UIColor.whiteColor(), forKeyPath: "tintColor")
+        for sub in pickerView.subviews {
+            sub.setValue(UIColor.whiteColor(), forKeyPath: "textColor")
+            sub.setValue(UIColor.whiteColor(), forKey: "tintColor")
+        }
+        
+        pickerTitle.text = "Choose a Date"
+    }
+    
+
+
     //Hide tutorial by rotation
     override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
         
@@ -260,6 +301,31 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
         _Object.moodImagePath = imagePaths[selectedIndexPath!.row+1]
         
     }
+    
+    func setupPickerView() {
+        
+        blurView.frame = pickerBG.bounds
+        blurView.translatesAutoresizingMaskIntoConstraints = false
+        if !pickerBG.subviews.contains(blurView) {
+            pickerBG.addSubview(blurView)
+            pickerBG.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: pickerBG, attribute: NSLayoutAttribute.Top, multiplier: 1.0, constant: 0.0))
+            pickerBG.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: pickerBG, attribute: NSLayoutAttribute.Leading, multiplier: 1.0, constant: 0.0))
+            pickerBG.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: pickerBG, attribute: NSLayoutAttribute.Bottom, multiplier: 1.0, constant: 0.0))
+            pickerBG.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.Trailing, relatedBy: NSLayoutRelation.Equal, toItem: pickerBG, attribute: NSLayoutAttribute.Trailing, multiplier: 1.0, constant: 0.0))
+        }
+        pickerBG.alpha = 0
+        pickerBG.hidden = false
+        self.view.bringSubviewToFront(pickerBG)
+        pickerBG.bringSubviewToFront(pickerView)
+        pickerBG.bringSubviewToFront(finishButton)
+        pickerBG.bringSubviewToFront(pickerTitle)
+        UIView.animateWithDuration(0.5, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
+            self.pickerBG.alpha = 1
+            }, completion: { finished in
+        })
+        
+    }
+
     
     // MARK: iAd
     func bannerViewDidLoadAd(banner: ADBannerView!) {

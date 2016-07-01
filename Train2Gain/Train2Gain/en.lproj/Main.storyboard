@@ -531,7 +531,7 @@
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
-                                            <segue destination="Rf4-zc-Cks" kind="show" id="DjL-gl-eea"/>
+                                            <action selector="pickDateClicked:" destination="y16-dY-flm" eventType="touchUpInside" id="GpX-1B-HHS"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -558,6 +558,43 @@
                                     </mask>
                                 </variation>
                             </view>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vlE-1f-a0k">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PFN-Go-Urs">
+                                        <rect key="frame" x="267" y="432" width="66" height="41"/>
+                                        <fontDescription key="fontDescription" type="system" weight="light" pointSize="24"/>
+                                        <state key="normal" title="Select">
+                                            <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="finishCL:" destination="y16-dY-flm" eventType="touchUpInside" id="eew-xm-UK7"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Exercises" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E50-bf-bXw">
+                                        <rect key="frame" x="235" y="128" width="130" height="40"/>
+                                        <fontDescription key="fontDescription" type="system" weight="thin" pointSize="33"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="AIs-gv-4ZU">
+                                        <rect key="frame" x="0.0" y="192" width="600" height="216"/>
+                                        <date key="date" timeIntervalSinceReferenceDate="484744352.10034901">
+                                            <!--2016-05-12 11:12:32 +0000-->
+                                        </date>
+                                    </datePicker>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="E50-bf-bXw" firstAttribute="centerX" secondItem="vlE-1f-a0k" secondAttribute="centerX" id="2dP-wR-U7V"/>
+                                    <constraint firstAttribute="bottom" secondItem="PFN-Go-Urs" secondAttribute="bottom" constant="127" id="4Jf-RU-nqI"/>
+                                    <constraint firstItem="PFN-Go-Urs" firstAttribute="centerX" secondItem="vlE-1f-a0k" secondAttribute="centerX" id="dre-0U-4hd"/>
+                                    <constraint firstItem="AIs-gv-4ZU" firstAttribute="leading" secondItem="vlE-1f-a0k" secondAttribute="leading" id="gfG-Gv-Cd8"/>
+                                    <constraint firstItem="E50-bf-bXw" firstAttribute="top" secondItem="vlE-1f-a0k" secondAttribute="top" constant="128" id="j9K-MX-GPV"/>
+                                    <constraint firstItem="PFN-Go-Urs" firstAttribute="centerX" secondItem="AIs-gv-4ZU" secondAttribute="centerX" id="kQ6-RX-Mrw"/>
+                                    <constraint firstItem="AIs-gv-4ZU" firstAttribute="centerY" secondItem="vlE-1f-a0k" secondAttribute="centerY" id="pTf-h2-cOz"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -578,6 +615,7 @@
                             <constraint firstItem="JwG-Gn-7lo" firstAttribute="leading" secondItem="8zY-Wf-EWx" secondAttribute="trailing" constant="10" id="ML3-vc-OaC"/>
                             <constraint firstItem="JwG-Gn-7lo" firstAttribute="top" secondItem="bC9-eV-E4B" secondAttribute="bottom" constant="27" id="MOf-Da-7GH"/>
                             <constraint firstItem="mGx-rg-HsI" firstAttribute="leading" secondItem="8jg-l7-5Ea" secondAttribute="leadingMargin" constant="10" id="Mvf-Du-a6r"/>
+                            <constraint firstItem="vlE-1f-a0k" firstAttribute="bottom" secondItem="AeX-hM-mFb" secondAttribute="top" id="PKM-52-fmc"/>
                             <constraint firstItem="pOn-gh-ldZ" firstAttribute="leading" secondItem="8jg-l7-5Ea" secondAttribute="leadingMargin" constant="10" id="QHx-zE-Cjl"/>
                             <constraint firstItem="sjI-Se-vdR" firstAttribute="top" secondItem="hnP-4y-ujV" secondAttribute="bottom" constant="20" id="SHC-Ub-jwk"/>
                             <constraint firstItem="VWs-Us-bmb" firstAttribute="trailing" secondItem="8jg-l7-5Ea" secondAttribute="trailingMargin" id="Syc-j8-tWZ"/>
@@ -598,11 +636,14 @@
                             <constraint firstItem="bC9-eV-E4B" firstAttribute="leading" secondItem="L1S-AI-NcP" secondAttribute="trailing" constant="10" id="kp3-i2-Z2M"/>
                             <constraint firstItem="mGx-rg-HsI" firstAttribute="top" secondItem="jMp-df-7Xx" secondAttribute="bottom" constant="27" id="luU-JL-fmY"/>
                             <constraint firstItem="JwG-Gn-7lo" firstAttribute="trailing" secondItem="8jg-l7-5Ea" secondAttribute="trailingMargin" id="neQ-Th-Qxl"/>
+                            <constraint firstItem="vlE-1f-a0k" firstAttribute="top" secondItem="8jg-l7-5Ea" secondAttribute="top" id="oA1-Nt-vtD"/>
                             <constraint firstItem="L1S-AI-NcP" firstAttribute="leading" secondItem="ULD-Rg-qk5" secondAttribute="trailing" constant="10" id="p1X-0e-jF5"/>
                             <constraint firstAttribute="trailingMargin" secondItem="s1r-2p-T6Z" secondAttribute="trailing" constant="-20" id="quz-gS-M7M"/>
                             <constraint firstItem="hnP-4y-ujV" firstAttribute="leading" secondItem="jMp-df-7Xx" secondAttribute="trailing" constant="10" id="rMY-as-p4O"/>
                             <constraint firstItem="YkX-h6-TZw" firstAttribute="top" secondItem="nzU-xs-ZJg" secondAttribute="bottom" constant="60" id="sgd-jD-Db7"/>
+                            <constraint firstItem="vlE-1f-a0k" firstAttribute="leading" secondItem="s1r-2p-T6Z" secondAttribute="leading" id="sj7-ww-kCj"/>
                             <constraint firstItem="jMp-df-7Xx" firstAttribute="top" secondItem="pOn-gh-ldZ" secondAttribute="bottom" constant="25" id="su1-HI-U05"/>
+                            <constraint firstItem="vlE-1f-a0k" firstAttribute="centerX" secondItem="JlS-NT-uY9" secondAttribute="centerX" id="v2e-Ha-LrT"/>
                             <constraint firstItem="cuw-Pd-yqw" firstAttribute="trailing" secondItem="8jg-l7-5Ea" secondAttribute="trailingMargin" id="vwi-Bo-wQF"/>
                             <constraint firstItem="JlS-NT-uY9" firstAttribute="leading" secondItem="8jg-l7-5Ea" secondAttribute="leadingMargin" constant="-16" id="xa3-j2-4U5"/>
                             <constraint firstItem="jMp-df-7Xx" firstAttribute="leading" secondItem="8jg-l7-5Ea" secondAttribute="leadingMargin" constant="10" id="yye-QN-KgQ"/>
@@ -617,6 +658,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="finishButton" destination="PFN-Go-Urs" id="sg8-uS-5PQ"/>
                         <outlet property="iAd" destination="s1r-2p-T6Z" id="B5s-N9-phs"/>
                         <outlet property="m_L_WeightUnit" destination="bC9-eV-E4B" id="ZRT-oH-KE5"/>
                         <outlet property="m_b_PickDate" destination="yJH-k8-gwt" id="jf0-Uf-jJg"/>
@@ -625,6 +667,9 @@
                         <outlet property="m_tf_Leg" destination="eIo-yw-vgB" id="1d7-2m-Fdj"/>
                         <outlet property="m_tf_Waist" destination="sjI-Se-vdR" id="Kf2-pv-oIo"/>
                         <outlet property="m_tf_Weights" destination="L1S-AI-NcP" id="jMP-i5-4HO"/>
+                        <outlet property="pickerBG" destination="vlE-1f-a0k" id="UyI-Fq-j6x"/>
+                        <outlet property="pickerTitle" destination="E50-bf-bXw" id="EtS-s0-jYB"/>
+                        <outlet property="pickerView" destination="AIs-gv-4ZU" id="Jlt-5t-wKD"/>
                         <outletCollection property="m_L_LengthUnit" destination="JwG-Gn-7lo" collectionClass="NSMutableArray" id="epb-do-hDr"/>
                         <outletCollection property="m_L_LengthUnit" destination="cuw-Pd-yqw" collectionClass="NSMutableArray" id="IvX-gr-KW6"/>
                         <outletCollection property="m_L_LengthUnit" destination="VWs-Us-bmb" collectionClass="NSMutableArray" id="VKS-uz-Wh3"/>
@@ -697,7 +742,7 @@
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
-                                            <segue destination="Rf4-zc-Cks" kind="show" id="7et-fB-uhd"/>
+                                            <action selector="pickDateClicked:" destination="fQn-ZL-WLK" eventType="touchUpInside" id="tIf-y1-1Rd"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -778,12 +823,53 @@
                             <adBannerView hidden="YES" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dgW-n5-FfL">
                                 <rect key="frame" x="0.0" y="534" width="600" height="66"/>
                             </adBannerView>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dm1-he-VZx">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GTx-p3-TZi">
+                                        <rect key="frame" x="267" y="432" width="66" height="41"/>
+                                        <fontDescription key="fontDescription" type="system" weight="light" pointSize="24"/>
+                                        <state key="normal" title="Select">
+                                            <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="finishCL:" destination="fQn-ZL-WLK" eventType="touchUpInside" id="VOd-HI-PoL"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Exercises" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1op-Rf-by8">
+                                        <rect key="frame" x="235" y="128" width="130" height="40"/>
+                                        <fontDescription key="fontDescription" type="system" weight="thin" pointSize="33"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="xEG-ZJ-xEg">
+                                        <rect key="frame" x="0.0" y="192" width="600" height="216"/>
+                                        <date key="date" timeIntervalSinceReferenceDate="484744352.10034901">
+                                            <!--2016-05-12 11:12:32 +0000-->
+                                        </date>
+                                    </datePicker>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="GTx-p3-TZi" firstAttribute="centerX" secondItem="dm1-he-VZx" secondAttribute="centerX" id="Kgt-sc-sWe"/>
+                                    <constraint firstAttribute="bottom" secondItem="GTx-p3-TZi" secondAttribute="bottom" constant="127" id="NIb-E9-UHx"/>
+                                    <constraint firstItem="GTx-p3-TZi" firstAttribute="centerX" secondItem="xEG-ZJ-xEg" secondAttribute="centerX" id="PJT-Vk-alH"/>
+                                    <constraint firstItem="1op-Rf-by8" firstAttribute="centerX" secondItem="dm1-he-VZx" secondAttribute="centerX" id="TDd-ts-90Y"/>
+                                    <constraint firstItem="1op-Rf-by8" firstAttribute="top" secondItem="dm1-he-VZx" secondAttribute="top" constant="128" id="jV0-Pg-VqW"/>
+                                    <constraint firstItem="xEG-ZJ-xEg" firstAttribute="centerY" secondItem="dm1-he-VZx" secondAttribute="centerY" id="qWE-nG-sA0"/>
+                                    <constraint firstItem="xEG-ZJ-xEg" firstAttribute="leading" secondItem="dm1-he-VZx" secondAttribute="leading" id="veC-JR-MIZ"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.74851701577012353" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="dgW-n5-FfL" secondAttribute="trailing" constant="-20" id="1aI-aO-JkX"/>
+                            <constraint firstItem="v5z-bC-WPc" firstAttribute="top" secondItem="dm1-he-VZx" secondAttribute="bottom" id="3cV-i7-LmM"/>
                             <constraint firstItem="dgW-n5-FfL" firstAttribute="top" secondItem="bxu-OJ-jUi" secondAttribute="bottom" id="9Qo-xz-tUY"/>
                             <constraint firstAttribute="trailingMargin" secondItem="bxu-OJ-jUi" secondAttribute="trailing" constant="-16" id="9h8-fx-s59"/>
+                            <constraint firstItem="dm1-he-VZx" firstAttribute="leading" secondItem="dgW-n5-FfL" secondAttribute="leading" id="CXm-8N-tc1"/>
+                            <constraint firstItem="dm1-he-VZx" firstAttribute="centerX" secondItem="bxu-OJ-jUi" secondAttribute="centerX" id="CbP-Ou-Cg1"/>
+                            <constraint firstItem="dm1-he-VZx" firstAttribute="centerY" secondItem="9C2-80-3fw" secondAttribute="centerY" id="CeZ-dS-VQc"/>
                             <constraint firstItem="v5z-bC-WPc" firstAttribute="top" secondItem="dgW-n5-FfL" secondAttribute="bottom" id="K2f-jH-gID"/>
                             <constraint firstItem="dgW-n5-FfL" firstAttribute="leading" secondItem="9C2-80-3fw" secondAttribute="leadingMargin" constant="-20" id="KJZ-cQ-ehS"/>
                             <constraint firstItem="yOA-Kt-bJI" firstAttribute="leading" secondItem="9C2-80-3fw" secondAttribute="leadingMargin" constant="-16" id="P91-jP-ECu"/>
@@ -803,8 +889,12 @@
                     </navigationItem>
                     <connections>
                         <outlet property="cvc" destination="bxu-OJ-jUi" id="jBN-YS-S5C"/>
+                        <outlet property="finishButton" destination="GTx-p3-TZi" id="cCb-Si-rQ0"/>
                         <outlet property="iAd" destination="dgW-n5-FfL" id="tSl-lO-MYL"/>
                         <outlet property="m_b_PickDate" destination="gvq-Zz-xr7" id="JWr-5A-2Bd"/>
+                        <outlet property="pickerBG" destination="dm1-he-VZx" id="vX0-DJ-5a6"/>
+                        <outlet property="pickerTitle" destination="1op-Rf-by8" id="K3V-YZ-IhX"/>
+                        <outlet property="pickerView" destination="xEG-ZJ-xEg" id="3hE-L9-T9J"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cI6-O1-tAa" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -823,13 +913,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="trd-M5-Z3E">
+                            <datePicker contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="trd-M5-Z3E">
                                 <rect key="frame" x="20" y="114" width="560" height="216"/>
                                 <date key="date" timeIntervalSinceReferenceDate="-33302971.027640998">
                                     <!--1999-12-12 13:10:28 +0000-->
                                 </date>
                             </datePicker>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c0z-UM-hcT">
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c0z-UM-hcT">
                                 <rect key="frame" x="20" y="350" width="560" height="30"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
@@ -874,7 +964,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="doZ-0R-bUV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2542" y="317"/>
+            <point key="canvasLocation" x="2792" y="369"/>
         </scene>
         <!--Edit-->
         <scene sceneID="eet-PW-CJH">
@@ -1436,7 +1526,7 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kSP-fx-1fD">
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kSP-fx-1fD">
                                 <rect key="frame" x="16" y="306" width="568" height="42"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                 <state key="normal" title="Show Tutorial in Views">
@@ -1553,7 +1643,7 @@
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
-                                            <segue destination="Rf4-zc-Cks" kind="show" identifier="pickDate" id="mWG-RV-9Eq"/>
+                                            <action selector="pickDateClicked:" destination="JUQ-nm-1zm" eventType="touchUpInside" id="fgi-wV-2as"/>
                                         </connections>
                                     </button>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WwP-GW-hSh">
@@ -1719,17 +1809,58 @@
                             <adBannerView hidden="YES" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cam-uU-oju">
                                 <rect key="frame" x="0.0" y="534" width="600" height="66"/>
                             </adBannerView>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s6R-Jv-7Qw">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EAd-hy-2oz">
+                                        <rect key="frame" x="267" y="432" width="66" height="41"/>
+                                        <fontDescription key="fontDescription" type="system" weight="light" pointSize="24"/>
+                                        <state key="normal" title="Select">
+                                            <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="finishCL:" destination="JUQ-nm-1zm" eventType="touchUpInside" id="5YU-YG-icN"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Exercises" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QQM-tq-8Yd">
+                                        <rect key="frame" x="235" y="128" width="130" height="40"/>
+                                        <fontDescription key="fontDescription" type="system" weight="thin" pointSize="33"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="vD1-EQ-YH3">
+                                        <rect key="frame" x="0.0" y="192" width="600" height="216"/>
+                                        <date key="date" timeIntervalSinceReferenceDate="484744352.10034901">
+                                            <!--2016-05-12 11:12:32 +0000-->
+                                        </date>
+                                    </datePicker>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="EAd-hy-2oz" firstAttribute="centerX" secondItem="vD1-EQ-YH3" secondAttribute="centerX" id="0Z5-pf-ey6"/>
+                                    <constraint firstItem="vD1-EQ-YH3" firstAttribute="leading" secondItem="s6R-Jv-7Qw" secondAttribute="leading" id="POp-4U-LpI"/>
+                                    <constraint firstItem="EAd-hy-2oz" firstAttribute="centerX" secondItem="s6R-Jv-7Qw" secondAttribute="centerX" id="Qiq-ts-xnj"/>
+                                    <constraint firstItem="QQM-tq-8Yd" firstAttribute="top" secondItem="s6R-Jv-7Qw" secondAttribute="top" constant="128" id="ef8-uV-qcc"/>
+                                    <constraint firstAttribute="bottom" secondItem="EAd-hy-2oz" secondAttribute="bottom" constant="127" id="iEZ-4M-Qx3"/>
+                                    <constraint firstItem="QQM-tq-8Yd" firstAttribute="centerX" secondItem="s6R-Jv-7Qw" secondAttribute="centerX" id="kvb-j4-Hjt"/>
+                                    <constraint firstItem="vD1-EQ-YH3" firstAttribute="centerY" secondItem="s6R-Jv-7Qw" secondAttribute="centerY" id="uPe-Il-cIi"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="Nua-la-hW9" firstAttribute="top" secondItem="gNW-Gs-Sdu" secondAttribute="bottom" id="2K5-bT-G2d"/>
+                            <constraint firstItem="s6R-Jv-7Qw" firstAttribute="leading" secondItem="cam-uU-oju" secondAttribute="leading" id="6OH-y8-9Xs"/>
                             <constraint firstAttribute="trailingMargin" secondItem="9jI-M5-ede" secondAttribute="trailing" constant="-8" id="9eT-lf-KQN"/>
                             <constraint firstAttribute="centerX" secondItem="cam-uU-oju" secondAttribute="centerX" id="CcM-zq-VKL"/>
                             <constraint firstItem="9jI-M5-ede" firstAttribute="leading" secondItem="aeA-Tn-xIe" secondAttribute="leadingMargin" constant="-8" id="EPP-7s-QPU"/>
                             <constraint firstItem="9jI-M5-ede" firstAttribute="top" secondItem="Nua-la-hW9" secondAttribute="bottom" id="PVz-Md-6fT"/>
                             <constraint firstItem="cam-uU-oju" firstAttribute="leading" secondItem="aeA-Tn-xIe" secondAttribute="leadingMargin" constant="-20" id="Pkm-mE-hM5"/>
                             <constraint firstAttribute="trailingMargin" secondItem="cam-uU-oju" secondAttribute="trailing" constant="-20" id="Vhw-IP-AlB"/>
+                            <constraint firstItem="s6R-Jv-7Qw" firstAttribute="centerX" secondItem="Nua-la-hW9" secondAttribute="centerX" id="Wc1-6Y-Lbv"/>
+                            <constraint firstItem="s6R-Jv-7Qw" firstAttribute="bottom" secondItem="fQK-kT-aJ0" secondAttribute="top" id="aiX-mq-OT9"/>
                             <constraint firstItem="cam-uU-oju" firstAttribute="top" secondItem="9jI-M5-ede" secondAttribute="bottom" constant="8" id="hmW-Po-G3g"/>
+                            <constraint firstItem="s6R-Jv-7Qw" firstAttribute="top" secondItem="aeA-Tn-xIe" secondAttribute="top" id="qCJ-8x-Aj9"/>
                             <constraint firstItem="Nua-la-hW9" firstAttribute="leading" secondItem="aeA-Tn-xIe" secondAttribute="leadingMargin" constant="-18" id="tT5-ND-9dw"/>
                             <constraint firstItem="fQK-kT-aJ0" firstAttribute="top" secondItem="cam-uU-oju" secondAttribute="bottom" id="yGf-Ip-JQT"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Nua-la-hW9" secondAttribute="trailing" constant="-18" id="zeW-WH-Qxw"/>
@@ -1744,6 +1875,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="finishButton" destination="EAd-hy-2oz" id="iHQ-ls-zyg"/>
                         <outlet property="iAd" destination="cam-uU-oju" id="PXS-IT-jFe"/>
                         <outlet property="m_IV_moodImage" destination="AtN-Py-Io8" id="pUb-17-3Ky"/>
                         <outlet property="m_L_Arm" destination="yTi-MF-uRb" id="THZ-Xh-yBv"/>
@@ -1757,6 +1889,9 @@
                         <outlet property="m_b_nextDate" destination="PX5-KU-mC1" id="kJw-1F-8n1"/>
                         <outlet property="m_b_prevDate" destination="nge-Ee-zhf" id="Ul4-ah-aVO"/>
                         <outlet property="m_tv_DayIds" destination="9jI-M5-ede" id="UxP-O2-Xxh"/>
+                        <outlet property="pickerBG" destination="s6R-Jv-7Qw" id="Zkh-ic-LkS"/>
+                        <outlet property="pickerTitle" destination="QQM-tq-8Yd" id="G3h-OD-WM4"/>
+                        <outlet property="pickerView" destination="vD1-EQ-YH3" id="Kh8-VY-RTZ"/>
                         <segue destination="lXD-fx-6nt" kind="show" identifier="editSegue" id="nyv-ye-hL4"/>
                     </connections>
                 </viewController>
@@ -2017,7 +2152,7 @@
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
-                                            <segue destination="Rf4-zc-Cks" kind="show" id="LYc-40-cwN"/>
+                                            <action selector="pickDateClicked:" destination="cSb-bX-5fT" eventType="touchUpInside" id="cqs-Zh-obg"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -2056,10 +2191,48 @@
                                     <action selector="stopStopWatch:" destination="cSb-bX-5fT" eventType="touchUpInside" id="ZTU-VC-H8E"/>
                                 </connections>
                             </button>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ya2-he-z00">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="h4D-W7-2X3">
+                                        <rect key="frame" x="267" y="432" width="66" height="41"/>
+                                        <fontDescription key="fontDescription" type="system" weight="light" pointSize="24"/>
+                                        <state key="normal" title="Select">
+                                            <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="finishCL:" destination="cSb-bX-5fT" eventType="touchUpInside" id="iQG-qY-AgY"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Exercises" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mq5-R3-7Kj">
+                                        <rect key="frame" x="235" y="128" width="130" height="40"/>
+                                        <fontDescription key="fontDescription" type="system" weight="thin" pointSize="33"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="mbW-wZ-ocs">
+                                        <rect key="frame" x="0.0" y="192" width="600" height="216"/>
+                                        <date key="date" timeIntervalSinceReferenceDate="484744352.10034901">
+                                            <!--2016-05-12 11:12:32 +0000-->
+                                        </date>
+                                    </datePicker>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="mbW-wZ-ocs" firstAttribute="leading" secondItem="Ya2-he-z00" secondAttribute="leading" id="0Nq-3P-7lZ"/>
+                                    <constraint firstItem="h4D-W7-2X3" firstAttribute="centerX" secondItem="mbW-wZ-ocs" secondAttribute="centerX" id="DGH-k5-axq"/>
+                                    <constraint firstAttribute="bottom" secondItem="h4D-W7-2X3" secondAttribute="bottom" constant="127" id="Xri-07-cZE"/>
+                                    <constraint firstItem="h4D-W7-2X3" firstAttribute="centerX" secondItem="Ya2-he-z00" secondAttribute="centerX" id="dK1-GB-60A"/>
+                                    <constraint firstItem="Mq5-R3-7Kj" firstAttribute="centerX" secondItem="Ya2-he-z00" secondAttribute="centerX" id="wcu-Ms-dse"/>
+                                    <constraint firstItem="Mq5-R3-7Kj" firstAttribute="top" secondItem="Ya2-he-z00" secondAttribute="top" constant="128" id="yfr-rN-iKz"/>
+                                    <constraint firstItem="mbW-wZ-ocs" firstAttribute="centerY" secondItem="Ya2-he-z00" secondAttribute="centerY" id="zuH-fD-DXT"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="centerX" secondItem="rUe-A3-q1q" secondAttribute="centerX" id="0ke-Z3-xGk"/>
+                            <constraint firstItem="Ya2-he-z00" firstAttribute="leading" secondItem="28R-cf-jZ8" secondAttribute="leading" id="0zY-yx-43Z"/>
                             <constraint firstAttribute="trailingMargin" secondItem="2TT-uN-Ytr" secondAttribute="trailing" constant="-5" id="2sO-sq-nuL"/>
                             <constraint firstItem="VKR-Gl-XWK" firstAttribute="leading" secondItem="gsx-D3-OSF" secondAttribute="leadingMargin" id="4ck-Hm-tu7"/>
                             <constraint firstItem="rUe-A3-q1q" firstAttribute="top" secondItem="u0Z-ly-fPb" secondAttribute="bottom" id="53X-kD-J3I"/>
@@ -2073,6 +2246,7 @@
                             <constraint firstItem="2TT-uN-Ytr" firstAttribute="leading" secondItem="gsx-D3-OSF" secondAttribute="leadingMargin" constant="-5" id="OS9-Ct-XWk"/>
                             <constraint firstItem="JX9-pU-oF8" firstAttribute="top" secondItem="2TT-uN-Ytr" secondAttribute="bottom" constant="5" id="QXX-Iu-99r"/>
                             <constraint firstItem="qjF-xi-V9m" firstAttribute="top" secondItem="28R-cf-jZ8" secondAttribute="bottom" id="RmP-HO-fQH"/>
+                            <constraint firstItem="Ya2-he-z00" firstAttribute="centerX" secondItem="JX9-pU-oF8" secondAttribute="centerX" id="SWu-Fc-Azv"/>
                             <constraint firstItem="28R-cf-jZ8" firstAttribute="top" secondItem="iK9-0R-KOF" secondAttribute="bottom" constant="3" id="VFJ-vT-XN7"/>
                             <constraint firstAttribute="centerX" secondItem="28R-cf-jZ8" secondAttribute="centerX" id="Wa3-59-sLH"/>
                             <constraint firstItem="28R-cf-jZ8" firstAttribute="leading" secondItem="gsx-D3-OSF" secondAttribute="leadingMargin" constant="-20" id="WtL-35-4BQ"/>
@@ -2082,6 +2256,8 @@
                             <constraint firstAttribute="trailingMargin" secondItem="iK9-0R-KOF" secondAttribute="trailing" id="jLQ-TC-eKx"/>
                             <constraint firstItem="28R-cf-jZ8" firstAttribute="top" secondItem="82p-Lb-7VO" secondAttribute="bottom" constant="5" id="nXa-2H-mpF"/>
                             <constraint firstItem="28R-cf-jZ8" firstAttribute="top" secondItem="asu-ga-C0g" secondAttribute="bottom" constant="5" id="o5d-Qs-heA"/>
+                            <constraint firstItem="Ya2-he-z00" firstAttribute="top" secondItem="gsx-D3-OSF" secondAttribute="top" id="uaI-xc-PPE"/>
+                            <constraint firstItem="Ya2-he-z00" firstAttribute="bottom" secondItem="qjF-xi-V9m" secondAttribute="top" id="vvU-cO-fhP"/>
                             <constraint firstItem="h8g-QD-d44" firstAttribute="leading" secondItem="gsx-D3-OSF" secondAttribute="leadingMargin" constant="-16" id="whH-xz-JkV"/>
                             <constraint firstItem="2TT-uN-Ytr" firstAttribute="top" secondItem="gsx-D3-OSF" secondAttribute="topMargin" constant="160" id="wxN-rZ-0Do"/>
                             <constraint firstAttribute="trailingMargin" secondItem="h8g-QD-d44" secondAttribute="trailing" constant="-16" id="x1J-p2-HSB"/>
@@ -2104,6 +2280,7 @@
                     </navigationItem>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="finishButton" destination="h4D-W7-2X3" id="Mg0-Ov-OZG"/>
                         <outlet property="iAd" destination="28R-cf-jZ8" id="5Bf-OY-0Jf"/>
                         <outlet property="m_L_ExerciseName" destination="Krj-aD-1ao" id="Cvf-Zf-ELG"/>
                         <outlet property="m_L_ListName" destination="rUe-A3-q1q" id="35C-jE-OZV"/>
@@ -2114,6 +2291,9 @@
                         <outlet property="m_tf_Reps" destination="EAx-KU-R1T" id="eay-Jv-by2"/>
                         <outlet property="m_tf_Weights" destination="QB2-D3-siw" id="Djq-2a-RKy"/>
                         <outlet property="nextExButton" destination="iK9-0R-KOF" id="qRH-pt-Ogh"/>
+                        <outlet property="pickerBG" destination="Ya2-he-z00" id="ySl-JP-v1L"/>
+                        <outlet property="pickerTitle" destination="Mq5-R3-7Kj" id="kUc-nL-jHs"/>
+                        <outlet property="pickerView" destination="mbW-wZ-ocs" id="L2m-fp-Vfo"/>
                         <outlet property="previousExButton" destination="VKR-Gl-XWK" id="q8m-0L-Ly4"/>
                         <outlet property="stopWatchLabel" destination="JX9-pU-oF8" id="xeX-0z-aue"/>
                     </connections>
