@@ -17,7 +17,7 @@
 /* Class = "UILabel"; text = "No entry at this date"; ObjectID = "3Ab-G9-gdk"; */
 "3Ab-G9-gdk.text" = "Kein Eintrag";
 
-/* Class = "UIBarButtonItem"; title = "Save"; ObjectID = "3ON-vc-jo8"; */
+/* Class = "UIBarButtonItem"; title = "Sichern"; ObjectID = "3ON-vc-jo8"; */
 "3ON-vc-jo8.title" = "Sichern";
 
 /* Class = "UILabel"; text = "Exercise Name : "; ObjectID = "3dG-9s-8TT"; */
@@ -47,7 +47,7 @@
 /* Class = "UIButton"; normalTitle = "Stop"; ObjectID = "82p-Lb-7VO"; */
 "82p-Lb-7VO.normalTitle" = "Stop";
 
-/* Class = "UINavigationItem"; title = "Measurement"; ObjectID = "8a0-IH-n9v"; */
+/* Class = "UINavigationItem"; title = "Maße"; ObjectID = "8a0-IH-n9v"; */
 "8a0-IH-n9v.title" = "Maße";
 
 /* Class = "UIButton"; normalTitle = "Pick date"; ObjectID = "8sm-BN-umy"; */
@@ -61,6 +61,9 @@
 
 /* Class = "UILabel"; text = "00:00:00"; ObjectID = "Bol-Te-XOf"; */
 "Bol-Te-XOf.text" = "00:00:00";
+
+/* Class = "UILabel"; text = "Exercises"; ObjectID = "Bur-G2-Wxk"; */
+"Bur-G2-Wxk.text" = "Übungen";
 
 /* Class = "UIButton"; normalTitle = "Mood"; ObjectID = "DZa-dg-yFc"; */
 "DZa-dg-yFc.normalTitle" = "Stimmung";
@@ -83,20 +86,11 @@
 /* Class = "UINavigationItem"; title = "Training"; ObjectID = "Fwr-zg-nBP"; */
 "Fwr-zg-nBP.title" = "Training";
 
-/* Class = "UIBarButtonItem"; title = "Save"; ObjectID = "GO2-Cx-qqf"; */
-"GO2-Cx-qqf.title" = "Sichern";
-
-/* Class = "UIBarButtonItem"; title = "Save"; ObjectID = "GoG-5u-MBv"; */
-"GoG-5u-MBv.title" = "Sichern";
-
 /* Class = "UILabel"; text = "Training plan name :"; ObjectID = "HAb-Z0-odN"; */
 "HAb-Z0-odN.text" = "Name des Plans :";
 
 /* Class = "UIButton"; normalTitle = ">"; ObjectID = "HtT-NH-aNa"; */
 "HtT-NH-aNa.normalTitle" = ">";
-
-/* Class = "UIBarButtonItem"; title = "Save"; ObjectID = "IBA-rM-Vrc"; */
-"IBA-rM-Vrc.title" = "Sichern";
 
 /* Class = "UILabel"; text = "Change data from "; ObjectID = "IrE-aB-Cjm"; */
 "IrE-aB-Cjm.text" = "Daten ändern vom ";
@@ -152,8 +146,14 @@
 /* Class = "UIButton"; normalTitle = ">"; ObjectID = "PX5-KU-mC1"; */
 "PX5-KU-mC1.normalTitle" = ">";
 
-/* Class = "UIViewController"; title = "Pick date"; ObjectID = "Rf4-zc-Cks"; */
-"Rf4-zc-Cks.title" = "Datum wählen";
+/* Class = "UIButton"; normalTitle = "Select"; ObjectID = "QMr-lx-Tzy"; */
+"QMr-lx-Tzy.normalTitle" = "Auswählen";
+
+/* Class = "UILabel"; text = "Exercises"; ObjectID = "Qe9-7t-rmb"; */
+"Qe9-7t-rmb.text" = "Übungen";
+
+/* Class = "UILabel"; text = "Exercises"; ObjectID = "Qvs-U0-2LZ"; */
+"Qvs-U0-2LZ.text" = "Übungen";
 
 /* Class = "UINavigationItem"; title = "Training"; ObjectID = "SOC-5T-UPJ"; */
 "SOC-5T-UPJ.title" = "Training";
@@ -194,6 +194,12 @@
 /* Class = "UILabel"; text = "Exercises"; ObjectID = "XTd-Do-fSa"; */
 "XTd-Do-fSa.text" = "Übungen";
 
+/* Class = "UIButton"; normalTitle = "Select"; ObjectID = "XiR-St-jzc"; */
+"XiR-St-jzc.normalTitle" = "Auswählen";
+
+/* Class = "UILabel"; text = "Exercises"; ObjectID = "Xva-XW-iXV"; */
+"Xva-XW-iXV.text" = "Übungen";
+
 /* Class = "UILabel"; text = "Enter your body measurements "; ObjectID = "YkX-h6-TZw"; */
 "YkX-h6-TZw.text" = "Gib deine Körpermaße ein ";
 
@@ -221,8 +227,8 @@
 /* Class = "UILabel"; text = "Label"; ObjectID = "bop-g7-i41"; */
 "bop-g7-i41.text" = "Label";
 
-/* Class = "UIButton"; normalTitle = "OK"; ObjectID = "c0z-UM-hcT"; */
-"c0z-UM-hcT.normalTitle" = "OK";
+/* Class = "UIButton"; normalTitle = "Select"; ObjectID = "bq6-H4-Q9o"; */
+"bq6-H4-Q9o.normalTitle" = "Auswählen";
 
 /* Class = "UILabel"; text = "Legs:   000.00"; ObjectID = "cfq-Rd-dxn"; */
 "cfq-Rd-dxn.text" = "Beine:   ---";
@@ -341,14 +347,14 @@
 /* Class = "UILabel"; text = "Enabled"; ObjectID = "xu7-XU-86f"; */
 "xu7-XU-86f.text" = "An";
 
-/* Class = "UIBarButtonItem"; title = "Save"; ObjectID = "y4G-a7-5b2"; */
-"y4G-a7-5b2.title" = "Sichern";
-
 /* Class = "UIButton"; normalTitle = "Pick date"; ObjectID = "yJH-k8-gwt"; */
 "yJH-k8-gwt.normalTitle" = "Datum wählen";
 
 /* Class = "UILabel"; text = "Arms:  000.00"; ObjectID = "yTi-MF-uRb"; */
 "yTi-MF-uRb.text" = "Arme:  ---";
+
+/* Class = "UIButton"; normalTitle = "Select"; ObjectID = "zel-yf-yfu"; */
+"zel-yf-yfu.normalTitle" = "Auswählen";
 
 /* Class = "UIButton"; normalTitle = "<"; ObjectID = "zn6-G3-Zn8"; */
 "zn6-G3-Zn8.normalTitle" = "<";

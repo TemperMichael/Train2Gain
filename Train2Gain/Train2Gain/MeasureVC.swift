@@ -141,7 +141,7 @@ class MeasureVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
             sub.setValue(UIColor.whiteColor(), forKey: "tintColor")
         }
         
-        pickerTitle.text = "Choose a Date"
+        pickerTitle.text = NSLocalizedString("Choose a date", comment: "Choose a date")
 
         
     }

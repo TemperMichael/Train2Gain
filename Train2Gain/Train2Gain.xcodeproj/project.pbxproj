@@ -121,13 +121,13 @@
 		46AD666F1C3A09B50040E685 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		46AD66751C3ADDB60040E685 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		46AD66951C3AEDA40040E685 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		46AD66971C3AEDB50040E685 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Main.strings; sourceTree = "<group>"; };
 		46C0DBB01B8EECAD007245E7 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
 		46C0DBB11B8EECAD007245E7 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		46C220B31BC168F30045940F /* StatisticVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatisticVC.swift; sourceTree = "<group>"; };
 		46CEDEFE1B6C137A00B6E7D0 /* EditChooserVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditChooserVC.swift; sourceTree = "<group>"; };
 		46E50E571B6AF29D003F381E /* EditDayIDVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditDayIDVC.swift; sourceTree = "<group>"; };
 		46EAAB011B8A40F900EB2919 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		46F0FFBB1D52430E00FE2787 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Main.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -487,7 +487,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				46AD66951C3AEDA40040E685 /* Base */,
-				46AD66971C3AEDB50040E685 /* de */,
+				46F0FFBB1D52430E00FE2787 /* de */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";

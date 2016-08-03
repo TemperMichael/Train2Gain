@@ -270,7 +270,7 @@ class ExerciseChosenVC: UIViewController, UITextFieldDelegate, ADBannerViewDeleg
             sub.setValue(UIColor.whiteColor(), forKey: "tintColor")
         }
         
-        pickerTitle.text = NSLocalizedString("Choose a Date", comment: "Choose a Date")
+        pickerTitle.text = NSLocalizedString("Choose a date", comment: "Choose a date")
         
     }
     
