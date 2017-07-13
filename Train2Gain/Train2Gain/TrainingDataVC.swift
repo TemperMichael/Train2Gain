@@ -23,14 +23,14 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     var moods: [Mood] = []
     var selectedDayDetails: [String] = []
     var selectedDoneExc: [DoneExercise] = []
-    var appdel = UIApplication.sharedApplication().delegate as! AppDelegate
-    var weightUnit: String! = NSUserDefaults.standardUserDefaults().objectForKey("weightUnit")! as! String
-    var lengthUnit: String! = NSUserDefaults.standardUserDefaults().objectForKey("lengthUnit")! as! String
+    var appdel = UIApplication.shared.delegate as! AppDelegate
+    var weightUnit = UserDefaults.standard.object(forKey: "weightUnit")! as! String
+    var lengthUnit = UserDefaults.standard.object(forKey: "lengthUnit")! as! String
     var doneEx: [DoneExercise]!
     var tutorialView: UIImageView!
     var showTutorial2 = true
-    let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.Dark))
-    let requestDoneEx = NSFetchRequest(entityName: "DoneExercise")
+    let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.dark))
+    let requestDoneEx = NSFetchRequest<NSFetchRequestResult>(entityName: "DoneExercise")
     
     @IBOutlet weak var m_b_prevDate: UIButton!
     @IBOutlet weak var m_b_nextDate: UIButton!
@@ -50,44 +50,44 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     @IBOutlet weak var pickerTitle: UILabel!
     @IBOutlet weak var finishButton: UIButton!
     @IBOutlet weak var pickerBG: UIView!
-    @IBAction func nextDayCL(sender: AnyObject) {
+    @IBAction func nextDayCL(_ sender: AnyObject) {
         
-        var date: NSDate = NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate
+        var date: Date = UserDefaults.standard.object(forKey: "dateUF") as! Date
         
         // Go to next day
-        date = date.dateByAddingTimeInterval(60 * 60 * 24)
-        NSUserDefaults.standardUserDefaults().setObject(date, forKey: "dateUF")
+        date = date.addingTimeInterval(60 * 60 * 24)
+        UserDefaults.standard.set(date, forKey: "dateUF")
         viewDidAppear(true)
         
     }
     
-    @IBAction func prevDayCL(sender: AnyObject) {
+    @IBAction func prevDayCL(_ sender: AnyObject) {
         
-        var date: NSDate = NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate
+        var date: Date = UserDefaults.standard.object(forKey: "dateUF") as! Date
         
         // Go to prevoius day
-        date = date.dateByAddingTimeInterval(-60 * 60 * 24)
-        NSUserDefaults.standardUserDefaults().setObject(date, forKey: "dateUF")
+        date = date.addingTimeInterval(-60 * 60 * 24)
+        UserDefaults.standard.set(date, forKey: "dateUF")
         viewDidAppear(true)
         
     }
     
-    @IBAction func finishCL(sender: AnyObject) {
+    @IBAction func finishCL(_ sender: AnyObject) {
         
         // Save date
         let date = pickerView.date
-        NSUserDefaults.standardUserDefaults().setObject(pickerView.date,forKey: "dateUF")
-        UIView.animateWithDuration(0.5, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
+        UserDefaults.standard.set(pickerView.date,forKey: "dateUF")
+        UIView.animate(withDuration: 0.5, delay: 0, options: UIViewAnimationOptions(), animations: {
             self.pickerBG.alpha = 0
             }, completion: { finished in
-                self.pickerBG.hidden = true
+                self.pickerBG.isHidden = true
         })
-        m_b_PickDate.setTitle(returnDateForm(date), forState: UIControlState.Normal)
+        m_b_PickDate.setTitle(returnDateForm(date), for: UIControlState())
         
         viewDidAppear(true)
     }
     
-    @IBAction func pickDateClicked(sender: AnyObject) {
+    @IBAction func pickDateClicked(_ sender: AnyObject) {
         
         setupPickerView()
         
@@ -101,7 +101,7 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         // Handle iAd
         iAd.delegate = self
-        iAd.hidden = true
+        iAd.isHidden = true
         
         // Set background
         var backgroundIMG = UIImage(named: "Background2.png")
@@ -109,7 +109,7 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
         
         // Show tutorial
-        if NSUserDefaults.standardUserDefaults().objectForKey("tutorialTrainingData") == nil {
+        if UserDefaults.standard.object(forKey: "tutorialTrainingData") == nil {
             tutorialView = UIImageView(frame: self.view.frame)
             tutorialView.image = UIImage(named: "TutorialTrainingData1.png")
             tutorialView.frame.origin.y += 18
@@ -118,46 +118,46 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             } else {
                 tutorialView.frame.size.height -= 60
             }
-            tutorialView.userInteractionEnabled = true
-            let tap = UITapGestureRecognizer(target: self, action:"hideTutorial")
+            tutorialView.isUserInteractionEnabled = true
+            let tap = UITapGestureRecognizer(target: self, action:#selector(TrainingDataVC.hideTutorial))
             tutorialView.addGestureRecognizer(tap)
             self.view.addSubview(tutorialView)
-            self.navigationController?.navigationBarHidden = true
+            self.navigationController?.isNavigationBarHidden = true
         }
         
         // Hide empty cells
-        let backgroundView = UIView(frame: CGRectZero)
+        let backgroundView = UIView(frame: CGRect.zero)
         self.m_tv_DayIds.tableFooterView = backgroundView
         self.m_tv_DayIds.backgroundColor = UIColor(red: 86 / 255, green: 158 / 255, blue: 197 / 255, alpha: 0)
         selectedDoneExc = []
         
         // Remove text from back button
-        let backButton = UIBarButtonItem(title: " ", style: UIBarButtonItemStyle.Plain, target: self, action: nil)
-        backButton.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "Chalkduster", size: 20)!], forState: UIControlState.Normal)
+        let backButton = UIBarButtonItem(title: " ", style: UIBarButtonItemStyle.plain, target: self, action: nil)
+        backButton.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "Chalkduster", size: 20)!], for: UIControlState())
         navigationItem.backBarButtonItem = backButton
-        m_b_PickDate.titleLabel?.text = returnDateForm(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate)
+        m_b_PickDate.titleLabel?.text = returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)
         m_tv_DayIds.dataSource = self
         m_tv_DayIds.delegate = self
         
         //Fabric - Analytic tool
-        Answers.logContentViewWithName("Watched Training data",
+        Answers.logContentView(withName: "Watched Training data",
             contentType: "Saved data",
             contentId: "Training data",
             customAttributes: [:])
-        doneEx = (try! appdel.managedObjectContext?.executeFetchRequest(requestDoneEx))  as! [DoneExercise]
+        doneEx = (try! appdel.managedObjectContext!.fetch(requestDoneEx))  as! [DoneExercise]
         
-        pickerView.setDate(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate, animated: true)
-        pickerView.viewForBaselineLayout().setValue(UIColor.whiteColor(), forKeyPath: "tintColor")
+        pickerView.setDate(UserDefaults.standard.object(forKey: "dateUF") as! Date, animated: true)
+        pickerView.forBaselineLayout().setValue(UIColor.white, forKeyPath: "tintColor")
         for sub in pickerView.subviews {
-            sub.setValue(UIColor.whiteColor(), forKeyPath: "textColor")
-            sub.setValue(UIColor.whiteColor(), forKey: "tintColor")
+            sub.setValue(UIColor.white, forKeyPath: "textColor")
+            sub.setValue(UIColor.white, forKey: "tintColor")
         }
         
         pickerTitle.text = NSLocalizedString("Choose a date", comment: "Choose a date")
         
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         
         self.navigationController?.setToolbarHidden(true, animated: true)
         
@@ -165,24 +165,18 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
  
     
     // Show correct background after rotation
-    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         
-        if NSUserDefaults.standardUserDefaults().objectForKey("tutorialTrainingData") == nil {
+        if UserDefaults.standard.object(forKey: "tutorialTrainingData") == nil {
             hideTutorial()
-            if NSUserDefaults.standardUserDefaults().objectForKey("tutorialTrainingData") == nil {
+            if UserDefaults.standard.object(forKey: "tutorialTrainingData") == nil {
                 hideTutorial()
-                self.navigationController?.navigationBarHidden = false
+                self.navigationController?.isNavigationBarHidden = false
             }
         }
         var backgroundIMG = UIImage(named: "Background2.png")
         backgroundIMG = imageResize(backgroundIMG!, sizeChange: size)
         self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
-        
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        
-        returnDateForm(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate)
         
     }
     
@@ -193,9 +187,9 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             var backgroundIMG = UIImage(named: "Background2.png")
             backgroundIMG = imageResize(backgroundIMG!, sizeChange: view.frame.size)
             self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
-            self.navigationController?.navigationBarHidden = false
+            self.navigationController?.isNavigationBarHidden = false
         }
-        UIView.transitionWithView(self.view, duration: 1, options: UIViewAnimationOptions.CurveLinear, animations: {
+        UIView.transition(with: self.view, duration: 1, options: UIViewAnimationOptions.curveLinear, animations: {
             if self.showTutorial2 {
                 self.tutorialView.image = UIImage(named: "TutorialTrainingData2.png")
             } else {
@@ -203,7 +197,7 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
             }, completion:{ finished in
                 if !self.showTutorial2 {
-                    NSUserDefaults.standardUserDefaults().setObject(false, forKey: "tutorialTrainingData")
+                    UserDefaults.standard.set(false, forKey: "tutorialTrainingData")
                     self.tutorialView.removeFromSuperview()
                 }
                 self.showTutorial2 = false
@@ -212,26 +206,26 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
 
     // Fit background image to display size
-    func imageResize(imageObj: UIImage, sizeChange: CGSize) -> UIImage {
+    func imageResize(_ imageObj: UIImage, sizeChange: CGSize) -> UIImage {
         
         let hasAlpha = false
         let scale: CGFloat = 0.0 // Automatically use scale factor of main screen
         UIGraphicsBeginImageContextWithOptions(sizeChange, !hasAlpha, scale)
-        imageObj.drawInRect(CGRect(origin: CGPointZero, size: sizeChange))
+        imageObj.draw(in: CGRect(origin: CGPoint.zero, size: sizeChange))
         let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
-        return scaledImage
+        return scaledImage!
         
     }
     
     // Get date in a good format
-    func returnDateForm(date: NSDate) -> String {
+    func returnDateForm(_ date: Date) -> String {
         
-        let dateFormatter = NSDateFormatter()
-        let theDateFormat = NSDateFormatterStyle.ShortStyle
-        let theTimeFormat = NSDateFormatterStyle.NoStyle
+        let dateFormatter = DateFormatter()
+        let theDateFormat = DateFormatter.Style.short
+        let theTimeFormat = DateFormatter.Style.none
         dateFormatter.dateStyle = theDateFormat
         dateFormatter.timeStyle = theTimeFormat
-        return dateFormatter.stringFromDate(date)
+        return dateFormatter.string(from: date)
         
     }
     
@@ -241,18 +235,18 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         blurView.translatesAutoresizingMaskIntoConstraints = false
         if !pickerBG.subviews.contains(blurView) {
             pickerBG.addSubview(blurView)
-            pickerBG.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: pickerBG, attribute: NSLayoutAttribute.Top, multiplier: 1.0, constant: 0.0))
-            pickerBG.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: pickerBG, attribute: NSLayoutAttribute.Leading, multiplier: 1.0, constant: 0.0))
-            pickerBG.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: pickerBG, attribute: NSLayoutAttribute.Bottom, multiplier: 1.0, constant: 0.0))
-            pickerBG.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.Trailing, relatedBy: NSLayoutRelation.Equal, toItem: pickerBG, attribute: NSLayoutAttribute.Trailing, multiplier: 1.0, constant: 0.0))
+            pickerBG.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: pickerBG, attribute: NSLayoutAttribute.top, multiplier: 1.0, constant: 0.0))
+            pickerBG.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.leading, relatedBy: NSLayoutRelation.equal, toItem: pickerBG, attribute: NSLayoutAttribute.leading, multiplier: 1.0, constant: 0.0))
+            pickerBG.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.bottom, relatedBy: NSLayoutRelation.equal, toItem: pickerBG, attribute: NSLayoutAttribute.bottom, multiplier: 1.0, constant: 0.0))
+            pickerBG.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.trailing, relatedBy: NSLayoutRelation.equal, toItem: pickerBG, attribute: NSLayoutAttribute.trailing, multiplier: 1.0, constant: 0.0))
         }
         pickerBG.alpha = 0
-        pickerBG.hidden = false
-        self.view.bringSubviewToFront(pickerBG)
-        pickerBG.bringSubviewToFront(pickerView)
-        pickerBG.bringSubviewToFront(finishButton)
-        pickerBG.bringSubviewToFront(pickerTitle)
-        UIView.animateWithDuration(0.5, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
+        pickerBG.isHidden = false
+        self.view.bringSubview(toFront: pickerBG)
+        pickerBG.bringSubview(toFront: pickerView)
+        pickerBG.bringSubview(toFront: finishButton)
+        pickerBG.bringSubview(toFront: pickerTitle)
+        UIView.animate(withDuration: 0.5, delay: 0, options: UIViewAnimationOptions(), animations: {
             self.pickerBG.alpha = 1
             }, completion: { finished in
         })
@@ -260,99 +254,101 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
 
     // MARK: TableView
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         
         return 1
         
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return dayIDs.count
         
     }
     
-    func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         
-        selectedDayDetails.append(dayIDs[indexPath.row])
+        selectedDayDetails.append(dayIDs[(indexPath as NSIndexPath).row])
         selectedDayDetails.append(m_L_Date.text!)
         return indexPath
         
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         //Save chosen exercise day
         if segue.identifier == "DayIDChosen" {
-            let vc = segue.destinationViewController as! DayIDChosenTVC
+            let vc = segue.destination as! DayIDChosenTVC
             vc.selectedDayDetails = selectedDayDetails
         }
         if segue.identifier == "editSegue" {
-            let vc = segue.destinationViewController as! EditDayIDVC
+            let vc = segue.destination as! EditDayIDVC
             vc.selectedExc = selectedDoneExc
         }
         
     }
     
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         // Has to stand here so custom action can be used
     }
     
-    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
 
         //Handle swipe to single tableview row
         //Handle the deletion of an row
-        let deleteAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: NSLocalizedString("Delete", comment: "Delete")) { (action, index) -> Void in
+        let deleteAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: NSLocalizedString("Delete", comment: "Delete")) { (action, index) -> Void in
             let context:NSManagedObjectContext = self.appdel.managedObjectContext!
-            for var i = 0; i < self.doneEx.count ; i++ {
-                if self.doneEx[i].dayID == self.dayIDs[indexPath.row] && self.returnDateForm(self.doneEx[i].date) == self.returnDateForm(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate) {
-                    context.deleteObject(self.doneEx[i] as NSManagedObject)
-                    self.doneEx.removeAtIndex(i)
-                    i--
+            var count = 0
+            for _ in 0..<self.doneEx.count{
+                if self.doneEx[count].dayID == self.dayIDs[(indexPath as NSIndexPath).row] && self.returnDateForm(self.doneEx[count].date as Date) == self.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date) {
+                    context.delete(self.doneEx[count] as NSManagedObject)
+                    self.doneEx.remove(at: count)
+                    count = count - 1
                 }
             }
-            self.dayIDs.removeAtIndex(indexPath.row)
+            self.dayIDs.remove(at: (indexPath as NSIndexPath).row)
             do {
                 try context.save()
             } catch _ {
             }
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+            tableView.deleteRows(at: [indexPath], with: .fade)
         }
         deleteAction.backgroundColor = UIColor(red: 86 / 255 , green: 158 / 255, blue: 197 / 255 , alpha: 1)
         
 
         // Handle the changings of the selected row item
-        let editAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: NSLocalizedString("Edit", comment: "Edit")) { (action, index) -> Void in
-            for var i = 0 ; i < self.doneEx.count ; i++ {
-                if self.doneEx[i].dayID == self.dayIDs[indexPath.row] && self.returnDateForm(self.doneEx[i].date) == self.returnDateForm(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate) {
+        let editAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: NSLocalizedString("Edit", comment: "Edit")) { (action, index) -> Void in
+            for i in 0  ..< self.doneEx.count {
+                if self.doneEx[i].dayID == self.dayIDs[(indexPath as NSIndexPath).row] && self.returnDateForm(self.doneEx[i].date as Date) == self.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date) {
                     self.selectedDoneExc.append(self.doneEx[i])
                 }
             }
-            self.performSegueWithIdentifier("editSegue", sender: nil)
+            self.performSegue(withIdentifier: "editSegue", sender: nil)
         }
         editAction.backgroundColor = UIColor(red: 112 / 255, green: 188 / 255, blue: 224 / 255 , alpha: 1)
         return [deleteAction,editAction]
         
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("TrainingDataCell", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "TrainingDataCell", for: indexPath)
         
         // Set Seperator left to zero
-        cell.separatorInset = UIEdgeInsetsZero
+        cell.separatorInset = UIEdgeInsets.zero
         cell.preservesSuperviewLayoutMargins = false
-        cell.layoutMargins = UIEdgeInsetsZero
-        cell.textLabel?.text = dayIDs[indexPath.row]
+        cell.layoutMargins = UIEdgeInsets.zero
+        cell.textLabel?.text = dayIDs[(indexPath as NSIndexPath).row]
         cell.textLabel?.font = UIFont(name: "HelveticaNeue-Light", size: 18)
         cell.textLabel?.textColor = UIColor(red: 22 / 255 , green: 204 / 255, blue: 1.00 , alpha: 1.0)
-        cell.textLabel?.textAlignment = .Center
-        cell.backgroundColor = UIColor.whiteColor()
+        cell.textLabel?.textAlignment = .center
+        cell.backgroundColor = UIColor.white
         return cell
 
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
+        
         //Reset lists
         selectedDayDetails = []
         dayIDs = []
@@ -361,25 +357,25 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         var dayHasContent = false
         
         //Show date of chosen day
-        m_b_PickDate.setTitle(returnDateForm(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate), forState: UIControlState.Normal)
+        m_b_PickDate.setTitle(returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date), for: UIControlState())
         
         //Hide empty cells
-        let backgroundView = UIView(frame: CGRectZero)
+        let backgroundView = UIView(frame: CGRect.zero)
         
         self.m_tv_DayIds.tableFooterView = backgroundView
         
         self.m_tv_DayIds.backgroundColor = UIColor(red:86/255 ,green:158/255, blue:197/255 ,alpha:0)
         
         //Get data
-        let appdel =  UIApplication.sharedApplication().delegate as! AppDelegate
-        let  requestDoneEx = NSFetchRequest(entityName: "DoneExercise")
-        doneExercises = (try! appdel.managedObjectContext?.executeFetchRequest(requestDoneEx))  as! [DoneExercise]
+        let appdel =  UIApplication.shared.delegate as! AppDelegate
+        let  requestDoneEx = NSFetchRequest<NSFetchRequestResult>(entityName: "DoneExercise")
+        doneExercises = (try! appdel.managedObjectContext?.fetch(requestDoneEx))  as! [DoneExercise]
         
-        let  requestMeasurements = NSFetchRequest(entityName: "Measurements")
-        measurements = (try! appdel.managedObjectContext?.executeFetchRequest(requestMeasurements))  as! [Measurements]
+        let  requestMeasurements = NSFetchRequest<NSFetchRequestResult>(entityName: "Measurements")
+        measurements = (try! appdel.managedObjectContext?.fetch(requestMeasurements))  as! [Measurements]
         
-        let  requestMood = NSFetchRequest(entityName: "Mood")
-        moods = (try! appdel.managedObjectContext?.executeFetchRequest(requestMood))  as! [Mood]
+        let  requestMood = NSFetchRequest<NSFetchRequestResult>(entityName: "Mood")
+        moods = (try! appdel.managedObjectContext?.fetch(requestMood))  as! [Mood]
         
         var checkString = ""
         var checkBefore = ""
@@ -388,29 +384,29 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         //Only get different done trainings plans
         for checkIDAmount in doneExercises {
             
-            if(returnDateForm(checkIDAmount.date) ==  returnDateForm(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate)){
+            if(returnDateForm(checkIDAmount.date as Date) ==  returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)) {
                 dayHasContent = true
                 checkBefore=checkString
                 
                 
                 checkString = checkIDAmount.dayID
-                if(checkString != checkBefore){
+                if checkString != checkBefore {
                     
                     for checkIds in dayIDs{
                         
                         
-                        if(checkIds == checkIDAmount.dayID){
+                        if checkIds == checkIDAmount.dayID {
                             
                             dayIDExists = false;
                         }
                     }
-                    if(dayIDExists){
+                    if dayIDExists {
                         dayIDs.append(checkIDAmount.dayID)
                     }
                     
                     
                 }
-                m_L_Date.text = returnDateForm(checkIDAmount.date)
+                m_L_Date.text = returnDateForm(checkIDAmount.date as Date)
             }
             
         }
@@ -432,39 +428,39 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         //Show data in right unit
         for checkMeasureExists in measurements {
             
-            if(returnDateForm(checkMeasureExists.date) ==  returnDateForm(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate)){
+            if(returnDateForm(checkMeasureExists.date as Date) ==  returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)) {
                 var weight = (checkMeasureExists.weight).doubleValue
-                if(weightUnit == "lbs"){
+                if weightUnit == "lbs" {
                     weight = weight * 2.20462262185
                 }
                 
                 dayHasContent = true
-                m_L_Weight.text = NSString(format:"\(translationWeight): %.2f \(weightUnit)",weight ) as String
+                m_L_Weight.text = NSString(format:"\(translationWeight): %.2f \(weightUnit)" as NSString,weight ) as String
                 
                 var length = (checkMeasureExists.arm).doubleValue
-                if(lengthUnit == "inch"){
+                if lengthUnit == "inch" {
                     length = length/2.54
                 }
-                m_L_Arm.text =  NSString(format:"\(translationArms): %.2f \(lengthUnit)",length ) as String
+                m_L_Arm.text =  NSString(format:"\(translationArms): %.2f \(lengthUnit)" as NSString,length ) as String
                 
                 length = (checkMeasureExists.chest).doubleValue
-                if(lengthUnit == "inch"){
+                if lengthUnit == "inch" {
                     length = length/2.54
                 }
-                m_L_Chest.text =  NSString(format:"\(translationChest): %.2f \(lengthUnit)",length ) as String
+                m_L_Chest.text =  NSString(format:"\(translationChest): %.2f \(lengthUnit)" as NSString,length ) as String
                 
                 
                 length = (checkMeasureExists.waist).doubleValue
-                if(lengthUnit == "inch"){
+                if lengthUnit == "inch" {
                     length = length/2.54
                 }
-                m_L_Waist.text =  NSString(format:"\(translationWaist): %.2f \(lengthUnit)",length ) as String
+                m_L_Waist.text =  NSString(format:"\(translationWaist): %.2f \(lengthUnit)" as NSString,length ) as String
                 
                 length = (checkMeasureExists.leg).doubleValue
-                if(lengthUnit == "inch"){
+                if lengthUnit == "inch" {
                     length = length/2.54
                 }
-                m_L_Legs.text =  NSString(format:"\(translationLegs): %.2f \(lengthUnit)",length ) as String
+                m_L_Legs.text =  NSString(format:"\(translationLegs): %.2f \(lengthUnit)" as NSString,length ) as String
             }
             
         }
@@ -475,7 +471,7 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         for checkMoodExists in moods{
             
-            if(returnDateForm(checkMoodExists.date) ==  returnDateForm(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate)){
+            if(returnDateForm(checkMoodExists.date as Date) ==  returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)){
                 dayHasContent = true
                 m_L_moodName.text = checkMoodExists.moodName
                 m_IV_moodImage.image = UIImage(named: checkMoodExists.moodImagePath)
@@ -483,11 +479,11 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             
         }
         
-        m_L_Date.text = returnDateForm(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate)
+        m_L_Date.text = returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)
         
         m_tv_DayIds.reloadData()
         
-        if(!dayHasContent){
+        if !dayHasContent {
             m_L_Date.text = NSLocalizedString("No entry at this date", comment: "No entry at this date")
         }
         m_tv_DayIds.separatorColor = UIColor(red:22/255 ,green:204/255, blue:1.00 ,alpha:1.0)
@@ -495,37 +491,37 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     // MARK: iAd
-    func bannerViewDidLoadAd(banner: ADBannerView!) {
+    func bannerViewDidLoadAd(_ banner: ADBannerView!) {
         
         self.layoutAnimated(true)
         
     }
     
-    func bannerView(banner: ADBannerView!, didFailToReceiveAdWithError error: NSError!) {
+    func bannerView(_ banner: ADBannerView!, didFailToReceiveAdWithError error: Error!) {
         
         self.layoutAnimated(true)
         
     }
     
-    func bannerViewActionShouldBegin(banner: ADBannerView!, willLeaveApplication willLeave: Bool) -> Bool {
+    func bannerViewActionShouldBegin(_ banner: ADBannerView!, willLeaveApplication willLeave: Bool) -> Bool {
         
         return true
         
     }
     
-    func layoutAnimated(animated: Bool) {
+    func layoutAnimated(_ animated: Bool) {
         
-        if iAd.bannerLoaded {
-            iAd.hidden = false
-            UIView.animateWithDuration(animated ? 0.25 : 0.0, animations: {
+        if iAd.isBannerLoaded {
+            iAd.isHidden = false
+            UIView.animate(withDuration: animated ? 0.25 : 0.0, animations: {
                 self.iAd.alpha = 1;
             })
         } else {
-            UIView.animateWithDuration(animated ? 0.25 : 0.0, animations: {
+            UIView.animate(withDuration: animated ? 0.25 : 0.0, animations: {
                 self.iAd.alpha = 0
                 }, completion: {
                     (value: Bool) in
-                    self.iAd.hidden = true
+                    self.iAd.isHidden = true
             })
         }
         

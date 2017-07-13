@@ -14,15 +14,15 @@ class MoodCell: UICollectionViewCell {
     
     @IBOutlet weak var m_L_moodName: UILabel!
     
-    override var selected : Bool {
+    override var isSelected : Bool {
         
         //Show the user that one cell is selected
         didSet{
             //Mark selected cell with a border and a bigger font
-            m_L_moodName.font = selected ? UIFont(name: "HelveticaNeue-Medium", size: 18) : UIFont(name: "HelveticaNeue-Light", size: 18)
-            layer.borderWidth =  selected ? 1 : 0;
+            m_L_moodName.font = isSelected ? UIFont(name: "HelveticaNeue-Medium", size: 18) : UIFont(name: "HelveticaNeue-Light", size: 18)
+            layer.borderWidth =  isSelected ? 1 : 0
             layer.cornerRadius = 5
-            layer.borderColor = UIColor(red: 20 / 255, green: 204 / 255, blue:1.00, alpha:1.0).CGColor
+            layer.borderColor = UIColor(red: 20 / 255, green: 204 / 255, blue:1.00, alpha:1.0).cgColor
         }
     }
 }

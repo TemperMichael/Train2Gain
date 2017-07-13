@@ -13,7 +13,7 @@ import iAd
 class ExercisesTVC: UIViewController, UITableViewDelegate, UITableViewDataSource, ADBannerViewDelegate {
     
     var exercises: [Exercise] = []
-    var appdel = UIApplication.sharedApplication().delegate as! AppDelegate
+    var appdel = UIApplication.shared.delegate as! AppDelegate
     var selectedExc: [Exercise] = []
     var dayIDs: [String] = []
     var selectedDayID: String!
@@ -29,7 +29,7 @@ class ExercisesTVC: UIViewController, UITableViewDelegate, UITableViewDataSource
         
         // Handle iAd
         iAd.delegate = self
-        iAd.hidden = true
+        iAd.isHidden = true
         
         // Set background
         var backgroundIMG = UIImage(named: "Background2.png")
@@ -37,7 +37,7 @@ class ExercisesTVC: UIViewController, UITableViewDelegate, UITableViewDataSource
         self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
         
         // Show tutorial
-        if NSUserDefaults.standardUserDefaults().objectForKey("tutorialTrainingPlans") == nil {
+        if UserDefaults.standard.object(forKey: "tutorialTrainingPlans") == nil {
             tutorialView = UIImageView(frame: self.view.frame)
             tutorialView.image = UIImage(named: "TutorialTrainingPlans.png")
             tutorialView.frame.origin.y += 18
@@ -46,21 +46,21 @@ class ExercisesTVC: UIViewController, UITableViewDelegate, UITableViewDataSource
             } else {
                 tutorialView.frame.size.height -= 60
             }
-            tutorialView.userInteractionEnabled = true
-            let tap = UITapGestureRecognizer(target: self, action: "hideTutorial")
+            tutorialView.isUserInteractionEnabled = true
+            let tap = UITapGestureRecognizer(target: self, action: #selector(ExercisesTVC.hideTutorial))
             tutorialView.addGestureRecognizer(tap)
             self.view.addSubview(tutorialView)
-            self.navigationController?.navigationBarHidden = true
+            self.navigationController?.isNavigationBarHidden = true
         }
         selectedExc = []
 
         // Remove text from the back button
-        let backButton = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.Plain, target: self, action: nil)
-        backButton.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "Heiti SC", size: 18)!], forState: UIControlState.Normal)
+        let backButton = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.plain, target: self, action: nil)
+        backButton.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "Heiti SC", size: 18)!], for: UIControlState())
         navigationItem.backBarButtonItem = backButton
         
         //Hide empty cells
-        let backgroundView = UIView(frame: CGRectZero)
+        let backgroundView = UIView(frame: CGRect.zero)
         self.tableView.tableFooterView = backgroundView
         self.tableView.backgroundColor = UIColor(red: 22 / 255 , green: 200 / 255, blue: 1.00, alpha: 0)
         tableView.delegate = self
@@ -68,10 +68,10 @@ class ExercisesTVC: UIViewController, UITableViewDelegate, UITableViewDataSource
         
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         
         // Set actual date
-        NSUserDefaults.standardUserDefaults().setObject(NSDate(), forKey: "dateUF")
+        UserDefaults.standard.set(Date(), forKey: "dateUF")
         
         // Reset lists
         dayIDs = []
@@ -79,13 +79,13 @@ class ExercisesTVC: UIViewController, UITableViewDelegate, UITableViewDataSource
         exercises = []
         
         // Hide empty cells
-        let backgroundView = UIView(frame: CGRectZero)
+        let backgroundView = UIView(frame: CGRect.zero)
         self.tableView.tableFooterView = backgroundView
         self.tableView.backgroundColor = UIColor(red: 22 / 255, green: 200 / 255, blue: 1.00, alpha: 0)
         
         // Get exercises core data
-        let  request = NSFetchRequest(entityName: "Exercise")
-        exercises = (try! appdel.managedObjectContext?.executeFetchRequest(request))  as! [Exercise]
+        let  request = NSFetchRequest<NSFetchRequestResult>(entityName: "Exercise")
+        exercises = (try! appdel.managedObjectContext?.fetch(request))  as! [Exercise]
         var exists = false
         
         // Check if data already exists
@@ -111,38 +111,33 @@ class ExercisesTVC: UIViewController, UITableViewDelegate, UITableViewDataSource
         var backgroundIMG = UIImage(named: "Background2.png")
         backgroundIMG = imageResize(backgroundIMG!, sizeChange: view.frame.size)
         self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
-        self.navigationController?.navigationBarHidden = false
-        UIView.transitionWithView(self.view, duration: 1, options: UIViewAnimationOptions.CurveLinear, animations: {
+        self.navigationController?.isNavigationBarHidden = false
+        UIView.transition(with: self.view, duration: 1, options: UIViewAnimationOptions.curveLinear, animations: {
             self.tutorialView.alpha = 0;
             }, completion:{ finished in
-                 NSUserDefaults.standardUserDefaults().setObject(false, forKey: "tutorialTrainingPlans")
+                 UserDefaults.standard.set(false, forKey: "tutorialTrainingPlans")
             self.tutorialView.removeFromSuperview()
         })
         
     }
     
     // Fit background image to display size
-    func imageResize(imageObj: UIImage, sizeChange: CGSize) -> UIImage {
+    func imageResize(_ imageObj: UIImage, sizeChange: CGSize) -> UIImage {
         
         let hasAlpha = false
         let scale: CGFloat = 0.0 // Automatically use scale factor of main screen
         UIGraphicsBeginImageContextWithOptions(sizeChange, !hasAlpha, scale)
-        imageObj.drawInRect(CGRect(origin: CGPointZero, size: sizeChange))
+        imageObj.draw(in: CGRect(origin: CGPoint.zero, size: sizeChange))
         let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
-        return scaledImage
+        return scaledImage!
         
     }
     
-    // MARK: TableView Methods
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-    
-    }
-    
-    func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         
         // Save the selected exercises for the next view
-        for var i = 0 ; i < exercises.count ; i++ {
-            if exercises[i].dayID == dayIDs[indexPath.row] {
+        for i in 0  ..< exercises.count {
+            if exercises[i].dayID == dayIDs[(indexPath as NSIndexPath).row] {
                 selectedExc.append(exercises[i])
             }
         }
@@ -150,53 +145,55 @@ class ExercisesTVC: UIViewController, UITableViewDelegate, UITableViewDataSource
         
     }
     
-    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         
         // Handle swipe to single tableview row
         // Handle the deletion of an row
-        let deleteAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: NSLocalizedString("Delete", comment: "Delete")) { (action, index) -> Void in
+        let deleteAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: NSLocalizedString("Delete", comment: "Delete")) { (action, index) -> Void in
             let context: NSManagedObjectContext = self.appdel.managedObjectContext!
-            for var i = 0; i < self.exercises.count ; i++ {
-                if self.exercises[i].dayID == self.dayIDs[indexPath.row] {
-                    context.deleteObject(self.exercises[i] as NSManagedObject)
-                    self.exercises.removeAtIndex(i)
-                    i--
+            var count = self.exercises.count
+            for _ in 0..<self.exercises.count  {
+                if self.exercises[count].dayID == self.dayIDs[(indexPath as NSIndexPath).row] {
+                    context.delete(self.exercises[count] as NSManagedObject)
+                    self.exercises.remove(at: count)
+                    count = count - 1
                 }
+                count = count + 1
             }
-            self.dayIDs.removeAtIndex(indexPath.row)
+            self.dayIDs.remove(at: (indexPath as NSIndexPath).row)
             do {
                 try context.save()
             } catch _ {
             }
-            self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+            self.tableView.deleteRows(at: [indexPath], with: .fade)
         }
         deleteAction.backgroundColor = UIColor(red: 86 / 255, green: 158 / 255, blue: 197 / 255, alpha: 1)
         
 
         // Handle the changings of the selected row item
-        let editAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: NSLocalizedString("Edit", comment: "Edit")) { (action, index) -> Void in
-            for var i = 0 ; i < self.exercises.count ; i++ {
-                if self.exercises[i].dayID == self.dayIDs[indexPath.row] {
+        let editAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: NSLocalizedString("Edit", comment: "Edit")) { (action, index) -> Void in
+            for i in  0..<self.exercises.count {
+                if self.exercises[i].dayID == self.dayIDs[(indexPath as NSIndexPath).row] {
                     self.selectedExc.append(self.exercises[i])
                 }
             }
-            self.performSegueWithIdentifier("AddExercise", sender: UITableViewRowAction())
+            self.performSegue(withIdentifier: "AddExercise", sender: UITableViewRowAction())
         }
         editAction.backgroundColor = UIColor(red: 112 / 255, green: 188 / 255, blue: 224 / 255, alpha: 1)
         return [deleteAction,editAction]
         
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         //Give the next view the selected exercises
         if segue.identifier == "ExerciseChosen" {
-            let vc = segue.destinationViewController as! ExerciseChosenVC
+            let vc = segue.destination as! ExerciseChosenVC
             vc.clickedExc = selectedExc
         }
         if segue.identifier == "AddExercise" {
             if let _ = sender as? UITableViewRowAction {
-               let vc = segue.destinationViewController as! AddExerciseVC
+               let vc = segue.destination as! AddExerciseVC
                 vc.editMode = true
                 vc.selectedExc = self.selectedExc
             }
@@ -204,75 +201,80 @@ class ExercisesTVC: UIViewController, UITableViewDelegate, UITableViewDataSource
         
     }
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         
         return 1
         
     }
     
-     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        // Has to stand here so custom action can be used
+    }
+    
+     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return dayIDs.count
         
     }
     
-     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         //Setup cell
-        let cell = tableView.dequeueReusableCellWithIdentifier("ExerciseCell", forIndexPath: indexPath) 
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ExerciseCell", for: indexPath) 
         cell.textLabel?.font = UIFont(name: "HelveticaNeue-Light", size: 18)
         cell.textLabel?.textColor = UIColor(red: 22 / 255, green: 204 / 255, blue: 1.00, alpha:1.0)
-        cell.textLabel?.text = dayIDs[indexPath.row]
-        cell.backgroundColor = UIColor.whiteColor()
+        cell.textLabel?.text = dayIDs[(indexPath as NSIndexPath).row]
+        cell.backgroundColor = UIColor.white
         
         //Set Seperator left to zero
-        cell.separatorInset = UIEdgeInsetsZero
+        cell.separatorInset = UIEdgeInsets.zero
         cell.preservesSuperviewLayoutMargins = false
-        cell.layoutMargins = UIEdgeInsetsZero
+        cell.layoutMargins = UIEdgeInsets.zero
         return cell
         
     }
     
     // MARK: iAd
-    func bannerViewDidLoadAd(banner: ADBannerView!) {
+    func bannerViewDidLoadAd(_ banner: ADBannerView!) {
         
         self.layoutAnimated(true)
         
     }
     
-    func bannerView(banner: ADBannerView!, didFailToReceiveAdWithError error: NSError!) {
+    func bannerView(_ banner: ADBannerView!, didFailToReceiveAdWithError error: Error!) {
         
         self.layoutAnimated(true)
         
     }
     
-    func bannerViewActionShouldBegin(banner: ADBannerView!, willLeaveApplication willLeave: Bool) -> Bool {
+    func bannerViewActionShouldBegin(_ banner: ADBannerView!, willLeaveApplication willLeave: Bool) -> Bool {
         
         return true
         
     }
     
-    func layoutAnimated(animated : Bool) {
+    func layoutAnimated(_ animated : Bool) {
 
-        if iAd.bannerLoaded {
-            iAd.hidden = false
-            UIView.animateWithDuration(animated ? 0.25 : 0.0, animations: {
+        if iAd.isBannerLoaded {
+            iAd.isHidden = false
+            UIView.animate(withDuration: animated ? 0.25 : 0.0, animations: {
                 self.iAd.alpha = 1;
             })
         } else {
-            UIView.animateWithDuration(animated ? 0.25 : 0.0, animations: {
+            UIView.animate(withDuration: animated ? 0.25 : 0.0, animations: {
                 self.iAd.alpha = 0
                 }, completion: {
                     (value: Bool) in
-                    self.iAd.hidden = true
+                    self.iAd.isHidden = true
             })
         }
         
     }
 
     // Show correct background after rotation
-    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-        if NSUserDefaults.standardUserDefaults().objectForKey("tutorialTrainingPlans") == nil {
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        
+        if UserDefaults.standard.object(forKey: "tutorialTrainingPlans") == nil {
             hideTutorial()
         }
         var backgroundIMG = UIImage(named: "Background2.png")

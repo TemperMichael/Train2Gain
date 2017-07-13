@@ -9,6 +9,26 @@
 import UIKit
 import CoreData
 import iAd
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
 
@@ -16,7 +36,7 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
     var dayId: String = ""
     var userPos: Int = 0
     var deleteOn: Bool = false
-    var appdel = UIApplication.sharedApplication().delegate as! AppDelegate
+    var appdel = UIApplication.shared.delegate as! AppDelegate
     var editMode = false
     var editDayIDSaver = ""
     var selectedExc: [Exercise] = []
@@ -34,11 +54,11 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
     @IBOutlet weak var addExButton: UIButton!
     
     // Add a new exercise
-    @IBAction func AddExButtonCL(sender: AnyObject) {
+    @IBAction func AddExButtonCL(_ sender: AnyObject) {
         
         if allFilled() {
             exercises[userPos] = [m_tf_Name.text!, m_tf_Reps.text!, m_tf_Sets.text!]
-            exercises.insert(["", "", ""], atIndex: userPos+1)
+            exercises.insert(["", "", ""], at: userPos+1)
             filterSpecificView(false)
             clearDetails()
         }
@@ -46,9 +66,9 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
     }
     
     // Delete actual exercise
-    @IBAction func deleteExButtonCL(sender: AnyObject) {
+    @IBAction func deleteExButtonCL(_ sender: AnyObject) {
         
-        exercises.removeAtIndex(userPos)
+        exercises.remove(at: userPos)
         deleteOn = true
         if userPos > 0 {
             filterSpecificView(true)
@@ -59,7 +79,7 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
     }
     
     // Show previous exercise
-    @IBAction func previousExButtonCL(sender: AnyObject) {
+    @IBAction func previousExButtonCL(_ sender: AnyObject) {
         
         exercises[userPos] = [m_tf_Name.text!, m_tf_Reps.text!, m_tf_Sets.text!]
         filterSpecificView(true)
@@ -67,45 +87,45 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
     }
     
     // Show next exercise
-    @IBAction func nextExButtonCL(sender: AnyObject) {
+    @IBAction func nextExButtonCL(_ sender: AnyObject) {
         
         exercises[userPos] = [m_tf_Name.text!, m_tf_Reps.text!, m_tf_Sets.text!]
         filterSpecificView(false)
         
     }
     
-    @IBAction func saveClickListener(sender: AnyObject) {
+    @IBAction func saveClickListener(_ sender: AnyObject) {
         
         // Save all created exercises
         if allFilled() {
             dayId = m_tf_ListName.text!
             exercises[userPos] = [m_tf_Name.text!, m_tf_Reps.text!, m_tf_Sets.text!]
-            let request = NSFetchRequest(entityName: "Exercise")
-            let exercisesCD = (try! appdel.managedObjectContext?.executeFetchRequest(request)) as! [Exercise]
+            let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Exercise")
+            let exercisesCD = (try! appdel.managedObjectContext?.fetch(request)) as! [Exercise]
             
             // In edit mode remove old saved exercises and add the new edited one
             if editMode {
                 for singleExCD in exercisesCD {
                     if singleExCD.dayID == editDayIDSaver {
-                        appdel.managedObjectContext!.deleteObject(singleExCD as NSManagedObject)
+                        appdel.managedObjectContext!.delete(singleExCD as NSManagedObject)
                     }
                 }
             }
             appdel.saveContext()
             for checkCells in self.exercises {
-                let newItem = NSEntityDescription.insertNewObjectForEntityForName("Exercise", inManagedObjectContext: appdel.managedObjectContext!) as! Exercise
+                let newItem = NSEntityDescription.insertNewObject(forEntityName: "Exercise", into: appdel.managedObjectContext!) as! Exercise
                 newItem.dayID = dayId
                 print(checkCells[0])
                 newItem.name = checkCells[0]
-                newItem.reps = Int(checkCells[1])!
-                newItem.sets = Int(checkCells[2])!
+                newItem.reps = Int(checkCells[1])! as NSNumber
+                newItem.sets = Int(checkCells[2])! as NSNumber
                 appdel.saveContext()
             }
-            let informUser = UIAlertController(title: "Saved", message: "Your training plan was saved", preferredStyle: UIAlertControllerStyle.Alert)
-            informUser.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
-                self.navigationController?.popViewControllerAnimated(true)
+            let informUser = UIAlertController(title: "Saved", message: "Your training plan was saved", preferredStyle: UIAlertControllerStyle.alert)
+            informUser.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: { (action) -> Void in
+                self.navigationController?.popViewController(animated: true)
             }))
-            presentViewController(informUser, animated: true, completion: nil)
+            present(informUser, animated: true, completion: nil)
         }
         
     }
@@ -118,7 +138,7 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
         
         // Handle iAd
         iAd.delegate = self
-        iAd.hidden = true
+        iAd.isHidden = true
         
         // Set background
         var backgroundIMG = UIImage(named: "Background2.png")
@@ -126,7 +146,7 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
         self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
         
         // Show tutorial
-        if NSUserDefaults.standardUserDefaults().objectForKey("tutorialAddExercise") == nil {
+        if UserDefaults.standard.object(forKey: "tutorialAddExercise") == nil {
             tutorialView = UIImageView(frame: self.view.frame)
             tutorialView.image = UIImage(named: "TutorialAddExercise.png")
             tutorialView.frame.origin.y += 18
@@ -135,11 +155,11 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
             } else {
                 tutorialView.frame.size.height -= 60
             }
-            tutorialView.userInteractionEnabled = true
-            let tap = UITapGestureRecognizer(target: self, action: "hideTutorial")
+            tutorialView.isUserInteractionEnabled = true
+            let tap = UITapGestureRecognizer(target: self, action: #selector(AddExerciseVC.hideTutorial))
             tutorialView.addGestureRecognizer(tap)
             self.view.addSubview(tutorialView)
-            self.navigationController?.navigationBarHidden = true
+            self.navigationController?.isNavigationBarHidden = true
         }
 
         // Set delegates of textfields
@@ -175,25 +195,25 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
         }
         
         if exercises.count <= 1 {
-            deleteExButton.enabled = false
-            nextExButton.enabled = false
-            nextExButton.setTitle("", forState: UIControlState.Normal)
+            deleteExButton.isEnabled = false
+            nextExButton.isEnabled = false
+            nextExButton.setTitle("", for: UIControlState())
         }
-        previousExButton.enabled = false
-        previousExButton.setTitle("", forState: UIControlState.Normal)
+        previousExButton.isEnabled = false
+        previousExButton.setTitle("", for: UIControlState())
         
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         
         self.navigationController?.setToolbarHidden(true, animated: true)
         
     }
     
     // Show correct background after rotation
-    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         
-        if NSUserDefaults.standardUserDefaults().objectForKey("tutorialAddExercise") == nil {
+        if UserDefaults.standard.object(forKey: "tutorialAddExercise") == nil {
             hideTutorial()
         }
         var backgroundIMG = UIImage(named: "Background2.png")
@@ -203,7 +223,7 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
     }
     
     // MARK: Keyboard Methods
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
         // Close Keyboard when clicking outside
         m_tf_Name.resignFirstResponder()
@@ -213,7 +233,7 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
         
     }
     
-    func textFieldDidBeginEditing(textField: UITextField) {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
         
         // Push up view to see what you are actual entering
         switch textField {
@@ -229,7 +249,7 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
         
     }
     
-    func textFieldDidEndEditing(textField: UITextField) {
+    func textFieldDidEndEditing(_ textField: UITextField) {
         
         // Put view back down after entering in text fields
         switch textField {
@@ -245,7 +265,7 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
         
     }
     
-    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
         // Jump to next textfield by clicking on "next" button
         if string == "\n" {
@@ -260,9 +280,9 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
             }
             return true
         }
-        textField.backgroundColor = UIColor.whiteColor()
+        textField.backgroundColor = UIColor.white
         textField.placeholder = ""
-        let text = (textField.text! as NSString).stringByReplacingCharactersInRange(range, withString: string)
+        let text = (textField.text! as NSString).replacingCharacters(in: range, with: string)
         
         // Setup input settings
         let newLength = textField.text!.characters.count + string.characters.count - range.length
@@ -290,25 +310,25 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
     // MARK: My Methods
     func hideTutorial() {
       
-        self.navigationController?.navigationBarHidden = false
-        UIView.transitionWithView(self.view, duration: 1, options: UIViewAnimationOptions.CurveLinear, animations: {
+        self.navigationController?.isNavigationBarHidden = false
+        UIView.transition(with: self.view, duration: 1, options: UIViewAnimationOptions.curveLinear, animations: {
             self.tutorialView.alpha = 0;
             }, completion:{ finished in
-                 NSUserDefaults.standardUserDefaults().setObject(false, forKey: "tutorialAddExercise")
+                 UserDefaults.standard.set(false, forKey: "tutorialAddExercise")
                 self.tutorialView.removeFromSuperview()
         })
         
     }
     
     // Fit background image to display size
-    func imageResize(imageObj: UIImage, sizeChange: CGSize) -> UIImage {
+    func imageResize(_ imageObj: UIImage, sizeChange: CGSize) -> UIImage {
         
         let hasAlpha = false
         let scale: CGFloat = 0.0 // Automatically use scale factor of main screen
         UIGraphicsBeginImageContextWithOptions(sizeChange, !hasAlpha, scale)
-        imageObj.drawInRect(CGRect(origin: CGPointZero, size: sizeChange))
+        imageObj.draw(in: CGRect(origin: CGPoint.zero, size: sizeChange))
         let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
-        return scaledImage
+        return scaledImage!
         
     }
     
@@ -348,7 +368,7 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
         
     }
     
-    func filterSpecificView(animationDirection: Bool) {
+    func filterSpecificView(_ animationDirection: Bool) {
         
         if deleteOn || allFilled() {
             dayId = m_tf_ListName.text!
@@ -369,22 +389,22 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
                         
                         // Enable/Disable buttons
                         if userPos > 0 {
-                            previousExButton.enabled = true
-                            previousExButton.setTitle("<", forState: UIControlState.Normal)
-                            deleteExButton.enabled = true
+                            previousExButton.isEnabled = true
+                            previousExButton.setTitle("<", for: UIControlState())
+                            deleteExButton.isEnabled = true
                         } else {
-                            previousExButton.enabled = false
-                            previousExButton.setTitle("", forState: UIControlState.Normal)
+                            previousExButton.isEnabled = false
+                            previousExButton.setTitle("", for: UIControlState())
                         }
                         if exercises.count <= 1 {
-                            deleteExButton.enabled = false
+                            deleteExButton.isEnabled = false
                         }
                         if userPos + 1 < exercises.count {
-                            nextExButton.enabled = true
-                            nextExButton.setTitle(">", forState: UIControlState.Normal)
+                            nextExButton.isEnabled = true
+                            nextExButton.setTitle(">", for: UIControlState())
                         } else {
-                            nextExButton.enabled = false
-                            nextExButton.setTitle("", forState: UIControlState.Normal)
+                            nextExButton.isEnabled = false
+                            nextExButton.setTitle("", for: UIControlState())
                         }
                     }
                 }
@@ -394,27 +414,27 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
         
     }
 
-    func slideIn(duration: NSTimeInterval = 1.0, completionDelegate: AnyObject? = nil, direction:Bool) {
+    func slideIn(_ duration: TimeInterval = 1.0, completionDelegate: AnyObject? = nil, direction:Bool) {
         
-        m_tf_Name.backgroundColor = UIColor.whiteColor()
-        m_tf_Sets.backgroundColor = UIColor.whiteColor()
-        m_tf_Reps.backgroundColor = UIColor.whiteColor()
+        m_tf_Name.backgroundColor = UIColor.white
+        m_tf_Sets.backgroundColor = UIColor.white
+        m_tf_Reps.backgroundColor = UIColor.white
         
         // Create a CATransition animation
         let slideInTransition = CATransition()
         
         // Set its callback delegate to the completionDelegate that was provided (if any)
-        if let delegate: AnyObject = completionDelegate {
+        if let delegate = completionDelegate as? CAAnimationDelegate {
             slideInTransition.delegate = delegate
         }
         
         // Customize the animation's properties
         slideInTransition.type = kCATransitionMoveIn
         if direction {
-            userPos--
+            userPos -= 1
             slideInTransition.subtype = kCATransitionFromLeft
         } else {
-            userPos++
+            userPos += 1
             slideInTransition.subtype = kCATransitionFromRight
         }
         slideInTransition.duration = duration
@@ -422,42 +442,42 @@ class AddExerciseVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate
         slideInTransition.fillMode = kCAFillModeRemoved
         
         // Add the animation to the View's layer
-        (completionDelegate as! UIView).layer.addAnimation(slideInTransition, forKey: "slideInTransition")
+        (completionDelegate as! UIView).layer.add(slideInTransition, forKey: "slideInTransition")
         
     }
     
     // MARK: iAd
-    func bannerViewDidLoadAd(banner: ADBannerView!) {
+    func bannerViewDidLoadAd(_ banner: ADBannerView!) {
         
         self.layoutAnimated(true)
         
     }
     
-    func bannerView(banner: ADBannerView!, didFailToReceiveAdWithError error: NSError!) {
+    func bannerView(_ banner: ADBannerView!, didFailToReceiveAdWithError error: Error!) {
         
         self.layoutAnimated(true)
         
     }
     
-    func bannerViewActionShouldBegin(banner: ADBannerView!, willLeaveApplication willLeave: Bool) -> Bool {
+    func bannerViewActionShouldBegin(_ banner: ADBannerView!, willLeaveApplication willLeave: Bool) -> Bool {
         
         return true
         
     }
     
-    func layoutAnimated(animated: Bool) {
+    func layoutAnimated(_ animated: Bool) {
 
-        if iAd.bannerLoaded {
-            iAd.hidden = false
-            UIView.animateWithDuration(animated ? 0.25 : 0.0, animations: {
+        if iAd.isBannerLoaded {
+            iAd.isHidden = false
+            UIView.animate(withDuration: animated ? 0.25 : 0.0, animations: {
                 self.iAd.alpha = 1;
             })
         } else {
-            UIView.animateWithDuration(animated ? 0.25 : 0.0, animations: {
+            UIView.animate(withDuration: animated ? 0.25 : 0.0, animations: {
                 self.iAd.alpha = 0
                 }, completion: {
                     (value: Bool) in
-                    self.iAd.hidden = true
+                    self.iAd.isHidden = true
             })
         }
         
