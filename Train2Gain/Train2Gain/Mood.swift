@@ -14,6 +14,6 @@ class Mood : NSManagedObject {
 
     @NSManaged var moodImagePath: String
     @NSManaged var moodName: String
-    @NSManaged var date: NSDate
+    @NSManaged var date: Date
 
 }

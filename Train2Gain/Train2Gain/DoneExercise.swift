@@ -21,11 +21,11 @@ class DoneExercise: NSManagedObject {
     @NSManaged var setCounter: NSNumber
     @NSManaged var doneReps: NSNumber
     @NSManaged var weight: NSDecimalNumber
-    @NSManaged var date: NSDate
+    @NSManaged var date: Date
     
     convenience init() {
         
-        let appdel =  UIApplication.sharedApplication().delegate as! AppDelegate
+        let appdel =  UIApplication.shared.delegate as! AppDelegate
         var managedObjectContext: NSManagedObjectContext? = {
             let coordinator = appdel.persistentStoreCoordinator;
             if coordinator == nil{
@@ -37,8 +37,8 @@ class DoneExercise: NSManagedObject {
             
             }()
         
-        let entity = NSEntityDescription.entityForName("DoneExercise", inManagedObjectContext: appdel.managedObjectContext!)!
-        self.init(entity: entity, insertIntoManagedObjectContext: appdel.managedObjectContext)
+        let entity = NSEntityDescription.entity(forEntityName: "DoneExercise", in: appdel.managedObjectContext!)!
+        self.init(entity: entity, insertInto: appdel.managedObjectContext)
         
         self.weight = 0
         self.sets = 0
@@ -47,7 +47,7 @@ class DoneExercise: NSManagedObject {
         self.name = ""
         self.dayID = ""
         self.setCounter = 0
-        self.date = NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate
+        self.date = UserDefaults.standard.object(forKey: "dateUF") as! Date
         
         
     }

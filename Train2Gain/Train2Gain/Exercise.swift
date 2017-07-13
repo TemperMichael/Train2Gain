@@ -20,11 +20,10 @@ class Exercise: NSManagedObject {
     @NSManaged var name: String
     @NSManaged var dayID: String
     
-    //m_weight: NSNumber, m_sets: NSNumber, m_doneReps: NSNumber, m_reps:NSNumber, m_name: String, m_dayID:String
     
     convenience init() {
         
-        let appdel =  UIApplication.sharedApplication().delegate as! AppDelegate
+        let appdel =  UIApplication.shared.delegate as! AppDelegate
         var managedObjectContext: NSManagedObjectContext? = {
             let coordinator = appdel.persistentStoreCoordinator;
             if coordinator == nil{
@@ -36,8 +35,8 @@ class Exercise: NSManagedObject {
             
             }()
 
-        let entity = NSEntityDescription.entityForName("Exercise", inManagedObjectContext: appdel.managedObjectContext!)!
-        self.init(entity: entity, insertIntoManagedObjectContext: appdel.managedObjectContext)
+        let entity = NSEntityDescription.entity(forEntityName: "Exercise", in: appdel.managedObjectContext!)!
+        self.init(entity: entity, insertInto: appdel.managedObjectContext)
         
         self.weight = 0
         self.sets = 0

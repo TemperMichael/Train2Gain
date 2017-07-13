@@ -12,6 +12,6 @@ import CoreData
 @objc(Dates)
 class Dates: NSManagedObject {
 
-    @NSManaged var savedDate: NSDate
+    @NSManaged var savedDate: Date
 
 }
