@@ -16,11 +16,11 @@ class PickDateVC: UIViewController, ADBannerViewDelegate {
     @IBOutlet weak var iAd: ADBannerView!
     @IBOutlet weak var okButton: UIButton!
     
-    @IBAction func okCL(sender: AnyObject) {
+    @IBAction func okCL(_ sender: AnyObject) {
         
         // Save date
-        NSUserDefaults.standardUserDefaults().setObject(m_dp_DatePicker.date,forKey: "dateUF")
-        self.navigationController?.popViewControllerAnimated(true)
+        UserDefaults.standard.set(m_dp_DatePicker.date,forKey: "dateUF")
+        self.navigationController?.popViewController(animated: true)
         
     }
 
@@ -30,86 +30,86 @@ class PickDateVC: UIViewController, ADBannerViewDelegate {
         
         // Handle iAd
         iAd.delegate = self
-        iAd.hidden = true
-        okButton.layer.borderColor = UIColor.whiteColor().CGColor
+        iAd.isHidden = true
+        okButton.layer.borderColor = UIColor.white.cgColor
         
         // Set background
         var backgroundIMG = UIImage(named: "Background2.png")
         backgroundIMG = imageResize(backgroundIMG!, sizeChange: view.frame.size)
         self.view.backgroundColor = UIColor(patternImage: backgroundIMG!)
         self.navigationItem.hidesBackButton = true
-        m_dp_DatePicker.setDate(NSUserDefaults.standardUserDefaults().objectForKey("dateUF") as! NSDate, animated: true)
-        m_dp_DatePicker.viewForBaselineLayout().setValue(UIColor.whiteColor(), forKeyPath: "tintColor")
+        m_dp_DatePicker.setDate(UserDefaults.standard.object(forKey: "dateUF") as! Date, animated: true)
+        m_dp_DatePicker.forBaselineLayout().setValue(UIColor.white, forKeyPath: "tintColor")
         for sub in m_dp_DatePicker.subviews {
-            sub.setValue(UIColor.whiteColor(), forKeyPath: "textColor")
-            sub.setValue(UIColor.whiteColor(), forKey: "tintColor")     
+            sub.setValue(UIColor.white, forKeyPath: "textColor")
+            sub.setValue(UIColor.white, forKey: "tintColor")     
         }
  
     }
 
     //Get date in a good format
-    func returnDateForm(date: NSDate) -> String {
+    func returnDateForm(_ date: Date) -> String {
         
-        let dateFormatter = NSDateFormatter()
-        let theDateFormat = NSDateFormatterStyle.ShortStyle
-        let theTimeFormat = NSDateFormatterStyle.NoStyle
+        let dateFormatter = DateFormatter()
+        let theDateFormat = DateFormatter.Style.short
+        let theTimeFormat = DateFormatter.Style.none
         dateFormatter.dateStyle = theDateFormat
         dateFormatter.timeStyle = theTimeFormat
-        return dateFormatter.stringFromDate(date)
+        return dateFormatter.string(from: date)
         
     }
     
     // Fit background image to display size
-    func imageResize(imageObj: UIImage, sizeChange: CGSize) -> UIImage {
+    func imageResize(_ imageObj: UIImage, sizeChange: CGSize) -> UIImage {
         
         let hasAlpha = false
         let scale: CGFloat = 0.0 // Automatically use scale factor of main screen
         UIGraphicsBeginImageContextWithOptions(sizeChange, !hasAlpha, scale)
-        imageObj.drawInRect(CGRect(origin: CGPointZero, size: sizeChange))
+        imageObj.draw(in: CGRect(origin: CGPoint.zero, size: sizeChange))
         let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
-        return scaledImage
+        return scaledImage!
         
     }
     
     // MARK: iAd
-    func bannerViewDidLoadAd(banner: ADBannerView!) {
+    func bannerViewDidLoadAd(_ banner: ADBannerView!) {
         
         self.layoutAnimated(true)
         
     }
     
-    func bannerView(banner: ADBannerView!, didFailToReceiveAdWithError error: NSError!) {
+    func bannerView(_ banner: ADBannerView!, didFailToReceiveAdWithError error: Error!) {
         
         self.layoutAnimated(true)
         
     }
     
-    func bannerViewActionShouldBegin(banner: ADBannerView!, willLeaveApplication willLeave: Bool) -> Bool {
+    func bannerViewActionShouldBegin(_ banner: ADBannerView!, willLeaveApplication willLeave: Bool) -> Bool {
         
         return true
         
     }
     
-    func layoutAnimated(animated : Bool) {
+    func layoutAnimated(_ animated : Bool) {
         
-        if iAd.bannerLoaded {
-            iAd.hidden = false
-            UIView.animateWithDuration(animated ? 0.25 : 0.0, animations: {
+        if iAd.isBannerLoaded {
+            iAd.isHidden = false
+            UIView.animate(withDuration: animated ? 0.25 : 0.0, animations: {
                 self.iAd.alpha = 1;
             })
         } else {
-            UIView.animateWithDuration(animated ? 0.25 : 0.0, animations: {
+            UIView.animate(withDuration: animated ? 0.25 : 0.0, animations: {
                 self.iAd.alpha = 0
                 }, completion: {
                     (value: Bool) in
-                    self.iAd.hidden = true
+                    self.iAd.isHidden = true
             })
         }
         
     }
     
     // Show correct background after rotation
-    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         
         var backgroundIMG = UIImage(named: "Background2.png")
         backgroundIMG = imageResize(backgroundIMG!, sizeChange: size)

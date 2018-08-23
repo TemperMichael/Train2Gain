@@ -14,7 +14,7 @@ class DayIDChosenTVC: UITableViewController {
     var selectedDayDetails: [String] = []
     var doneExercises: [DoneExercise] = []
     var setCountValues: [String] = []
-    var weightUnit: String! = NSUserDefaults.standardUserDefaults().objectForKey("weightUnit")! as! String
+    var weightUnit = UserDefaults.standard.object(forKey: "weightUnit")! as! String
     
     // MARK: View Methods
     override func viewDidLoad() {
@@ -22,28 +22,28 @@ class DayIDChosenTVC: UITableViewController {
         super.viewDidLoad()
         
         // Set background
-        let backgroundView = UIView(frame: CGRectZero)
+        let backgroundView = UIView(frame: CGRect.zero)
         self.tableView.tableFooterView = backgroundView
         self.tableView.backgroundColor = UIColor(red: 22 / 255, green: 200 / 255, blue: 1.00, alpha: 1)
         
-        let appdel =  UIApplication.sharedApplication().delegate as! AppDelegate
-        let requestDoneEx = NSFetchRequest(entityName: "DoneExercise")
-        let doneEx = (try! appdel.managedObjectContext?.executeFetchRequest(requestDoneEx)) as! [DoneExercise]
+        let appdel =  UIApplication.shared.delegate as! AppDelegate
+        let requestDoneEx = NSFetchRequest<NSFetchRequestResult>(entityName: "DoneExercise")
+        let doneEx = (try! appdel.managedObjectContext?.fetch(requestDoneEx)) as! [DoneExercise]
         self.title = "\(selectedDayDetails[0])"
         var checkString = ""
         var checkBefore = ""
         var counter = 2
         
         // Get done exercises of this day
-        for singleEx in doneEx{
-            checkBefore=checkString
+        for singleEx in doneEx {
+            checkBefore = checkString
             if singleEx.dayID == selectedDayDetails[0] && returnDateForm(singleEx.date) == selectedDayDetails [1] {
                 checkString = singleEx.name
                 doneExercises.append(singleEx)
-                if(checkString == checkBefore){
+                if checkString == checkBefore {
                    setCountValues.append("\(counter)")
-                    counter++;
-                }else{
+                    counter += 1;
+                } else {
                     setCountValues.append("1")
                     counter = 2
                 }
@@ -52,9 +52,9 @@ class DayIDChosenTVC: UITableViewController {
         
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         
-        let appdel =  UIApplication.sharedApplication().delegate as! AppDelegate
+        let appdel =  UIApplication.shared.delegate as! AppDelegate
         appdel.rollBackContext()
         
     }
@@ -65,23 +65,23 @@ class DayIDChosenTVC: UITableViewController {
         
     }
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         
         return 1
         
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return doneExercises.count
         
     }
     
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("OwnCell", forIndexPath: indexPath) as! DayIDChosenCell
-        var weight = (doneExercises[indexPath.row].weight).doubleValue
+        let cell = tableView.dequeueReusableCell(withIdentifier: "OwnCell", for: indexPath) as! DayIDChosenCell
+        var weight = (doneExercises[(indexPath as NSIndexPath).row].weight).doubleValue
         
         // Calculation for actual chosen unit
         if weightUnit == "lbs" {
@@ -89,9 +89,9 @@ class DayIDChosenTVC: UITableViewController {
         }
         
         // Setup cells
-        cell.m_L_Name.text = doneExercises[indexPath.row].name
-        cell.m_L_Reps.text = "\(doneExercises[indexPath.row].reps)"
-        cell.m_L_DoneReps.text = "\(doneExercises[indexPath.row].doneReps)"
+        cell.m_L_Name.text = doneExercises[(indexPath as NSIndexPath).row].name
+        cell.m_L_Reps.text = "\(doneExercises[(indexPath as NSIndexPath).row].reps)"
+        cell.m_L_DoneReps.text = "\(doneExercises[(indexPath as NSIndexPath).row].doneReps)"
         cell.m_L_Weight.text = NSString(format: "%.2f", weight) as String
         
         if weight < 1000 {
@@ -106,27 +106,27 @@ class DayIDChosenTVC: UITableViewController {
         }
         
         let translationSet = NSLocalizedString("Set", comment: "Set")
-        cell.m_L_setCount.text = "\(setCountValues[indexPath.row]).\(translationSet)"
+        cell.m_L_setCount.text = "\(setCountValues[(indexPath as NSIndexPath).row]).\(translationSet)"
         cell.m_L_WeightUnit.text = weightUnit
         
         //Set seperators to the left side
-        cell.separatorInset = UIEdgeInsetsZero
+        cell.separatorInset = UIEdgeInsets.zero
         cell.preservesSuperviewLayoutMargins = false
-        cell.layoutMargins = UIEdgeInsetsZero
+        cell.layoutMargins = UIEdgeInsets.zero
         return cell
         
     }
     
     // MARK: My Methods
     // Get the date in a good format
-    func returnDateForm(date:NSDate) -> String{
+    func returnDateForm(_ date:Date) -> String{
         
-        let dateFormatter = NSDateFormatter()
-        let theDateFormat = NSDateFormatterStyle.ShortStyle
-        let theTimeFormat = NSDateFormatterStyle.NoStyle
+        let dateFormatter = DateFormatter()
+        let theDateFormat = DateFormatter.Style.short
+        let theTimeFormat = DateFormatter.Style.none
         dateFormatter.dateStyle = theDateFormat
         dateFormatter.timeStyle = theTimeFormat
-        return dateFormatter.stringFromDate(date)
+        return dateFormatter.string(from: date)
         
     }
 }

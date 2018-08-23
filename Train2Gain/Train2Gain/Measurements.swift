@@ -16,6 +16,6 @@ class Measurements: NSManagedObject {
     @NSManaged var arm: NSDecimalNumber
     @NSManaged var waist: NSDecimalNumber
     @NSManaged var leg: NSDecimalNumber
-    @NSManaged var date: NSDate
+    @NSManaged var date: Date
 
 }
