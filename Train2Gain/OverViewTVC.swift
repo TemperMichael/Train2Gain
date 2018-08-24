@@ -35,7 +35,7 @@ class OverViewTVC: UITableViewController {
         
         // Remove text from back button
         let backButton = UIBarButtonItem(title: " ", style: UIBarButtonItemStyle.plain, target: self, action: nil)
-        backButton.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "Chalkduster", size: 20)!], for: UIControlState())
+        backButton.setTitleTextAttributes([NSAttributedStringKey.font: UIFont(name: "Chalkduster", size: 20)!], for: UIControlState())
         navigationItem.backBarButtonItem = backButton
         
         // Get the actual chosen units

@@ -38,7 +38,7 @@ class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         
         // Remove text from the back button
         let backButton = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.plain, target: self, action: nil)
-        backButton.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "Heiti SC", size: 18)!], for: UIControlState())
+        backButton.setTitleTextAttributes([NSAttributedStringKey.font: UIFont(name: "Heiti SC", size: 18)!], for: UIControlState())
         navigationItem.backBarButtonItem = backButton
         
         //Hide empty cells
@@ -186,15 +186,15 @@ class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     }
     
     // MARK: iAd
-    func bannerViewDidLoadAd(_ banner: ADBannerView!) {
+    func bannerViewDidLoadAd(_ banner: ADBannerView) {
         self.layoutAnimated(true)
     }
     
-    func bannerView(_ banner: ADBannerView!, didFailToReceiveAdWithError error: Error!) {
+    func bannerView(_ banner: ADBannerView, didFailToReceiveAdWithError error: Error) {
         self.layoutAnimated(true)
     }
     
-    func bannerViewActionShouldBegin(_ banner: ADBannerView!, willLeaveApplication willLeave: Bool) -> Bool {
+    func bannerViewActionShouldBegin(_ banner: ADBannerView, willLeaveApplication willLeave: Bool) -> Bool {
         return true
     }
     

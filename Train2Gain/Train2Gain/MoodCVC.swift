@@ -252,15 +252,15 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
     
     
     // MARK: iAd
-    func bannerViewDidLoadAd(_ banner: ADBannerView!) {
+    func bannerViewDidLoadAd(_ banner: ADBannerView) {
         self.layoutAnimated(true)
     }
     
-    func bannerView(_ banner: ADBannerView!, didFailToReceiveAdWithError error: Error!) {
+    func bannerView(_ banner: ADBannerView, didFailToReceiveAdWithError error: Error) {
         self.layoutAnimated(true)
     }
     
-    func bannerViewActionShouldBegin(_ banner: ADBannerView!, willLeaveApplication willLeave: Bool) -> Bool {
+    func bannerViewActionShouldBegin(_ banner: ADBannerView, willLeaveApplication willLeave: Bool) -> Bool {
         return true
     }
     

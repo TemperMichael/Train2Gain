@@ -98,7 +98,7 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         // Remove text from back button
         let backButton = UIBarButtonItem(title: " ", style: UIBarButtonItemStyle.plain, target: self, action: nil)
-        backButton.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "Chalkduster", size: 20)!], for: UIControlState())
+        backButton.setTitleTextAttributes([NSAttributedStringKey.font: UIFont(name: "Chalkduster", size: 20)!], for: UIControlState())
         navigationItem.backBarButtonItem = backButton
         datePickerButton.titleLabel?.text = returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)
         trainingDataDayIDTableView.dataSource = self
@@ -389,15 +389,15 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     // MARK: iAd
-    func bannerViewDidLoadAd(_ banner: ADBannerView!) {
+    func bannerViewDidLoadAd(_ banner: ADBannerView) {
         self.layoutAnimated(true)
     }
     
-    func bannerView(_ banner: ADBannerView!, didFailToReceiveAdWithError error: Error!) {
+    func bannerView(_ banner: ADBannerView, didFailToReceiveAdWithError error: Error) {
         self.layoutAnimated(true)
     }
     
-    func bannerViewActionShouldBegin(_ banner: ADBannerView!, willLeaveApplication willLeave: Bool) -> Bool {
+    func bannerViewActionShouldBegin(_ banner: ADBannerView, willLeaveApplication willLeave: Bool) -> Bool {
         return true
     }
     

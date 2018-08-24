@@ -26,7 +26,7 @@ class EditTrainingDataVC: UIViewController, ADBannerViewDelegate {
         
         // Remove text from back button
         let backButton = UIBarButtonItem(title: " ", style: UIBarButtonItemStyle.plain, target: self, action: nil)
-        backButton.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "Chalkduster", size: 20)!], for: UIControlState())
+        backButton.setTitleTextAttributes([NSAttributedStringKey.font: UIFont(name: "Chalkduster", size: 20)!], for: UIControlState())
         navigationItem.backBarButtonItem = backButton
         
         // Set bordercolor of buttons
@@ -87,15 +87,15 @@ class EditTrainingDataVC: UIViewController, ADBannerViewDelegate {
     }
     
     // MARK: iAd
-    func bannerViewDidLoadAd(_ banner: ADBannerView!) {
+    func bannerViewDidLoadAd(_ banner: ADBannerView) {
         self.layoutAnimated(true)
     }
     
-    func bannerView(_ banner: ADBannerView!, didFailToReceiveAdWithError error: Error!) {
+    func bannerView(_ banner: ADBannerView, didFailToReceiveAdWithError error: Error) {
         self.layoutAnimated(true)
     }
     
-    func bannerViewActionShouldBegin(_ banner: ADBannerView!, willLeaveApplication willLeave: Bool) -> Bool {
+    func bannerViewActionShouldBegin(_ banner: ADBannerView, willLeaveApplication willLeave: Bool) -> Bool {
         return true
     }
     

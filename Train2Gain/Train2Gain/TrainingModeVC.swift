@@ -359,7 +359,7 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegat
         return dateFormatter.string(from: date)
     }
     
-    func updateTime() {
+    @objc func updateTime() {
         currentTime = Date.timeIntervalSinceReferenceDate
         
         // Find the difference between current time and start time.
@@ -501,15 +501,15 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegat
     }
     
     // MARK: iAd
-    func bannerViewDidLoadAd(_ banner: ADBannerView!) {
+    func bannerViewDidLoadAd(_ banner: ADBannerView) {
         self.layoutAnimated(true)
     }
     
-    func bannerView(_ banner: ADBannerView!, didFailToReceiveAdWithError error: Error!) {
+    func bannerView(_ banner: ADBannerView, didFailToReceiveAdWithError error: Error) {
         self.layoutAnimated(true)
     }
     
-    func bannerViewActionShouldBegin(_ banner: ADBannerView!, willLeaveApplication willLeave: Bool) -> Bool {
+    func bannerViewActionShouldBegin(_ banner: ADBannerView, willLeaveApplication willLeave: Bool) -> Bool {
         return true
     }
     
