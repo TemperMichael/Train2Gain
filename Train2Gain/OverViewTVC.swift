@@ -11,7 +11,7 @@ import LocalAuthentication
 
 class OverViewTVC: UITableViewController {
     
-    var menuPoints: [String] = [NSLocalizedString("Training", comment: "Training"),  NSLocalizedString("Body measurements", comment: "Body measurements"), NSLocalizedString("Mood", comment: "Mood"), NSLocalizedString("Training data", comment: "Training data"), NSLocalizedString("Settings", comment: "Settings")]
+    var menuPoints: [String] = [NSLocalizedString("Training", comment: "Training"),  NSLocalizedString("Body measurements", comment: "Body measurements"), NSLocalizedString("Mood", comment: "Mood"), NSLocalizedString("Training data", comment: "Training data"), NSLocalizedString("Statistic", comment: "Statistic"), NSLocalizedString("Settings", comment: "Settings")]
     // NSLocalizedString("Statistic", comment: "Statistic")
     var password: String =  ""
     var selectedSection: String = ""
@@ -48,7 +48,7 @@ class OverViewTVC: UITableViewController {
         }
         
         // Get actual pw if one is set
-        if let pw = UserDefaults.standard.object(forKey: "Password") as? String{
+        if let pw = UserDefaults.standard.object(forKey: "Password") as? String {
             password = pw
         }
  
@@ -150,7 +150,7 @@ class OverViewTVC: UITableViewController {
                 } else {
                     self.performSegue(withIdentifier: "TrainingData", sender: self)
                 }
-            case 123 :
+            case 4 :
                 //TODO - Statistics not used currently since charts framework was updated due to Swift 3 and I didn't have time to adjust my project to the changes
                 if password != "" {
                     selectedSection = "Statistic"
@@ -158,7 +158,7 @@ class OverViewTVC: UITableViewController {
                 } else {
                     self.performSegue(withIdentifier: "Statistic", sender: self)
                 }
-            case 4 :
+            case 5 :
                 performSegue(withIdentifier: "Settings", sender: self)
             default :
                 print("Error", terminator: "")
