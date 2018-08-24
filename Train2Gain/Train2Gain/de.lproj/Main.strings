@@ -266,9 +266,6 @@
 /* Class = "UILabel"; text = "Arms :"; ObjectID = "jMp-df-7Xx"; */
 "jMp-df-7Xx.text" = "Arme :";
 
-/* Class = "UIButton"; normalTitle = "Show Tutorial in Views"; ObjectID = "kSP-fx-1fD"; */
-"kSP-fx-1fD.normalTitle" = "Tutorial erneut anzeigen";
-
 /* Class = "UIButton"; normalTitle = ">"; ObjectID = "kqs-rI-j5K"; */
 "kqs-rI-j5K.normalTitle" = ">";
 

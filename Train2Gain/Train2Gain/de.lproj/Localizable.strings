@@ -146,11 +146,6 @@
 "Password" = "Passwort";
 
 
-// Tutorial Alert
-
-"Tutorials" = "Tutorials";
-"Tutorials will be shown again in the views" = "Tutorials werden erneut in den Ansichten angezeigt";
-
 // PickerView
 
 "Choose a date" = "Wähle ein Datum";

@@ -11,11 +11,10 @@ import LocalAuthentication
 
 class OverViewTVC: UITableViewController {
     
+    var appDelegate = UIApplication.shared.delegate as! AppDelegate
     var menuPoints: [String] = [NSLocalizedString("Training", comment: "Training"),  NSLocalizedString("Body measurements", comment: "Body measurements"), NSLocalizedString("Mood", comment: "Mood"), NSLocalizedString("Training data", comment: "Training data"), NSLocalizedString("Statistic", comment: "Statistic"), NSLocalizedString("Settings", comment: "Settings")]
-    // NSLocalizedString("Statistic", comment: "Statistic")
     var password: String =  ""
     var selectedSection: String = ""
-    var appDelegate = UIApplication.shared.delegate as! AppDelegate
    
     // MARK: View Methods
     override func viewDidLoad() {
@@ -55,7 +54,6 @@ class OverViewTVC: UITableViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        
         appDelegate.shouldRotate = false
         if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.pad {
             appDelegate.shouldRotate = true
@@ -64,7 +62,7 @@ class OverViewTVC: UITableViewController {
         // Hide empty cells
         let backgroundView = UIView(frame: CGRect.zero)
         self.tableView.tableFooterView = backgroundView
-        self.tableView.backgroundColor = UIColor(red: 22 / 255, green: 200 / 255, blue: 1.00, alpha:1.0)
+        self.tableView.backgroundColor = UIColor(red: 22 / 255, green: 200 / 255, blue: 255 / 255, alpha: 1)
         
         // Get and save actual date
         UserDefaults.standard.set(Date(), forKey: "dateUF")
@@ -73,36 +71,26 @@ class OverViewTVC: UITableViewController {
         if let pw = UserDefaults.standard.object(forKey: "Password") as? String{
             password = pw
         }
-        
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        
         tableView.reloadData()
-        
     }
     
     // MARK: TableView Methods
     override func didReceiveMemoryWarning() {
-        
         super.didReceiveMemoryWarning()
- 
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        
         return 1
-        
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
         return menuPoints.count
-        
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         let cell = tableView.dequeueReusableCell(withIdentifier: "MenuPointCell", for: indexPath)
         
         // Setup cells
@@ -117,61 +105,53 @@ class OverViewTVC: UITableViewController {
         cell.preservesSuperviewLayoutMargins = false
         cell.layoutMargins = UIEdgeInsets.zero
         return cell
-        
     }
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        
         // Set colors of cells
-        cell.backgroundColor = UIColor(red: 22 / 255, green: 200 / 255, blue: 1.00, alpha: 1.0)
-        
+        cell.backgroundColor = UIColor(red: 22 / 255, green: 200 / 255, blue: 255 / 255, alpha: 1)
     }
    
     override var supportedInterfaceOrientations : UIInterfaceOrientationMask {
-        
         return UIInterfaceOrientationMask.portrait
-
     }
     
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         
         // Handle selection of menu item
         switch (indexPath as NSIndexPath).row {
-            case 0 :
+            case 0:
                 performSegue(withIdentifier: "ExerciseSegue", sender: self)
-            case 1 :
+            case 1:
                 performSegue(withIdentifier: "MeasurementSegue", sender: self)
-            case 2 :
+            case 2:
                 performSegue(withIdentifier: "MoodSegue", sender: self)
-            case 3 :
+            case 3:
                 if password != "" {
                     selectedSection = "TrainingData"
-                    self.checkPassword();
+                    self.checkPassword()
                 } else {
                     self.performSegue(withIdentifier: "TrainingData", sender: self)
                 }
-            case 4 :
-                //TODO - Statistics not used currently since charts framework was updated due to Swift 3 and I didn't have time to adjust my project to the changes
+            case 4:
                 if password != "" {
                     selectedSection = "Statistic"
-                    self.checkPassword();
+                    self.checkPassword()
                 } else {
                     self.performSegue(withIdentifier: "Statistic", sender: self)
                 }
-            case 5 :
+            case 5:
                 performSegue(withIdentifier: "Settings", sender: self)
-            default :
+            default:
                 print("Error", terminator: "")
         }
         return indexPath
-        
     }
     
-    // MARK: My Methods
+    // MARK: Own Methods
     func checkPassword(){
-
-        let context = LAContext()
         var error: NSError?
+        let context = LAContext()
         let messageText = NSLocalizedString("Scan your fingerprint", comment: "Scan your fingerprint")
         
         context.canEvaluatePolicy(LAPolicy.deviceOwnerAuthenticationWithBiometrics, error: &error)
@@ -180,7 +160,6 @@ class OverViewTVC: UITableViewController {
             
             if success {
                 OperationQueue.main.addOperation() {
-                    
                     // Open training data if right touch id was entered
                     if self.selectedSection == "TrainingData" {
                         self.performSegue(withIdentifier: self.selectedSection, sender: self)
@@ -189,7 +168,6 @@ class OverViewTVC: UITableViewController {
                     }
                 }
             } else {
-                
                 // Handle other possible situations
                 switch policyError!._code {
                 case LAError.Code.systemCancel.rawValue :
@@ -203,19 +181,17 @@ class OverViewTVC: UITableViewController {
                 }
             }
         })
-    
     }
     
     // Create password dialog: single = false for setup password
     //                         single = true for entering password
     func callPWAlert(_ _Message: String, single: Bool){
-        
         let passwordPrompt = UIAlertController(title: NSLocalizedString("Enter Password", comment: "Enter Password"), message: _Message, preferredStyle: UIAlertControllerStyle.alert)
+        
         passwordPrompt.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel"), style: UIAlertActionStyle.default, handler: nil))
         passwordPrompt.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: UIAlertActionStyle.default, handler: { (action) -> Void in
             //Enter password
             if single {
-                
                 let textField = passwordPrompt.textFields![0] 
                 let password = textField.text
                 if password == self.password {
@@ -224,7 +200,6 @@ class OverViewTVC: UITableViewController {
                     self.callPWAlert(NSLocalizedString("Password was wrong", comment: "Password was wrong"),single: true)
                 }
             } else {
-                
                 // Setup password
                 var textField = passwordPrompt.textFields![0] 
                 let password = textField.text
@@ -248,7 +223,7 @@ class OverViewTVC: UITableViewController {
                 textField.isSecureTextEntry = true
             })
         }
-        present(passwordPrompt, animated: true, completion: nil)
         
+        present(passwordPrompt, animated: true, completion: nil)
     }
 }

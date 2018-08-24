@@ -419,7 +419,9 @@ class EditTrainingDataDetailVC: UIViewController, UITextFieldDelegate, ADBannerV
             return false
         } else if textField == editRepsTextField {
             back = 2
-            if newLength <= back && ((Int(text)! >= 0 && Int(text)! < 100) || text == "") {
+            if let _ = Int(text), newLength <= back {
+                return true
+            } else if newLength <= back && text == "" {
                 return true
             } else {
                 return false
