@@ -333,34 +333,33 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
                 if weightUnit == "lbs" {
                     weight = weight * 2.20462262185
                 }
-                
                 dayHasContent = true
-                trainingDataWeightLabel.text = NSString(format:"\(translationWeight): %.2f \(weightUnit)" as NSString,weight ) as String
+                trainingDataWeightLabel.text = NSString(format:"\(translationWeight): %.2f \(weightUnit)" as NSString, weight) as String
                 
                 var length = (checkMeasureExists.arm).doubleValue
                 if lengthUnit == "inch" {
-                    length = length/2.54
+                    length = length / 2.54
                 }
-                trainingDataArmLabel.text =  NSString(format:"\(translationArms): %.2f \(lengthUnit)" as NSString,length ) as String
+                trainingDataArmLabel.text =  NSString(format:"\(translationArms): %.2f \(lengthUnit)" as NSString, length) as String
                 
                 length = (checkMeasureExists.chest).doubleValue
                 if lengthUnit == "inch" {
-                    length = length/2.54
+                    length = length / 2.54
                 }
-                trainingDataChestLabel.text =  NSString(format:"\(translationChest): %.2f \(lengthUnit)" as NSString,length ) as String
+                trainingDataChestLabel.text =  NSString(format:"\(translationChest): %.2f \(lengthUnit)" as NSString, length) as String
                 
                 
                 length = (checkMeasureExists.waist).doubleValue
                 if lengthUnit == "inch" {
-                    length = length/2.54
+                    length = length / 2.54
                 }
-                trainingDataWaistLabel.text =  NSString(format:"\(translationWaist): %.2f \(lengthUnit)" as NSString,length ) as String
+                trainingDataWaistLabel.text =  NSString(format:"\(translationWaist): %.2f \(lengthUnit)" as NSString, length) as String
                 
                 length = (checkMeasureExists.leg).doubleValue
                 if lengthUnit == "inch" {
-                    length = length/2.54
+                    length = length / 2.54
                 }
-                trainingDataLegLabel.text =  NSString(format:"\(translationLegs): %.2f \(lengthUnit)" as NSString,length ) as String
+                trainingDataLegLabel.text =  NSString(format:"\(translationLegs): %.2f \(lengthUnit)" as NSString, length) as String
             }
             
         }

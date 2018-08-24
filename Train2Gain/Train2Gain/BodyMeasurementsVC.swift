@@ -228,7 +228,7 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate, ADBannerViewDel
     
     func addMeasure(_ _Object: Measurements) {
         // TODO Werte  nicht formatiert gespeichert
-        var value : Double!
+        var value = 0.0
         _Object.date = date
         value = (measurementsWeightTextField.text! as NSString).doubleValue
         if weightUnit == "lbs" {
