@@ -113,10 +113,6 @@ class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSo
             let context: NSManagedObjectContext = self.appDelegate.managedObjectContext!
             var count = self.exercises.count - 1
             for _ in 0..<self.exercises.count  {
-                print(self.exercises)
-                print(count)
-                print((indexPath as NSIndexPath).row)
-                print(self.dayIDs)
                 if self.exercises[count].dayID == self.dayIDs[(indexPath as NSIndexPath).row] {
                     context.delete(self.exercises[count] as NSManagedObject)
                     self.exercises.remove(at: count)
