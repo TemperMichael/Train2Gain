@@ -135,7 +135,6 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
     }
     
     override func viewDidLoad() {
-        
         super.viewDidLoad()
         appDelegate.shouldRotate = true
         
@@ -199,7 +198,7 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         xAxis.spaceMax = 1
         
         let leftAxis = chartView.leftAxis
-        leftAxis.labelTextColor = UIColor(red:51/255, green:181/255, blue:229/255, alpha: 1)
+        leftAxis.labelTextColor = UIColor(red: 51 / 255, green: 181 / 255, blue: 229 / 255, alpha: 1)
         leftAxis.axisMaximum = 100
         leftAxis.axisMinimum = 0
         leftAxis.drawGridLinesEnabled = false
@@ -215,7 +214,7 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         setDataCount()
     }
     
-    // MARK: My Methods
+    // MARK: Own Methods
     func setDataCount() {
         
         setAmount = 0
@@ -273,8 +272,6 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
                         
                         //Fullfill axis when whole year should show up
                         if selectedMonths.count > 1 {
-                            
-                            
                             if ((year! % 4 == 0) && (year! % 100 != 0)) || (year! % 400 == 0) && monthDateDictionary.value(forKey: singleMonth) as! Int > 2 {
                                 
                                 // Leap year
@@ -316,23 +313,28 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
                         }
                         yAxisValuesRight.append(ChartDataEntry(x: Double(day! - 1), y: singleDoneEx.doneReps.doubleValue))
                         saveDays.append(day!)
-                        
-                        // For testing
                         /*
+                        // For testing
+                         var randNr = Double(arc4random_uniform(10))
+                         var randNrRight =  Double(arc4random_uniform(10))
                          for i in 0  ..< 365  {
-                         let randNr = Double(arc4random_uniform(200))
+                            if i % 30 == 0 {
+                                randNr = Double(arc4random_uniform(10))
+                                randNrRight =  Double(arc4random_uniform(10))
+                            }
                          if randNr > leftMax {
                          leftMax = randNr
+                            print(leftMax)
                          }
-                         let randNrRight =  Double(arc4random_uniform(10))
+                         
                          if randNrRight > rightMax {
                          rightMax = randNrRight
                          }
-                         yVals.append(ChartDataEntry(x: Double(i), y: randNr)
+                         yAxisValues.append(ChartDataEntry(x: Double(i), y: randNr)
                          )
-                         yValsRight.append(ChartDataEntry(x: Double(i), y: randNrRight))
+                         yAxisValuesRight.append(ChartDataEntry(x: Double(i), y: randNrRight))
                          }
-                         */
+                        */
                     }
                 }
             }
@@ -484,11 +486,11 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         selectedValueLabel.isHidden = false
         if highlight.dataSetIndex == 1 {
             selectedValueLabel.textColor = UIColor(red: 51 / 255, green: 181 / 255, blue: 229 / 255, alpha: 1)
-            selectedValueLabel.text = NSString(format: "Val.:%.2f \(weightUnit)" as NSString,entry.x ) as String
+            selectedValueLabel.text = NSString(format: "Val.:%.2f \(weightUnit)" as NSString,entry.y ) as String
         } else {
             selectedValueLabel.textColor = UIColor.gray
             let translationReps = NSLocalizedString("reps", comment: "reps")
-            selectedValueLabel.text = "Val.:\(entry.x) \(translationReps)"
+            selectedValueLabel.text = "Val.:\(entry.y) \(translationReps)"
         }
     }
     
