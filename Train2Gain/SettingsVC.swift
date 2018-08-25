@@ -8,14 +8,12 @@
 
 import UIKit
 import LocalAuthentication
-import iAd
 
-class SettingsVC: UIViewController, ADBannerViewDelegate {
+class SettingsVC: UIViewController {
     
     var password : String =  ""
     
     // MARK: IBOutlets & IBActions
-    @IBOutlet weak var iAd: ADBannerView!
     @IBOutlet weak var privacyModeSwitch: UISwitch!
     @IBOutlet weak var lengthUnitSwitch: UISwitch!
     @IBOutlet weak var weightUnitSwitch: UISwitch!
@@ -53,10 +51,6 @@ class SettingsVC: UIViewController, ADBannerViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        //Handle iAd
-        iAd.delegate = self
-        iAd.isHidden = true
         
         //Set background
         var backgroundImage = UIImage(named: "Background2.png")
@@ -169,35 +163,6 @@ class SettingsVC: UIViewController, ADBannerViewDelegate {
         }
         
         present(passwordPrompt, animated: true, completion: nil)
-    }
-    
-    // MARK: iAd
-    func bannerViewDidLoadAd(_ banner: ADBannerView) {
-        self.layoutAnimated(true)
-    }
-    
-    func bannerView(_ banner: ADBannerView, didFailToReceiveAdWithError error: Error) {
-        self.layoutAnimated(true)
-    }
-    
-    func bannerViewActionShouldBegin(_ banner: ADBannerView, willLeaveApplication willLeave: Bool) -> Bool {
-        return true
-    }
-    
-    func layoutAnimated(_ animated: Bool) {
-        if iAd.isBannerLoaded {
-            iAd.isHidden = false
-            UIView.animate(withDuration: animated ? 0.25 : 0.0, animations: {
-                self.iAd.alpha = 1
-            })
-        } else {
-            UIView.animate(withDuration: animated ? 0.25 : 0.0, animations: {
-                self.iAd.alpha = 0
-                }, completion: {
-                    (value: Bool) in
-                    self.iAd.isHidden = true
-            })
-        }
     }
     
 }

@@ -10,9 +10,8 @@ import UIKit
 import CoreData
 import Fabric
 import Crashlytics
-import iAd
 
-class BodyMeasurementsVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
+class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
     
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
     let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.dark))
@@ -29,7 +28,6 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate, ADBannerViewDel
     @IBOutlet weak var datePickerBackgroundView: UIView!
     @IBOutlet weak var datePickerButton: UIButton!
     @IBOutlet weak var datePickerTitleLabel: UILabel!
-    @IBOutlet weak var iAd: ADBannerView!
     @IBOutlet weak var measurementsArmTextField: UITextField!
     @IBOutlet weak var measurementsChestTextField: UITextField!
     @IBOutlet weak var measurementsLegTextField: UITextField!
@@ -136,10 +134,6 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate, ADBannerViewDel
     // MARK: View Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Handle iAd
-        iAd.delegate = self
-        iAd.isHidden = true
         
         // Set background
         var backgroundImage = UIImage(named: "Background2.png")
@@ -367,35 +361,6 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate, ADBannerViewDel
             }
         }
         return false
-    }
-    
-    // MARK: iAd
-    func bannerViewDidLoadAd(_ banner: ADBannerView) {
-        self.layoutAnimated(true)
-    }
-    
-    func bannerView(_ banner: ADBannerView, didFailToReceiveAdWithError error: Error) {
-        self.layoutAnimated(true)
-    }
-    
-    func bannerViewActionShouldBegin(_ banner: ADBannerView, willLeaveApplication willLeave: Bool) -> Bool {
-        return true
-    }
-    
-    func layoutAnimated(_ animated: Bool) {
-        if iAd.isBannerLoaded{
-            iAd.isHidden = false
-            UIView.animate(withDuration: animated ? 0.25 : 0.0, animations: {
-                self.iAd.alpha = 1
-            })
-        } else {
-            UIView.animate(withDuration: animated ? 0.25 : 0.0, animations: {
-                self.iAd.alpha = 0
-            }, completion: {
-                (value: Bool) in
-                self.iAd.isHidden = true
-            })
-        }
     }
     
     // Show correct background after rotation

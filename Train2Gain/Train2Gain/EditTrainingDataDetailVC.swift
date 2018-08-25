@@ -8,9 +8,8 @@
 
 import UIKit
 import CoreData
-import iAd
 
-class EditTrainingDataDetailVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
+class EditTrainingDataDetailVC: UIViewController, UITextFieldDelegate {
     
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
     var currentTime: TimeInterval?
@@ -35,7 +34,6 @@ class EditTrainingDataDetailVC: UIViewController, UITextFieldDelegate, ADBannerV
     @IBOutlet weak var editTrainingPlanNameLabel: UILabel!
     @IBOutlet weak var editWeightsLabel: UILabel!
     @IBOutlet weak var editWeightsTextField: UITextField!
-    @IBOutlet weak var iAd: ADBannerView!
     @IBOutlet weak var nextExerciseButton: UIButton!
     @IBOutlet weak var previousExerciseButton: UIButton!
     @IBOutlet weak var stopWatchLabel: UILabel!
@@ -135,10 +133,6 @@ class EditTrainingDataDetailVC: UIViewController, UITextFieldDelegate, ADBannerV
     // MARK: View Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Handle iAd
-        iAd.delegate = self
-        iAd.isHidden = true
         
         // Setup background
         let backgroundSize = CGSize(width: view.frame.width, height: view.frame.height)
@@ -419,7 +413,7 @@ class EditTrainingDataDetailVC: UIViewController, UITextFieldDelegate, ADBannerV
             return false
         } else if textField == editRepsTextField {
             back = 2
-            if let _ = Int(text), newLength <= back {
+            if let checksum = Int(text), newLength <= back, checksum >= 0, checksum < 100 {
                 return true
             } else if newLength <= back && text == "" {
                 return true
@@ -428,35 +422,6 @@ class EditTrainingDataDetailVC: UIViewController, UITextFieldDelegate, ADBannerV
             }
         }
         return newLength <= back
-    }
-    
-    // MARK: iAd
-    func bannerViewDidLoadAd(_ banner: ADBannerView) {
-        self.layoutAnimated(true)
-    }
-    
-    func bannerView(_ banner: ADBannerView, didFailToReceiveAdWithError error: Error) {
-        self.layoutAnimated(true)
-    }
-    
-    func bannerViewActionShouldBegin(_ banner: ADBannerView, willLeaveApplication willLeave: Bool) -> Bool {
-        return true
-    }
-    
-    func layoutAnimated(_ animated : Bool) {
-        if  iAd.isBannerLoaded {
-            iAd.isHidden = false
-            UIView.animate(withDuration: animated ? 0.25 : 0.0, animations: {
-                self.iAd.alpha = 1
-            })
-        } else {
-            UIView.animate(withDuration: animated ? 0.25 : 0.0, animations: {
-                self.iAd.alpha = 0
-            }, completion: {
-                (value: Bool) in
-                self.iAd.isHidden = true
-            })
-        }
     }
     
 }

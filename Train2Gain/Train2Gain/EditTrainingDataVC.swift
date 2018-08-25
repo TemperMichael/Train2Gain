@@ -7,22 +7,17 @@
 //
 
 import UIKit
-import iAd
 
-class EditTrainingDataVC: UIViewController, ADBannerViewDelegate {
+class EditTrainingDataVC: UIViewController {
     
+    // MARK: IBOutlets & IBActions
     @IBOutlet weak var bodyMeasurementsButton: UIButton!
     @IBOutlet weak var editTitleLabel: UILabel!
-    @IBOutlet weak var iAd: ADBannerView!
     @IBOutlet weak var moodButton: UIButton!
     
     // MARK: View Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Handle iAd
-        iAd.delegate = self
-        iAd.isHidden = true
         
         // Remove text from back button
         let backButton = UIBarButtonItem(title: " ", style: UIBarButtonItemStyle.plain, target: self, action: nil)
@@ -84,35 +79,6 @@ class EditTrainingDataVC: UIViewController, ADBannerViewDelegate {
         dateFormatter.dateStyle = theDateFormat
         dateFormatter.timeStyle = theTimeFormat
         return dateFormatter.string(from: date)
-    }
-    
-    // MARK: iAd
-    func bannerViewDidLoadAd(_ banner: ADBannerView) {
-        self.layoutAnimated(true)
-    }
-    
-    func bannerView(_ banner: ADBannerView, didFailToReceiveAdWithError error: Error) {
-        self.layoutAnimated(true)
-    }
-    
-    func bannerViewActionShouldBegin(_ banner: ADBannerView, willLeaveApplication willLeave: Bool) -> Bool {
-        return true
-    }
-    
-    func layoutAnimated(_ animated: Bool) {
-        if iAd.isBannerLoaded {
-            iAd.isHidden = false
-            UIView.animate(withDuration: animated ? 0.25 : 0.0, animations: {
-                self.iAd.alpha = 1
-            })
-        } else {
-            UIView.animate(withDuration: animated ? 0.25 : 0.0, animations: {
-                self.iAd.alpha = 0
-            }, completion: {
-                (value: Bool) in
-                self.iAd.isHidden = true
-            })
-        }
     }
     
 }

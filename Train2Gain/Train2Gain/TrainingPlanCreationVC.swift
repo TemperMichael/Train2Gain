@@ -8,29 +8,8 @@
 
 import UIKit
 import CoreData
-import iAd
-fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-    switch (lhs, rhs) {
-    case let (l?, r?):
-        return l < r
-    case (nil, _?):
-        return true
-    default:
-        return false
-    }
-}
 
-fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-    switch (lhs, rhs) {
-    case let (l?, r?):
-        return l > r
-    default:
-        return rhs < lhs
-    }
-}
-
-
-class TrainingPlanCreationVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
+class TrainingPlanCreationVC: UIViewController, UITextFieldDelegate {
     
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
     var dayId: String = ""
@@ -44,7 +23,6 @@ class TrainingPlanCreationVC: UIViewController, UITextFieldDelegate, ADBannerVie
     // MARK: IBOutles & IBActions
     @IBOutlet weak var addExerciseButton: UIButton!
     @IBOutlet weak var deleteExerciseButton: UIButton!
-    @IBOutlet weak var iAd: ADBannerView!
     @IBOutlet weak var nextExerciseButton: UIButton!
     @IBOutlet weak var previousExerciseButton: UIButton!
     @IBOutlet weak var trainingPlanNameTextField: UITextField!
@@ -120,12 +98,7 @@ class TrainingPlanCreationVC: UIViewController, UITextFieldDelegate, ADBannerVie
     
     // MARK: View Methods
     override func viewDidLoad() {
-        
         super.viewDidLoad()
-        
-        // Handle iAd
-        iAd.delegate = self
-        iAd.isHidden = true
         
         // Set background
         var backgroundImage = UIImage(named: "Background2.png")
@@ -171,7 +144,6 @@ class TrainingPlanCreationVC: UIViewController, UITextFieldDelegate, ADBannerVie
         }
         previousExerciseButton.isEnabled = false
         previousExerciseButton.setTitle("", for: UIControlState())
-        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -245,14 +217,18 @@ class TrainingPlanCreationVC: UIViewController, UITextFieldDelegate, ADBannerVie
         var back = 0
         if textField == trainingPlanRepsTextField {
             back = 2
-            if newLength <= back && ((Int(text) > 0 && Int(text) < 100) || text == "") {
+            if let checksum = Int(text), newLength <= back, checksum > 0, checksum < 100 {
+                return true
+            } else if newLength <= back && text == "" {
                 return true
             } else {
                 return false
             }
         } else if textField == trainingPlanSetsTextField {
             back = 1
-            if newLength <= back && ((Int(text) > 0 && Int(text) < 10) || text == "") {
+            if let checksum = Int(text), newLength <= back, checksum > 0, checksum < 10 {
+                return true
+            } else if newLength <= back && text == "" {
                 return true
             } else {
                 return false
@@ -381,32 +357,4 @@ class TrainingPlanCreationVC: UIViewController, UITextFieldDelegate, ADBannerVie
         
     }
     
-    // MARK: iAd
-    func bannerViewDidLoadAd(_ banner: ADBannerView) {
-        self.layoutAnimated(true)
-    }
-    
-    func bannerView(_ banner: ADBannerView, didFailToReceiveAdWithError error: Error) {
-        self.layoutAnimated(true)
-    }
-    
-    func bannerViewActionShouldBegin(_ banner: ADBannerView, willLeaveApplication willLeave: Bool) -> Bool {
-        return true
-    }
-    
-    func layoutAnimated(_ animated: Bool) {
-        if iAd.isBannerLoaded {
-            iAd.isHidden = false
-            UIView.animate(withDuration: animated ? 0.25 : 0.0, animations: {
-                self.iAd.alpha = 1
-            })
-        } else {
-            UIView.animate(withDuration: animated ? 0.25 : 0.0, animations: {
-                self.iAd.alpha = 0
-            }, completion: {
-                (value: Bool) in
-                self.iAd.isHidden = true
-            })
-        }
-    }
 }

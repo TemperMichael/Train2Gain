@@ -10,9 +10,8 @@ import UIKit
 import CoreData
 import Fabric
 import Crashlytics
-import iAd
 
-class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, ADBannerViewDelegate {
+class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     
     var appdel = UIApplication.shared.delegate as! AppDelegate
     let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.dark))
@@ -28,7 +27,6 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
     @IBOutlet weak var datePickerBackground: UIView!
     @IBOutlet weak var datePickerButton: UIButton!
     @IBOutlet weak var finishButton: UIButton!
-    @IBOutlet weak var iAd: ADBannerView!
     @IBOutlet weak var moodCollectionView: UICollectionView!
     @IBOutlet weak var pickerTitleLabel: UILabel!
     
@@ -163,10 +161,6 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //Handle iAd
-        iAd.delegate = self
-        iAd.isHidden = true
-        
         moodCollectionView.delegate = self
         moodCollectionView.dataSource = self
         
@@ -248,36 +242,6 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
             self.datePickerBackground.alpha = 1
         }, completion: { finished in
         })
-    }
-    
-    
-    // MARK: iAd
-    func bannerViewDidLoadAd(_ banner: ADBannerView) {
-        self.layoutAnimated(true)
-    }
-    
-    func bannerView(_ banner: ADBannerView, didFailToReceiveAdWithError error: Error) {
-        self.layoutAnimated(true)
-    }
-    
-    func bannerViewActionShouldBegin(_ banner: ADBannerView, willLeaveApplication willLeave: Bool) -> Bool {
-        return true
-    }
-    
-    func layoutAnimated(_ animated : Bool) {
-        if iAd.isBannerLoaded {
-            iAd.isHidden = false
-            UIView.animate(withDuration: animated ? 0.25 : 0.0, animations: {
-                self.iAd.alpha = 1
-            })
-        } else {
-            UIView.animate(withDuration: animated ? 0.25 : 0.0, animations: {
-                self.iAd.alpha = 0
-            }, completion: {
-                (value: Bool) in
-                self.iAd.isHidden = true
-            })
-        }
     }
     
 }

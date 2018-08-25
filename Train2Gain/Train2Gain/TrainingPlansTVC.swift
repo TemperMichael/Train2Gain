@@ -8,9 +8,8 @@
 
 import UIKit
 import CoreData
-import iAd
 
-class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSource, ADBannerViewDelegate {
+class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
     var dayIDs: [String] = []
@@ -20,14 +19,9 @@ class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     // MARK: IBOutlets & IBActions
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var iAd: ADBannerView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Handle iAd
-        iAd.delegate = self
-        iAd.isHidden = true
         
         // Set background
         var backgroundImage = UIImage(named: "Background2.png")
@@ -183,35 +177,6 @@ class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         cell.preservesSuperviewLayoutMargins = false
         cell.layoutMargins = UIEdgeInsets.zero
         return cell
-    }
-    
-    // MARK: iAd
-    func bannerViewDidLoadAd(_ banner: ADBannerView) {
-        self.layoutAnimated(true)
-    }
-    
-    func bannerView(_ banner: ADBannerView, didFailToReceiveAdWithError error: Error) {
-        self.layoutAnimated(true)
-    }
-    
-    func bannerViewActionShouldBegin(_ banner: ADBannerView, willLeaveApplication willLeave: Bool) -> Bool {
-        return true
-    }
-    
-    func layoutAnimated(_ animated : Bool) {
-        if iAd.isBannerLoaded {
-            iAd.isHidden = false
-            UIView.animate(withDuration: animated ? 0.25 : 0.0, animations: {
-                self.iAd.alpha = 1
-            })
-        } else {
-            UIView.animate(withDuration: animated ? 0.25 : 0.0, animations: {
-                self.iAd.alpha = 0
-            }, completion: {
-                (value: Bool) in
-                self.iAd.isHidden = true
-            })
-        }
     }
     
     // Show correct background after rotation

@@ -10,10 +10,8 @@ import UIKit
 import CoreData
 import Fabric
 import Crashlytics
-import iAd
 
-
-class TrainingModeVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegate {
+class TrainingModeVC: UIViewController, UITextFieldDelegate {
     
     var appDelegate =  UIApplication.shared.delegate as! AppDelegate
     let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.dark))
@@ -33,7 +31,6 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegat
     var userPosition: Int = 0
     
     // MARK: IBOutlets & IBActions
-    
     @IBOutlet weak var datePicker: UIDatePicker!
     @IBOutlet weak var datePickerBackgroundView: UIView!
     @IBOutlet weak var datePickerButton: UIButton!
@@ -45,7 +42,6 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegat
     @IBOutlet weak var exerciseTrainingPlanNameLabel: UILabel!
     @IBOutlet weak var exerciseWeightsLabel: UILabel!
     @IBOutlet weak var exerciseWeightsTextField: UITextField!
-    @IBOutlet weak var iAd: ADBannerView!
     @IBOutlet weak var nextExerciseButton: UIButton!
     @IBOutlet weak var previousExerciseButton: UIButton!
     @IBOutlet weak var selectDateButton: UIButton!
@@ -185,10 +181,6 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegat
     // MARK: View Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Handle iAd
-        iAd.delegate = self
-        iAd.isHidden = true
         
         // Setup background
         let backgroundSize = CGSize(width: view.frame.width, height: view.frame.height)
@@ -344,7 +336,6 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegat
                     nextExerciseButton.isEnabled = false
                     nextExerciseButton.setTitle("", for: UIControlState())
                 }
-                layoutAnimated(true)
             }
         }
     }
@@ -489,7 +480,7 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegat
             return false
         } else if textField == exerciseRepsTextField {
             back = 2
-            if let _ = Int(text), newLength <= back {
+            if let checksum = Int(text), newLength <= back, checksum >= 0, checksum < 100 {
                 return true
             } else if newLength <= back && text == "" {
                 return true
@@ -498,35 +489,6 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate, ADBannerViewDelegat
             }
         }
         return newLength <= back
-    }
-    
-    // MARK: iAd
-    func bannerViewDidLoadAd(_ banner: ADBannerView) {
-        self.layoutAnimated(true)
-    }
-    
-    func bannerView(_ banner: ADBannerView, didFailToReceiveAdWithError error: Error) {
-        self.layoutAnimated(true)
-    }
-    
-    func bannerViewActionShouldBegin(_ banner: ADBannerView, willLeaveApplication willLeave: Bool) -> Bool {
-        return true
-    }
-    
-    func layoutAnimated(_ animated : Bool) {
-        if iAd.isBannerLoaded {
-            iAd.isHidden = false
-            UIView.animate(withDuration: animated ? 0.25 : 0.0, animations: {
-                self.iAd.alpha = 1
-            })
-        } else {
-            UIView.animate(withDuration: animated ? 0.25 : 0.0, animations: {
-                self.iAd.alpha = 0
-            }, completion: {
-                (value: Bool) in
-                self.iAd.isHidden = true
-            })
-        }
     }
     
     // Show correct background after rotation

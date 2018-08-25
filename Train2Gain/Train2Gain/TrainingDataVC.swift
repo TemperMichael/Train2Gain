@@ -11,9 +11,8 @@ import CoreData
 import LocalAuthentication
 import Fabric
 import Crashlytics
-import iAd
 
-class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSource, ADBannerViewDelegate {
+class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
     let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.dark))
@@ -31,7 +30,6 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     @IBOutlet weak var datePickerButton: UIButton!
     @IBOutlet weak var datePickerBackgroundView: UIView!
     @IBOutlet weak var datePickerTitleLabel: UILabel!
-    @IBOutlet weak var iAd: ADBannerView!
     @IBOutlet weak var nextDateButton: UIButton!
     @IBOutlet weak var previousDateButton: UIButton!
     @IBOutlet weak var selectDateButton: UIButton!
@@ -80,10 +78,6 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     // MARK: View Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Handle iAd
-        iAd.delegate = self
-        iAd.isHidden = true
         
         // Set background
         var backgroundImage = UIImage(named: "Background2.png")
@@ -386,35 +380,6 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             trainingDataDateLabel.text = NSLocalizedString("No entry at this date", comment: "No entry at this date")
         }
         trainingDataDayIDTableView.separatorColor = UIColor(red: 22 / 255, green: 204 / 255, blue: 255 / 255,alpha: 1)
-    }
-    
-    // MARK: iAd
-    func bannerViewDidLoadAd(_ banner: ADBannerView) {
-        self.layoutAnimated(true)
-    }
-    
-    func bannerView(_ banner: ADBannerView, didFailToReceiveAdWithError error: Error) {
-        self.layoutAnimated(true)
-    }
-    
-    func bannerViewActionShouldBegin(_ banner: ADBannerView, willLeaveApplication willLeave: Bool) -> Bool {
-        return true
-    }
-    
-    func layoutAnimated(_ animated: Bool) {
-        if iAd.isBannerLoaded {
-            iAd.isHidden = false
-            UIView.animate(withDuration: animated ? 0.25 : 0.0, animations: {
-                self.iAd.alpha = 1
-            })
-        } else {
-            UIView.animate(withDuration: animated ? 0.25 : 0.0, animations: {
-                self.iAd.alpha = 0
-                }, completion: {
-                    (value: Bool) in
-                    self.iAd.isHidden = true
-            })
-        }
     }
     
 }
