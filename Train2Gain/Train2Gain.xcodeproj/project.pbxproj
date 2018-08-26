@@ -29,7 +29,6 @@
 		463D47721AED15FE0097E480 /* MoodCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463D47711AED15FE0097E480 /* MoodCVC.swift */; };
 		463D47751AED17520097E480 /* Moods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463D47741AED17520097E480 /* Moods.swift */; };
 		463D47771AED18180097E480 /* MoodCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463D47761AED18180097E480 /* MoodCell.swift */; };
-		46416C6D1B69A3990059B548 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46416C6C1B69A3990059B548 /* iAd.framework */; };
 		469121FF1AF7AB260097D22D /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 469121FE1AF7AB260097D22D /* LocalAuthentication.framework */; };
 		46AD66631C383A060040E685 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 46AD66651C383A060040E685 /* Main.storyboard */; };
 		46AD666C1C3A09B20040E685 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 46AD666E1C3A09B20040E685 /* Localizable.strings */; };
@@ -112,7 +111,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				46416C6D1B69A3990059B548 /* iAd.framework in Frameworks */,
 				469121FF1AF7AB260097D22D /* LocalAuthentication.framework in Frameworks */,
 				461E95821F17EB24001CDCA8 /* Charts.framework in Frameworks */,
 				46C0DBB31B8EECAD007245E7 /* Crashlytics.framework in Frameworks */,
@@ -578,7 +576,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "at.temper.at.temper.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
@@ -602,7 +600,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "at.temper.at.temper.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
@@ -611,10 +609,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -623,7 +617,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "at.fhooe.mc.MOM4.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Train2Gain.app/Train2Gain";
 			};
@@ -633,15 +627,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
 				INFOPLIST_FILE = Train2GainTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "at.fhooe.mc.MOM4.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Train2Gain.app/Train2Gain";
 			};

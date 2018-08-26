@@ -115,7 +115,6 @@ class SettingsVC: UIViewController {
     // Create password dialog: single = false for setup password
     //                         single = true for entering password
     func callPWAlert(_ _Message: String, single: Bool) {
-        var inputTextField: UITextField?
         let passwordPrompt = UIAlertController(title: NSLocalizedString("Enter Password", comment: "Enter Password"), message: _Message, preferredStyle: UIAlertControllerStyle.alert)
         passwordPrompt.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel"), style: UIAlertActionStyle.default, handler: { (action) -> Void in
             if self.privacyModeSwitch.isOn {
@@ -152,13 +151,11 @@ class SettingsVC: UIViewController {
         passwordPrompt.addTextField(configurationHandler: {(textField: UITextField) in
             textField.placeholder = NSLocalizedString("Password", comment: "Password")
             textField.isSecureTextEntry = true
-            inputTextField = textField
         })
         if single == false {
             passwordPrompt.addTextField(configurationHandler: {(textField: UITextField) in
                 textField.placeholder = NSLocalizedString("Confirm Password", comment: "Confirm Password")
                 textField.isSecureTextEntry = true
-                inputTextField = textField
             })
         }
         

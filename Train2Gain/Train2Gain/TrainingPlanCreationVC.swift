@@ -69,7 +69,6 @@ class TrainingPlanCreationVC: UIViewController, UITextFieldDelegate {
             for checkCells in self.exercises {
                 let newItem = NSEntityDescription.insertNewObject(forEntityName: "Exercise", into: appDelegate.managedObjectContext!) as! Exercise
                 newItem.dayID = dayId
-                print(checkCells[0])
                 newItem.name = checkCells[0]
                 newItem.reps = Int(checkCells[1])! as NSNumber
                 newItem.sets = Int(checkCells[2])! as NSNumber

@@ -392,7 +392,6 @@ class EditTrainingDataDetailVC: UIViewController, UITextFieldDelegate {
         let replacementStringIsLegal = string.rangeOfCharacter(from: disallowedCharacterSet) == nil
         let scanner = Scanner(string: text)
         let resultingTextIsNumeric = scanner.scanDecimal(nil) && scanner.isAtEnd
-        print(resultingTextIsNumeric)
         
         var getDecimalNumbers = (textField.text! as NSString).components(separatedBy: ".")
         if getDecimalNumbers.count > 1 && (getDecimalNumbers[1] as NSString).integerValue > 9 && string != ""  {
