@@ -51,11 +51,7 @@ class SettingsVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        //Set background
-        var backgroundImage = UIImage(named: "Background2.png")
-        backgroundImage = imageResize(backgroundImage!, sizeChange: view.frame.size)
-        self.view.backgroundColor = UIColor(patternImage: backgroundImage!)
+
         weightUnitSwitch.isOn = UserDefaults.standard.object(forKey: "weightUnit") as! String == "kg" ? true : false
         lengthUnitSwitch.isOn = UserDefaults.standard.object(forKey: "lengthUnit") as! String == "cm" ? true : false
         weightUnitSwitch.tintColor = UIColor.white
@@ -77,13 +73,6 @@ class SettingsVC: UIViewController {
         }
     }
     
-    //Show correct background after rotation
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        var backgroundImage = UIImage(named: "Background2.png")
-        backgroundImage = imageResize(backgroundImage!, sizeChange: size)
-        self.view.backgroundColor = UIColor(patternImage: backgroundImage!)
-    }
-    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(true)
         
@@ -102,15 +91,6 @@ class SettingsVC: UIViewController {
     }
     
     // MARK: Own Methods
-    // Fit background image to display size
-    func imageResize(_ imageObj: UIImage, sizeChange: CGSize) -> UIImage {
-        let hasAlpha = false
-        let scale: CGFloat = 0.0 // Automatically use scale factor of main screen
-        UIGraphicsBeginImageContextWithOptions(sizeChange, !hasAlpha, scale)
-        imageObj.draw(in: CGRect(origin: CGPoint.zero, size: sizeChange))
-        let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
-        return scaledImage!
-    }
 
     // Create password dialog: single = false for setup password
     //                         single = true for entering password

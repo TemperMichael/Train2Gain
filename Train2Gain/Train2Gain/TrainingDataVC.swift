@@ -79,11 +79,6 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Set background
-        var backgroundImage = UIImage(named: "Background2.png")
-        backgroundImage = imageResize(backgroundImage!, sizeChange: view.frame.size)
-        self.view.backgroundColor = UIColor(patternImage: backgroundImage!)
-        
         // Hide empty cells
         let backgroundView = UIView(frame: CGRect.zero)
         self.trainingDataDayIDTableView.tableFooterView = backgroundView
@@ -118,26 +113,8 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     override func viewWillDisappear(_ animated: Bool) {
         self.navigationController?.setToolbarHidden(true, animated: true)
     }
- 
-    
-    // Show correct background after rotation
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        var backgroundImage = UIImage(named: "Background2.png")
-        backgroundImage = imageResize(backgroundImage!, sizeChange: size)
-        self.view.backgroundColor = UIColor(patternImage: backgroundImage!)
-    }
     
     // MARK: Own Methods
-
-    // Fit background image to display size
-    func imageResize(_ imageObj: UIImage, sizeChange: CGSize) -> UIImage {
-        let hasAlpha = false
-        let scale: CGFloat = 0.0 // Automatically use scale factor of main screen
-        UIGraphicsBeginImageContextWithOptions(sizeChange, !hasAlpha, scale)
-        imageObj.draw(in: CGRect(origin: CGPoint.zero, size: sizeChange))
-        let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
-        return scaledImage!
-    }
     
     // Get date in a good format
     func returnDateForm(_ date: Date) -> String {

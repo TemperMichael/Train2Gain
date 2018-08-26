@@ -138,11 +138,6 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         super.viewDidLoad()
         appDelegate.shouldRotate = true
         
-        // Set background
-        var backgroundImage = UIImage(named: "Background2.png")
-        backgroundImage = imageResize(backgroundImage!, sizeChange: selectorsBackground.frame.size)
-        selectorsBackground.backgroundColor = UIColor(patternImage: backgroundImage!)
-        
         // Get current year
         let date = Date()
         let calendar = Calendar.current
@@ -314,17 +309,17 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
                         yAxisValuesRight.append(ChartDataEntry(x: Double(day! - 1), y: singleDoneEx.doneReps.doubleValue))
                         saveDays.append(day!)
                         /*
-                        // For testing
+                         // For testing
                          var randNr = Double(arc4random_uniform(10))
                          var randNrRight =  Double(arc4random_uniform(10))
                          for i in 0  ..< 365  {
-                            if i % 30 == 0 {
-                                randNr = Double(arc4random_uniform(10))
-                                randNrRight =  Double(arc4random_uniform(10))
-                            }
+                         if i % 30 == 0 {
+                         randNr = Double(arc4random_uniform(10))
+                         randNrRight =  Double(arc4random_uniform(10))
+                         }
                          if randNr > leftMax {
                          leftMax = randNr
-                            print(leftMax)
+                         print(leftMax)
                          }
                          
                          if randNrRight > rightMax {
@@ -334,7 +329,7 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
                          )
                          yAxisValuesRight.append(ChartDataEntry(x: Double(i), y: randNrRight))
                          }
-                        */
+                         */
                     }
                 }
             }
@@ -428,16 +423,6 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         }
     }
     
-    // Fit background image to display size
-    func imageResize(_ imageObj: UIImage, sizeChange: CGSize) -> UIImage {
-        let hasAlpha = false
-        let scale: CGFloat = 0.0 // Automatically use scale factor of main screen
-        UIGraphicsBeginImageContextWithOptions(sizeChange, !hasAlpha, scale)
-        imageObj.draw(in: CGRect(origin: CGPoint.zero, size: sizeChange))
-        let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
-        return scaledImage!
-    }
-
     
     // MARK: PickerView
     func setupPickerView() {

@@ -134,12 +134,7 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
     // MARK: View Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Set background
-        var backgroundImage = UIImage(named: "Background2.png")
-        backgroundImage = imageResize(backgroundImage!, sizeChange: view.frame.size)
-        self.view.backgroundColor = UIColor(patternImage: backgroundImage!)
-        
+    
         date = UserDefaults.standard.object(forKey: "dateUF") as! Date
         measurementsWeightTextField.delegate = self
         measurementsChestTextField.delegate = self
@@ -251,16 +246,6 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
         _Object.leg = NSDecimalNumber(string: !measurementsLegTextField.text!.isEmpty ? "\(value)" : "0")
     }
     
-    // Resize background image to fit in view
-    func imageResize(_ imageObj: UIImage, sizeChange:CGSize) -> UIImage {
-        let hasAlpha = false
-        let scale: CGFloat = 0.0
-        UIGraphicsBeginImageContextWithOptions(sizeChange, !hasAlpha, scale)
-        imageObj.draw(in: CGRect(origin: CGPoint.zero, size: sizeChange))
-        let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
-        return scaledImage!
-    }
-    
     func setupPickerView() {
         blurView.frame = datePickerBackgroundView.bounds
         blurView.translatesAutoresizingMaskIntoConstraints = false
@@ -361,13 +346,6 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
             }
         }
         return false
-    }
-    
-    // Show correct background after rotation
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        var backgroundImage = UIImage(named: "Background2.png")
-        backgroundImage = imageResize(backgroundImage!, sizeChange: size)
-        self.view.backgroundColor = UIColor(patternImage: backgroundImage!)
     }
     
 }

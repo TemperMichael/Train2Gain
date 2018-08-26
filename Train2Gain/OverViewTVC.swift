@@ -62,7 +62,7 @@ class OverViewTVC: UITableViewController {
         // Hide empty cells
         let backgroundView = UIView(frame: CGRect.zero)
         self.tableView.tableFooterView = backgroundView
-        self.tableView.backgroundColor = UIColor(red: 22 / 255, green: 200 / 255, blue: 255 / 255, alpha: 1)
+        self.tableView.backgroundColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
         
         // Get and save actual date
         UserDefaults.standard.set(Date(), forKey: "dateUF")
@@ -109,7 +109,7 @@ class OverViewTVC: UITableViewController {
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         // Set colors of cells
-        cell.backgroundColor = UIColor(red: 22 / 255, green: 200 / 255, blue: 255 / 255, alpha: 1)
+        cell.backgroundColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
     }
    
     override var supportedInterfaceOrientations : UIInterfaceOrientationMask {

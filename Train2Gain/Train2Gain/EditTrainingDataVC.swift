@@ -33,30 +33,9 @@ class EditTrainingDataVC: UIViewController {
         
         let translationChangeDataOf = NSLocalizedString("Change data of", comment: "Change data of")
         editTitleLabel.text = "\(translationChangeDataOf) \(returnDateForm(chosendate))"
-        
-        // Set background
-        var backgroundImage = UIImage(named: "Background2.png")
-        backgroundImage = imageResize(backgroundImage!, sizeChange: view.frame.size)
-        self.view.backgroundColor = UIColor(patternImage: backgroundImage!)
-    }
-    
-    // Show correct background after rotation
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        var backgroundImage = UIImage(named: "Background2.png")
-        backgroundImage = imageResize(backgroundImage!, sizeChange: size)
-        self.view.backgroundColor = UIColor(patternImage: backgroundImage!)
     }
     
     // MARK: Own Methods
-    // Resize background image to fit in view
-    func imageResize(_ imageObj: UIImage, sizeChange: CGSize) -> UIImage {
-        let hasAlpha = false
-        let scale: CGFloat = 0.0
-        UIGraphicsBeginImageContextWithOptions(sizeChange, !hasAlpha, scale)
-        imageObj.draw(in: CGRect(origin: CGPoint.zero, size: sizeChange))
-        let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
-        return scaledImage!
-    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let button = sender as? UIButton {

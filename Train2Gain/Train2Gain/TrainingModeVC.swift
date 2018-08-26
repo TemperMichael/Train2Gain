@@ -174,19 +174,9 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
         timer.invalidate()
     }
     
-    
-   
-    
-    
     // MARK: View Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Setup background
-        let backgroundSize = CGSize(width: view.frame.width, height: view.frame.height)
-        var backgroundImage = UIImage(named: "Background2.png")
-        backgroundImage = imageResize(backgroundImage!, sizeChange: backgroundSize)
-        self.view.backgroundColor = UIColor(patternImage: backgroundImage!)
         
         // Setup start view
         exerciseTrainingPlanNameLabel.text = selectedExercise[0].dayID
@@ -269,16 +259,6 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
     }
     
     // MARK: Own Methods
-    // Fit background image to display size
-    func imageResize(_ imageObj:UIImage, sizeChange: CGSize) -> UIImage {
-        let hasAlpha = false
-        let scale: CGFloat = 0.0
-        UIGraphicsBeginImageContextWithOptions(sizeChange, !hasAlpha, scale)
-        imageObj.draw(in: CGRect(origin: CGPoint.zero, size: sizeChange))
-        let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
-        return scaledImage!
-    }
-    
     func filterSpecificView(_ animationDirection: Bool) {
         for view in self.view.subviews {
             if view.tag == 123 {
@@ -489,13 +469,6 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
             }
         }
         return newLength <= back
-    }
-    
-    // Show correct background after rotation
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        var backgroundImage = UIImage(named: "Background2.png")
-        backgroundImage = imageResize(backgroundImage!, sizeChange: size)
-        self.view.backgroundColor = UIColor(patternImage: backgroundImage!)
     }
     
 }

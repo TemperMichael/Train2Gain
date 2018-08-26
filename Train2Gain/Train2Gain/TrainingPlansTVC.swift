@@ -23,11 +23,6 @@ class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Set background
-        var backgroundImage = UIImage(named: "Background2.png")
-        backgroundImage = imageResize(backgroundImage!, sizeChange: view.frame.size)
-        self.view.backgroundColor = UIColor(patternImage: backgroundImage!)
-        
         selectedExercise = []
         
         // Remove text from the back button
@@ -78,16 +73,6 @@ class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         tableView.reloadData()
         tableView.separatorColor = UIColor(red: 22 / 255, green: 204 / 255, blue: 255 / 255, alpha: 1)
         
-    }
-    
-    // Fit background image to display size
-    func imageResize(_ imageObj: UIImage, sizeChange: CGSize) -> UIImage {
-        let hasAlpha = false
-        let scale: CGFloat = 0.0 // Automatically use scale factor of main screen
-        UIGraphicsBeginImageContextWithOptions(sizeChange, !hasAlpha, scale)
-        imageObj.draw(in: CGRect(origin: CGPoint.zero, size: sizeChange))
-        let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
-        return scaledImage!
     }
     
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
@@ -177,13 +162,6 @@ class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         cell.preservesSuperviewLayoutMargins = false
         cell.layoutMargins = UIEdgeInsets.zero
         return cell
-    }
-    
-    // Show correct background after rotation
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        var backgroundImage = UIImage(named: "Background2.png")
-        backgroundImage = imageResize(backgroundImage!, sizeChange: size)
-        self.view.backgroundColor = UIColor(patternImage: backgroundImage!)
     }
     
 }
