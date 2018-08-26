@@ -29,6 +29,7 @@
 		463D47721AED15FE0097E480 /* MoodCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463D47711AED15FE0097E480 /* MoodCVC.swift */; };
 		463D47751AED17520097E480 /* Moods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463D47741AED17520097E480 /* Moods.swift */; };
 		463D47771AED18180097E480 /* MoodCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463D47761AED18180097E480 /* MoodCell.swift */; };
+		466EF3912132F198005A3BFA /* DateFormatHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 466EF3902132F198005A3BFA /* DateFormatHelper.swift */; };
 		469121FF1AF7AB260097D22D /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 469121FE1AF7AB260097D22D /* LocalAuthentication.framework */; };
 		46AD66631C383A060040E685 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 46AD66651C383A060040E685 /* Main.storyboard */; };
 		46AD666C1C3A09B20040E685 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 46AD666E1C3A09B20040E685 /* Localizable.strings */; };
@@ -92,6 +93,7 @@
 		463D47741AED17520097E480 /* Moods.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Moods.swift; sourceTree = "<group>"; };
 		463D47761AED18180097E480 /* MoodCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoodCell.swift; sourceTree = "<group>"; };
 		46416C6C1B69A3990059B548 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
+		466EF3902132F198005A3BFA /* DateFormatHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatHelper.swift; sourceTree = "<group>"; };
 		469121FE1AF7AB260097D22D /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
 		46AD666D1C3A09B20040E685 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		46AD666F1C3A09B50040E685 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -213,6 +215,7 @@
 				06DF4D2B1AC59FEB00FA2A01 /* AppDelegate.swift */,
 				463D47741AED17520097E480 /* Moods.swift */,
 				06DF4D2A1AC59FEB00FA2A01 /* Info.plist */,
+				466EF3902132F198005A3BFA /* DateFormatHelper.swift */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -395,6 +398,7 @@
 				4628E8051AED99F300D9DDF5 /* TrainingDataDetailTVC.swift in Sources */,
 				0618BA711AC7A11A00BDFBC0 /* TrainingModeVC.swift in Sources */,
 				06034FC91AD7290300EAB2D6 /* Measurements.swift in Sources */,
+				466EF3912132F198005A3BFA /* DateFormatHelper.swift in Sources */,
 				0618BA6F1AC78DEB00BDFBC0 /* Exercise.swift in Sources */,
 				4628E8071AED9FB900D9DDF5 /* TrainingDataDetailCell.swift in Sources */,
 				463070001AEE21F600B19267 /* SettingsVC.swift in Sources */,

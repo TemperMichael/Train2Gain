@@ -87,7 +87,7 @@ class EditTrainingDataDetailVC: UIViewController, UITextFieldDelegate {
         //setup data
         for checkCells in saveData{
             for singleDoneEx in doneEx{
-                if returnDateForm(singleDoneEx.date) == returnDateForm(editDate) && singleDoneEx.dayID == checkCells[0] && singleDoneEx.name == checkCells[1] && singleDoneEx.setCounter ==  NSDecimalNumber(string:checkCells[6]){
+                if DateFormatHelper.returnDateForm(singleDoneEx.date) == DateFormatHelper.returnDateForm(editDate) && singleDoneEx.dayID == checkCells[0] && singleDoneEx.name == checkCells[1] && singleDoneEx.setCounter ==  NSDecimalNumber(string:checkCells[6]){
                     singleDoneEx.doneReps = NSDecimalNumber(string:checkCells[3])
                     singleDoneEx.weight = NSDecimalNumber(string: checkCells[5])
                 }
@@ -210,17 +210,6 @@ class EditTrainingDataDetailVC: UIViewController, UITextFieldDelegate {
         appDelegate.rollBackContext()
     }
 
-    
-    // Get date in a good format
-    func returnDateForm(_ date: Date) -> String {
-        let dateFormatter = DateFormatter()
-        let theDateFormat = DateFormatter.Style.short
-        let theTimeFormat = DateFormatter.Style.none
-        dateFormatter.dateStyle = theDateFormat
-        dateFormatter.timeStyle = theTimeFormat
-        return dateFormatter.string(from: date)
-    }
-    
     // MARK: Own Methods
     
     func filterSpecificView(_ animationDirection: Bool) {

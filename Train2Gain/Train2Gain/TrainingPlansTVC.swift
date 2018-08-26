@@ -33,7 +33,7 @@ class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         //Hide empty cells
         let backgroundView = UIView(frame: CGRect.zero)
         self.tableView.tableFooterView = backgroundView
-        self.tableView.backgroundColor = UIColor(red: 22 / 255 , green: 200 / 255, blue: 255 / 255, alpha: 0)
+        self.tableView.backgroundColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
         tableView.delegate = self
         tableView.dataSource = self
         
@@ -51,7 +51,7 @@ class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         // Hide empty cells
         let backgroundView = UIView(frame: CGRect.zero)
         self.tableView.tableFooterView = backgroundView
-        self.tableView.backgroundColor = UIColor(red: 22 / 255, green: 200 / 255, blue: 255 / 255, alpha: 0)
+        self.tableView.backgroundColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
         
         // Get exercises core data
         let  request = NSFetchRequest<NSFetchRequestResult>(entityName: "Exercise")
@@ -71,7 +71,7 @@ class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSo
             }
         }
         tableView.reloadData()
-        tableView.separatorColor = UIColor(red: 22 / 255, green: 204 / 255, blue: 255 / 255, alpha: 1)
+        tableView.separatorColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
         
     }
     

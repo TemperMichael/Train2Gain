@@ -23,7 +23,7 @@ class TrainingDataDetailTVC: UITableViewController {
         // Set background
         let backgroundView = UIView(frame: CGRect.zero)
         self.tableView.tableFooterView = backgroundView
-        self.tableView.backgroundColor = UIColor(red: 22 / 255, green: 200 / 255, blue: 255 / 255, alpha: 1)
+        self.tableView.backgroundColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
         
         let appDelegate =  UIApplication.shared.delegate as! AppDelegate
         let requestDoneEx = NSFetchRequest<NSFetchRequestResult>(entityName: "DoneExercise")
@@ -36,7 +36,7 @@ class TrainingDataDetailTVC: UITableViewController {
         // Get done exercises of this day
         for singleEx in doneExercise {
             checkBefore = checkString
-            if singleEx.dayID == selectedDayDetails[0] && returnDateForm(singleEx.date) == selectedDayDetails [1] {
+            if singleEx.dayID == selectedDayDetails[0] && DateFormatHelper.returnDateForm(singleEx.date) == selectedDayDetails [1] {
                 checkString = singleEx.name
                 doneExercises.append(singleEx)
                 if checkString == checkBefore {
@@ -111,12 +111,5 @@ class TrainingDataDetailTVC: UITableViewController {
     
     // MARK: Own Methods
     // Get the date in a good format
-    func returnDateForm(_ date:Date) -> String{
-        let dateFormatter = DateFormatter()
-        let theDateFormat = DateFormatter.Style.short
-        let theTimeFormat = DateFormatter.Style.none
-        dateFormatter.dateStyle = theDateFormat
-        dateFormatter.timeStyle = theTimeFormat
-        return dateFormatter.string(from: date)
-    }
+  
 }

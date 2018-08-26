@@ -50,7 +50,7 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
             
             //Check if data already exists
             for i in 0 ..< dates.count {
-                if returnDateForm(dates[i].savedDate) == returnDateForm(date) {
+                if DateFormatHelper.returnDateForm(dates[i].savedDate) == DateFormatHelper.returnDateForm(date) {
                     alreadyExists = false
                 }
             }
@@ -68,7 +68,7 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
                     addNewMood()
                 } else {
                     let lastMeasure = savedMoods[savedMoods.count-1]
-                    if returnDateForm(lastMeasure.date) != returnDateForm(Date()) {
+                    if DateFormatHelper.returnDateForm(lastMeasure.date) != DateFormatHelper.returnDateForm(Date()) {
                         addNewMood()
                     } else {
                         addMood(lastMeasure)
@@ -78,7 +78,7 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
                 var moodExists = false
                 if !alreadyExists {
                     for singleMood in savedMoods{
-                        if returnDateForm(singleMood.date) == returnDateForm(date) {
+                        if DateFormatHelper.returnDateForm(singleMood.date) == DateFormatHelper.returnDateForm(date) {
                             moodExists = true
                             addMood(singleMood)
                         }
@@ -119,26 +119,26 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
         }, completion: { finished in
             self.datePickerBackground.isHidden = true
         })
-        datePickerButton.setTitle(returnDateForm(date), for: UIControlState())
+        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
     }
     
     @IBAction func showNextDay(_ sender: AnyObject) {
         //Go to next day
         date = date.addingTimeInterval(60 * 60 * 24)
         UserDefaults.standard.set(date , forKey: "dateUF")
-        datePickerButton.setTitle(returnDateForm(date), for: UIControlState())
+        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
     }
     
     @IBAction func showPreviousDay(_ sender: AnyObject) {
         //Go to prevoius day
         date = date.addingTimeInterval(-60 * 60 * 24)
         UserDefaults.standard.set(date, forKey: "dateUF")
-        datePickerButton.setTitle(returnDateForm(date), for: UIControlState())
+        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
     }
     
     override func viewDidAppear(_ animated: Bool) {
         date = UserDefaults.standard.object(forKey: "dateUF") as! Date
-        datePickerButton.setTitle(returnDateForm(date), for: UIControlState())
+        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
     }
     
     // MARK: View methods
@@ -198,16 +198,6 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
         cell.moodNameLabel.text = moods[(indexPath as NSIndexPath).row].moodName
         cell.moodImageView.image = moods[(indexPath as NSIndexPath).row].moodSmiley
         return cell
-    }
-    
-    //Get the date in a good format
-    func returnDateForm(_ date: Date) -> String{
-        let dateFormatter = DateFormatter()
-        let theDateFormat = DateFormatter.Style.short
-        let theTimeFormat = DateFormatter.Style.none
-        dateFormatter.dateStyle = theDateFormat
-        dateFormatter.timeStyle = theTimeFormat
-        return dateFormatter.string(from: date)
     }
     
     func addNewMood(){

@@ -56,7 +56,7 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         }, completion: { finished in
             self.datePickerBackgroundView.isHidden = true
         })
-        datePickerButton.setTitle(returnDateForm(date), for: UIControlState())
+        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
         
         viewDidAppear(true)
     }
@@ -82,14 +82,14 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         // Hide empty cells
         let backgroundView = UIView(frame: CGRect.zero)
         self.trainingDataDayIDTableView.tableFooterView = backgroundView
-        self.trainingDataDayIDTableView.backgroundColor = UIColor(red: 86 / 255, green: 158 / 255, blue: 197 / 255, alpha: 0)
+        self.trainingDataDayIDTableView.backgroundColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
         selectedDoneExercises = []
         
         // Remove text from back button
         let backButton = UIBarButtonItem(title: " ", style: UIBarButtonItemStyle.plain, target: self, action: nil)
         backButton.setTitleTextAttributes([NSAttributedStringKey.font: UIFont(name: "Chalkduster", size: 20)!], for: UIControlState())
         navigationItem.backBarButtonItem = backButton
-        datePickerButton.titleLabel?.text = returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)
+        datePickerButton.titleLabel?.text = DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)
         trainingDataDayIDTableView.dataSource = self
         trainingDataDayIDTableView.delegate = self
         
@@ -115,16 +115,6 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     // MARK: Own Methods
-    
-    // Get date in a good format
-    func returnDateForm(_ date: Date) -> String {
-        let dateFormatter = DateFormatter()
-        let theDateFormat = DateFormatter.Style.short
-        let theTimeFormat = DateFormatter.Style.none
-        dateFormatter.dateStyle = theDateFormat
-        dateFormatter.timeStyle = theTimeFormat
-        return dateFormatter.string(from: date)
-    }
     
     func setupPickerView() {
         blurView.frame = datePickerBackgroundView.bounds
@@ -187,7 +177,7 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             let context:NSManagedObjectContext = self.appDelegate.managedObjectContext!
             var count = self.doneExercises.count - 1
             for _ in 0..<self.doneExercises.count{
-                if self.doneExercises[count].dayID == self.dayIDs[(indexPath as NSIndexPath).row] && self.returnDateForm(self.doneExercises[count].date as Date) == self.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date) {
+                if self.doneExercises[count].dayID == self.dayIDs[(indexPath as NSIndexPath).row] && DateFormatHelper.returnDateForm(self.doneExercises[count].date as Date) == DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date) {
                     context.delete(self.doneExercises[count] as NSManagedObject)
                     self.doneExercises.remove(at: count)
                     count = count - 1
@@ -206,7 +196,7 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         // Handle the changings of the selected row item
         let editAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: NSLocalizedString("Edit", comment: "Edit")) { (action, index) -> Void in
             for i in 0  ..< self.doneExercises.count {
-                if self.doneExercises[i].dayID == self.dayIDs[(indexPath as NSIndexPath).row] && self.returnDateForm(self.doneExercises[i].date as Date) == self.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date) {
+                if self.doneExercises[i].dayID == self.dayIDs[(indexPath as NSIndexPath).row] && DateFormatHelper.returnDateForm(self.doneExercises[i].date as Date) == DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date) {
                     self.selectedDoneExercises.append(self.doneExercises[i])
                 }
             }
@@ -241,14 +231,14 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         var dayHasContent = false
         
         //Show date of chosen day
-        datePickerButton.setTitle(returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date), for: UIControlState())
+        datePickerButton.setTitle(DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date), for: UIControlState())
         
         //Hide empty cells
         let backgroundView = UIView(frame: CGRect.zero)
         
         self.trainingDataDayIDTableView.tableFooterView = backgroundView
         
-        self.trainingDataDayIDTableView.backgroundColor = UIColor(red: 86 / 255, green: 158 / 255, blue: 197 / 255,alpha: 0)
+        self.trainingDataDayIDTableView.backgroundColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
         
         let requestDoneExercises = NSFetchRequest<NSFetchRequestResult>(entityName: "DoneExercise")
         doneExercises = (try! appDelegate.managedObjectContext?.fetch(requestDoneExercises))  as! [DoneExercise]
@@ -265,7 +255,7 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         //Only get different done trainings plans
         for checkIDAmount in doneExercises {
-            if(returnDateForm(checkIDAmount.date as Date) ==  returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)) {
+            if(DateFormatHelper.returnDateForm(checkIDAmount.date as Date) ==  DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)) {
                 dayHasContent = true
                 checkBefore=checkString
                 checkString = checkIDAmount.dayID
@@ -280,7 +270,7 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
                         dayIDs.append(checkIDAmount.dayID)
                     }
                 }
-                trainingDataDateLabel.text = returnDateForm(checkIDAmount.date as Date)
+                trainingDataDateLabel.text = DateFormatHelper.returnDateForm(checkIDAmount.date as Date)
             }
         }
         //Default text
@@ -299,7 +289,7 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         //Show data in right unit
         for checkMeasureExists in measurements {
-            if(returnDateForm(checkMeasureExists.date as Date) ==  returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)) {
+            if(DateFormatHelper.returnDateForm(checkMeasureExists.date as Date) ==  DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)) {
                 var weight = (checkMeasureExists.weight).doubleValue
                 if weightUnit == "lbs" {
                     weight = weight * 2.20462262185
@@ -341,7 +331,7 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         for checkMoodExists in moods{
             
-            if(returnDateForm(checkMoodExists.date as Date) ==  returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)){
+            if(DateFormatHelper.returnDateForm(checkMoodExists.date as Date) ==  DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)){
                 dayHasContent = true
                 trainingDataMoodNameLabel.text = checkMoodExists.moodName
                 trainingDataMoodImageView.image = UIImage(named: checkMoodExists.moodImagePath)
@@ -349,14 +339,14 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             
         }
         
-        trainingDataDateLabel.text = returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)
+        trainingDataDateLabel.text = DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)
         
         trainingDataDayIDTableView.reloadData()
         
         if !dayHasContent {
             trainingDataDateLabel.text = NSLocalizedString("No entry at this date", comment: "No entry at this date")
         }
-        trainingDataDayIDTableView.separatorColor = UIColor(red: 22 / 255, green: 204 / 255, blue: 255 / 255,alpha: 1)
+        trainingDataDayIDTableView.separatorColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
     }
     
 }

@@ -71,7 +71,7 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Dates")
         dates = (try! appDelegate.managedObjectContext?.fetch(request))  as! [Dates]
         for i in 0  ..< dates.count {
-            if returnDateForm(dates[i].savedDate as Date) == returnDateForm(date) {
+            if DateFormatHelper.returnDateForm(dates[i].savedDate as Date) == DateFormatHelper.returnDateForm(date) {
                 alreadyExists = false
             }
         }
@@ -129,7 +129,7 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
         }, completion: { finished in
             self.datePickerBackgroundView.isHidden = true
         })
-        datePickerButton.setTitle(returnDateForm(date), for: UIControlState())
+        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
     }
     
     @IBAction func showDatePicker(_ sender: AnyObject) {
@@ -139,7 +139,7 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
     @IBAction func showNextDay(_ sender: AnyObject) {
         date = date.addingTimeInterval(60 * 60 * 24)
         UserDefaults.standard.set(date, forKey: "dateUF")
-        datePickerButton.setTitle(returnDateForm(date), for: UIControlState())
+        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
     }
     
     @IBAction func showNextExercise(_ sender: AnyObject) {
@@ -149,7 +149,7 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
     @IBAction func showPreviousDay(_ sender: AnyObject) {
         date = date.addingTimeInterval(-60 * 60 * 24)
         UserDefaults.standard.set(date, forKey: "dateUF")
-        datePickerButton.setTitle(returnDateForm(date), for: UIControlState())
+        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
     }
     
     @IBAction func showPreviousExercise(_ sender: AnyObject) {
@@ -230,7 +230,7 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
     override func viewDidAppear(_ animated: Bool) {
         exercisesWithSets = []
         date = UserDefaults.standard.object(forKey: "dateUF") as! Date
-        datePickerButton.setTitle(returnDateForm(date), for: UIControlState())
+        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
         for item in selectedExercise as [Exercise] {
             for i in 0..<(item.sets as! Int) {
                 setCounter.append(i + 1)
@@ -318,16 +318,6 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
                 }
             }
         }
-    }
-    
-    // Get date in a good format
-    func returnDateForm(_ date: Date) -> String {
-        let dateFormatter = DateFormatter()
-        let theDateFormat = DateFormatter.Style.short
-        let theTimeFormat = DateFormatter.Style.none
-        dateFormatter.dateStyle = theDateFormat
-        dateFormatter.timeStyle = theTimeFormat
-        return dateFormatter.string(from: date)
     }
     
     @objc func updateTime() {

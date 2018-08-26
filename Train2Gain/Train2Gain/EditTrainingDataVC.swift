@@ -32,7 +32,7 @@ class EditTrainingDataVC: UIViewController {
         let chosendate = UserDefaults.standard.object(forKey: "dateUF") as! Date
         
         let translationChangeDataOf = NSLocalizedString("Change data of", comment: "Change data of")
-        editTitleLabel.text = "\(translationChangeDataOf) \(returnDateForm(chosendate))"
+        editTitleLabel.text = "\(translationChangeDataOf) \(DateFormatHelper.returnDateForm(chosendate))"
     }
     
     // MARK: Own Methods
@@ -48,16 +48,6 @@ class EditTrainingDataVC: UIViewController {
                 moodCollectionViewController.editMode = true
             }
         }
-    }
-    
-    // Get date in a good format
-    func returnDateForm(_ date: Date) -> String {
-        let dateFormatter = DateFormatter()
-        let theDateFormat = DateFormatter.Style.short
-        let theTimeFormat = DateFormatter.Style.none
-        dateFormatter.dateStyle = theDateFormat
-        dateFormatter.timeStyle = theTimeFormat
-        return dateFormatter.string(from: date)
     }
     
 }

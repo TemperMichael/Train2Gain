@@ -49,7 +49,7 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
         
         // Check if data already exists
         for i in 0 ..< dates.count {
-            if(returnDateForm(dates[i].savedDate as Date) == returnDateForm(date)){
+            if(DateFormatHelper.returnDateForm(dates[i].savedDate as Date) == DateFormatHelper.returnDateForm(date)){
                 alreadyExists = false
             }
         }
@@ -66,7 +66,7 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
                 addNewMeasure()
             } else {
                 let lastMeasure = measurements[measurements.count-1]
-                if returnDateForm(lastMeasure.date as Date) != returnDateForm(Date()) {
+                if DateFormatHelper.returnDateForm(lastMeasure.date as Date) != DateFormatHelper.returnDateForm(Date()) {
                     addNewMeasure()
                 } else {
                     addMeasure(lastMeasure)
@@ -76,7 +76,7 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
             var measurementExists = false
             if !alreadyExists {
                 for singleMeasure in measurements {
-                    if returnDateForm(singleMeasure.date as Date) == returnDateForm(date) {
+                    if DateFormatHelper.returnDateForm(singleMeasure.date as Date) == DateFormatHelper.returnDateForm(date) {
                         measurementExists = true
                         addMeasure(singleMeasure)
                     }
@@ -111,7 +111,7 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
         }, completion: { finished in
             self.datePickerBackgroundView.isHidden = true
         })
-        datePickerButton.setTitle(returnDateForm(date), for: UIControlState())
+        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
     }
     
     @IBAction func showDatePicker(_ sender: AnyObject) {
@@ -121,14 +121,14 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
     @IBAction func showNextDay(_ sender: AnyObject) {
         date = date.addingTimeInterval(60 * 60 * 24)
         UserDefaults.standard.set(date, forKey: "dateUF")
-        datePickerButton.setTitle(returnDateForm(date), for: UIControlState())
+        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
         
     }
     
     @IBAction func showPreviousDay(_ sender: AnyObject) {
         date = date.addingTimeInterval(-60 * 60 * 24)
         UserDefaults.standard.set(date, forKey: "dateUF")
-        datePickerButton.setTitle(returnDateForm(date), for: UIControlState())
+        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
     }
     
     // MARK: View Methods
@@ -146,7 +146,7 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
         if editMode {
             measurements = (try! appDelegate.managedObjectContext?.fetch(requestedMeasurements))!
             for singleMeasure in measurements {
-                if returnDateForm(singleMeasure.date as Date) == returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date) {
+                if DateFormatHelper.returnDateForm(singleMeasure.date as Date) == DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date) {
                     measurementsWeightTextField.text = getCorrectString(singleMeasure.weight.doubleValue,id: 0)
                     measurementsArmTextField.text = getCorrectString(singleMeasure.arm.doubleValue,id: 1)
                     measurementsLegTextField.text = getCorrectString(singleMeasure.leg.doubleValue,id: 1)
@@ -159,7 +159,7 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
             singleLabel.text = lengthUnit
         }
         measurementWeightUnitLabel.text = weightUnit
-        datePickerButton.setTitle(returnDateForm(date), for: UIControlState())
+        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
         
         datePicker.setDate(UserDefaults.standard.object(forKey: "dateUF") as! Date, animated: true)
         datePicker.forBaselineLayout().setValue(UIColor.white, forKeyPath: "tintColor")
@@ -173,7 +173,7 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
     
     override func viewDidAppear(_ animated: Bool) {
         date = UserDefaults.standard.object(forKey: "dateUF") as! Date
-        datePickerButton.setTitle(returnDateForm(date), for: UIControlState())
+        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
     }
     
     // MARK: Own Methods
@@ -195,18 +195,6 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
             returnString = "0"
         }
         return returnString
-    }
-    
-    
-    
-    // Get date in a good format
-    func returnDateForm(_ date: Date) -> String {
-        let dateFormatter = DateFormatter()
-        let theDateFormat = DateFormatter.Style.short
-        let theTimeFormat = DateFormatter.Style.none
-        dateFormatter.dateStyle = theDateFormat
-        dateFormatter.timeStyle = theTimeFormat
-        return dateFormatter.string(from: date)
     }
     
     // Add measures in right units
