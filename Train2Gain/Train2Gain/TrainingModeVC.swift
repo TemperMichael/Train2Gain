@@ -133,7 +133,8 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func showDatePicker(_ sender: AnyObject) {
-        setupPickerView()
+        PickerViewHelper.setupPickerViewBackground(blurView, datePickerBackgroundView)
+        PickerViewHelper.bringPickerToFront(datePickerBackgroundView, datePicker, selectDateButton, datePickerTitleLabel)
     }
     
     @IBAction func showNextDay(_ sender: AnyObject) {
@@ -372,29 +373,6 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
         // Add the animation to the View's layer
         (completionDelegate as! UIView).layer.add(slideInTransition, forKey: "slideInTransition")
     }
-    
-    func setupPickerView() {
-        blurView.frame = datePickerBackgroundView.bounds
-        blurView.translatesAutoresizingMaskIntoConstraints = false
-        if !datePickerBackgroundView.subviews.contains(blurView) {
-            datePickerBackgroundView.addSubview(blurView)
-            datePickerBackgroundView.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: datePickerBackgroundView, attribute: NSLayoutAttribute.top, multiplier: 1.0, constant: 0.0))
-            datePickerBackgroundView.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.leading, relatedBy: NSLayoutRelation.equal, toItem: datePickerBackgroundView, attribute: NSLayoutAttribute.leading, multiplier: 1.0, constant: 0.0))
-            datePickerBackgroundView.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.bottom, relatedBy: NSLayoutRelation.equal, toItem: datePickerBackgroundView, attribute: NSLayoutAttribute.bottom, multiplier: 1.0, constant: 0.0))
-            datePickerBackgroundView.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.trailing, relatedBy: NSLayoutRelation.equal, toItem: datePickerBackgroundView, attribute: NSLayoutAttribute.trailing, multiplier: 1.0, constant: 0.0))
-        }
-        datePickerBackgroundView.alpha = 0
-        datePickerBackgroundView.isHidden = false
-        self.view.bringSubview(toFront: datePickerBackgroundView)
-        datePickerBackgroundView.bringSubview(toFront: datePicker)
-        datePickerBackgroundView.bringSubview(toFront: selectDateButton)
-        datePickerBackgroundView.bringSubview(toFront: datePickerTitleLabel)
-        UIView.animate(withDuration: 0.5, delay: 0, options: UIViewAnimationOptions(), animations: {
-            self.datePickerBackgroundView.alpha = 1
-        }, completion: { finished in
-        })
-    }
-    
     
     // MARK: Keyboard methods
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

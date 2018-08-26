@@ -234,7 +234,7 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="23"/>
                                 <state key="normal" title="&lt;">
-                                    <color key="titleColor" red="0.086274509799999996" green="0.80000000000000004" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
@@ -249,7 +249,7 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="23"/>
                                 <state key="normal" title="&gt;">
-                                    <color key="titleColor" red="0.086274509799999996" green="0.80000000000000004" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
@@ -264,7 +264,7 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" weight="ultraLight" pointSize="34"/>
                                 <state key="normal" title="+">
-                                    <color key="titleColor" red="0.086274509799999996" green="0.80000000000000004" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
@@ -280,7 +280,7 @@
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="30" id="o5m-Rv-KZl"/>
                                 </constraints>
                                 <state key="normal" image="trash">
-                                    <color key="titleColor" red="0.086274509799999996" green="0.80000000000000004" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
@@ -870,11 +870,11 @@
                     </navigationItem>
                     <connections>
                         <outlet property="datePicker" destination="g7b-Eh-Hx3" id="8vk-ud-GIZ"/>
-                        <outlet property="datePickerBackground" destination="a6G-Vd-CTb" id="qod-93-thN"/>
+                        <outlet property="datePickerBackgroundView" destination="a6G-Vd-CTb" id="qod-93-thN"/>
                         <outlet property="datePickerButton" destination="gvq-Zz-xr7" id="JWr-5A-2Bd"/>
-                        <outlet property="finishButton" destination="XiR-St-jzc" id="8Yj-uL-32l"/>
+                        <outlet property="datePickerTitleLabel" destination="Qvs-U0-2LZ" id="dmu-VX-aue"/>
                         <outlet property="moodCollectionView" destination="bxu-OJ-jUi" id="jBN-YS-S5C"/>
-                        <outlet property="pickerTitleLabel" destination="Qvs-U0-2LZ" id="dmu-VX-aue"/>
+                        <outlet property="selectDateButton" destination="XiR-St-jzc" id="8Yj-uL-32l"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cI6-O1-tAa" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1322,10 +1322,10 @@
                         <outlet property="chartView" destination="oFR-Il-LRJ" id="2o4-A5-oGt"/>
                         <outlet property="exerciseButton" destination="ZH4-h2-Z4G" id="yuU-sG-w4o"/>
                         <outlet property="monthButton" destination="qXI-vl-EvS" id="lch-Ec-Lnw"/>
-                        <outlet property="pickerBackground" destination="rra-0M-JSX" id="Ass-Qp-Owk"/>
+                        <outlet property="pickerBackgroundView" destination="rra-0M-JSX" id="Ass-Qp-Owk"/>
+                        <outlet property="pickerSelectButton" destination="nCy-8J-ZEK" id="uBt-zo-hHt"/>
                         <outlet property="pickerTitle" destination="XTd-Do-fSa" id="Xrj-y2-Mvm"/>
                         <outlet property="pickerView" destination="UBm-FJ-5jH" id="HyJ-fG-iaw"/>
-                        <outlet property="selectDateButton" destination="nCy-8J-ZEK" id="uBt-zo-hHt"/>
                         <outlet property="selectedValueLabel" destination="6sW-QV-t0j" id="al9-I3-2XT"/>
                         <outlet property="selectorsBackground" destination="nyd-sb-Dir" id="DfV-ao-6tz"/>
                         <outlet property="setButton" destination="9am-Mg-wLB" id="iy3-bc-hvH"/>

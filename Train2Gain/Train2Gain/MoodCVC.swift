@@ -24,14 +24,15 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
     
     // MARK: IBOutlets & IBActions
     @IBOutlet weak var datePicker: UIDatePicker!
-    @IBOutlet weak var datePickerBackground: UIView!
+    @IBOutlet weak var datePickerBackgroundView: UIView!
     @IBOutlet weak var datePickerButton: UIButton!
-    @IBOutlet weak var finishButton: UIButton!
+    @IBOutlet weak var datePickerTitleLabel: UILabel!
     @IBOutlet weak var moodCollectionView: UICollectionView!
-    @IBOutlet weak var pickerTitleLabel: UILabel!
+    @IBOutlet weak var selectDateButton: UIButton!
     
     @IBAction func pickDate(_ sender: AnyObject) {
-        setupPickerView()
+        PickerViewHelper.setupPickerViewBackground(blurView, datePickerBackgroundView)
+        PickerViewHelper.bringPickerToFront(datePickerBackgroundView, datePicker, selectDateButton, datePickerTitleLabel)
     }
     
     @IBAction func saveMood(_ sender: AnyObject) {
@@ -115,9 +116,9 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
         date = datePicker.date
         UserDefaults.standard.set(datePicker.date,forKey: "dateUF")
         UIView.animate(withDuration: 0.5, delay: 0, options: UIViewAnimationOptions(), animations: {
-            self.datePickerBackground.alpha = 0
+            self.datePickerBackgroundView.alpha = 0
         }, completion: { finished in
-            self.datePickerBackground.isHidden = true
+            self.datePickerBackgroundView.isHidden = true
         })
         datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
     }
@@ -172,7 +173,7 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
             sub.setValue(UIColor.white, forKeyPath: "textColor")
             sub.setValue(UIColor.white, forKey: "tintColor")
         }
-        pickerTitleLabel.text = NSLocalizedString("Choose a date", comment: "Choose a date")
+        datePickerTitleLabel.text = NSLocalizedString("Choose a date", comment: "Choose a date")
     }
     
     // MARK: CollectionView
@@ -210,28 +211,6 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
         _Object.date = date
         _Object.moodName = cell.moodNameLabel.text!
         _Object.moodImagePath = imagePaths[(selectedIndexPath! as NSIndexPath).row + 1]
-    }
-    
-    func setupPickerView() {
-        blurView.frame = datePickerBackground.bounds
-        blurView.translatesAutoresizingMaskIntoConstraints = false
-        if !datePickerBackground.subviews.contains(blurView) {
-            datePickerBackground.addSubview(blurView)
-            datePickerBackground.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: datePickerBackground, attribute: NSLayoutAttribute.top, multiplier: 1.0, constant: 0.0))
-            datePickerBackground.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.leading, relatedBy: NSLayoutRelation.equal, toItem: datePickerBackground, attribute: NSLayoutAttribute.leading, multiplier: 1.0, constant: 0.0))
-            datePickerBackground.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.bottom, relatedBy: NSLayoutRelation.equal, toItem: datePickerBackground, attribute: NSLayoutAttribute.bottom, multiplier: 1.0, constant: 0.0))
-            datePickerBackground.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.trailing, relatedBy: NSLayoutRelation.equal, toItem: datePickerBackground, attribute: NSLayoutAttribute.trailing, multiplier: 1.0, constant: 0.0))
-        }
-        datePickerBackground.alpha = 0
-        datePickerBackground.isHidden = false
-        self.view.bringSubview(toFront: datePickerBackground)
-        datePickerBackground.bringSubview(toFront: datePicker)
-        datePickerBackground.bringSubview(toFront: finishButton)
-        datePickerBackground.bringSubview(toFront: pickerTitleLabel)
-        UIView.animate(withDuration: 0.5, delay: 0, options: UIViewAnimationOptions(), animations: {
-            self.datePickerBackground.alpha = 1
-        }, completion: { finished in
-        })
     }
     
 }

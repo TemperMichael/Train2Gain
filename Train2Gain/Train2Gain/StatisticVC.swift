@@ -34,11 +34,11 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
     @IBOutlet weak var chartView: LineChartView!
     @IBOutlet weak var exerciseButton: UIButton!
     @IBOutlet weak var monthButton: UIButton!
-    @IBOutlet weak var pickerBackground: UIView!
+    @IBOutlet weak var pickerBackgroundView: UIView!
+    @IBOutlet weak var pickerSelectButton: UIButton!
     @IBOutlet weak var pickerTitle: UILabel!
     @IBOutlet weak var pickerView: UIPickerView!
     @IBOutlet weak var selectorsBackground: UIView!
-    @IBOutlet weak var selectDateButton: UIButton!
     @IBOutlet weak var selectedValueLabel: UILabel!
     @IBOutlet weak var setButton: UIButton!
     @IBOutlet weak var yearButton: UIButton!
@@ -46,9 +46,9 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
     //Animate the hiding of the pickerview, set data and set titles of the buttons
     @IBAction func closePicker(_ sender: AnyObject) {
         UIView.animate(withDuration: 0.5, delay: 0, options: UIViewAnimationOptions(), animations: {
-            self.pickerBackground.alpha = 0
+            self.pickerBackgroundView.alpha = 0
         }, completion: { finished in
-            self.pickerBackground.isHidden = true
+            self.pickerBackgroundView.isHidden = true
         })
         
         switch self.pickerTitle.text! {
@@ -109,7 +109,6 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         }
         pickerData = sets
         setupPickerView()
-        
     }
     
     @IBAction func selectYear(_ sender: AnyObject) {
@@ -425,27 +424,11 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
     
     
     // MARK: PickerView
+    
     func setupPickerView() {
         pickerView.reloadAllComponents()
-        blurView.frame = pickerBackground.bounds
-        blurView.translatesAutoresizingMaskIntoConstraints = false
-        if !pickerBackground.subviews.contains(blurView) {
-            pickerBackground.addSubview(blurView)
-            pickerBackground.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: pickerBackground, attribute: NSLayoutAttribute.top, multiplier: 1.0, constant: 0.0))
-            pickerBackground.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.leading, relatedBy: NSLayoutRelation.equal, toItem: pickerBackground, attribute: NSLayoutAttribute.leading, multiplier: 1.0, constant: 0.0))
-            pickerBackground.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.bottom, relatedBy: NSLayoutRelation.equal, toItem: pickerBackground, attribute: NSLayoutAttribute.bottom, multiplier: 1.0, constant: 0.0))
-            pickerBackground.addConstraint(NSLayoutConstraint(item: blurView, attribute: NSLayoutAttribute.trailing, relatedBy: NSLayoutRelation.equal, toItem: pickerBackground, attribute: NSLayoutAttribute.trailing, multiplier: 1.0, constant: 0.0))
-        }
-        pickerBackground.alpha = 0
-        pickerBackground.isHidden = false
-        self.view.bringSubview(toFront: pickerBackground)
-        pickerBackground.bringSubview(toFront: pickerView)
-        pickerBackground.bringSubview(toFront: selectDateButton)
-        pickerBackground.bringSubview(toFront: pickerTitle)
-        UIView.animate(withDuration: 0.5, delay: 0, options: UIViewAnimationOptions(), animations: {
-            self.pickerBackground.alpha = 1
-        }, completion: { finished in
-        })
+        PickerViewHelper.setupPickerViewBackground(blurView, pickerBackgroundView)
+        PickerViewHelper.bringPickerToFront(pickerBackgroundView, pickerView, pickerSelectButton, pickerTitle)
     }
     
     // The number of columns of data
