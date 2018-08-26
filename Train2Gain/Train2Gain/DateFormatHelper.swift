@@ -7,8 +7,11 @@
 //
 
 import Foundation
+import UIKit
 
 class DateFormatHelper {
+    
+    var date = Date()
     
     static func returnDateForm(_ date: Date) -> String {
         let dateFormatter = DateFormatter()
@@ -17,6 +20,13 @@ class DateFormatHelper {
         dateFormatter.dateStyle = dateFormat
         dateFormatter.timeStyle = timeFormat
         return dateFormatter.string(from: date)
+    }
+
+    
+    static func setDate(_ date: Date, _ datePickerButton : UIButton) -> Date {
+        UserDefaults.standard.set(date , forKey: "dateUF")
+        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
+        return date
     }
     
 }

@@ -533,7 +533,7 @@
                                         </connections>
                                     </button>
                                 </subviews>
-                                <color key="backgroundColor" red="0.1137254902" green="0.76078431369999999" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.14509689810000001" green="0.74653351310000005" blue="0.99635750059999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="bottom" secondItem="yJH-k8-gwt" secondAttribute="bottom" constant="10" id="6fF-dp-v8r"/>
                                     <constraint firstItem="HtT-NH-aNa" firstAttribute="leading" secondItem="yJH-k8-gwt" secondAttribute="trailing" id="O6t-Ux-OQV"/>
@@ -566,7 +566,7 @@
                                             <action selector="closePicker:" destination="pwE-sf-q0a" eventType="touchUpInside" id="ysl-h2-Fow"/>
                                             <action selector="selectDate:" destination="y16-dY-flm" eventType="touchUpInside" id="4G7-RW-QH0"/>
                                             <action selector="selectDate:" destination="JUQ-nm-1zm" eventType="touchUpInside" id="aOm-72-U2Y"/>
-                                            <action selector="selectedDate:" destination="fQn-ZL-WLK" eventType="touchUpInside" id="gJK-JX-cJ7"/>
+                                            <action selector="selectDate:" destination="fQn-ZL-WLK" eventType="touchUpInside" id="gJK-JX-cJ7"/>
                                         </connections>
                                     </button>
                                     <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="yla-x5-YDr">
@@ -738,7 +738,7 @@
                                         </connections>
                                     </button>
                                 </subviews>
-                                <color key="backgroundColor" red="0.1137254902" green="0.76078431369999999" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.14509689810000001" green="0.74653351310000005" blue="0.99635750059999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="bottom" secondItem="gvq-Zz-xr7" secondAttribute="bottom" constant="10" id="5mg-6l-4aD"/>
                                     <constraint firstAttribute="height" constant="55" id="FV5-tb-sMb"/>
@@ -819,7 +819,7 @@
                                         </state>
                                         <connections>
                                             <action selector="closePicker:" destination="pwE-sf-q0a" eventType="touchUpInside" id="DVl-Vf-eMn"/>
-                                            <action selector="selectedDate:" destination="fQn-ZL-WLK" eventType="touchUpInside" id="SKP-P2-raL"/>
+                                            <action selector="selectDate:" destination="fQn-ZL-WLK" eventType="touchUpInside" id="SKP-P2-raL"/>
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Exercises" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qvs-U0-2LZ">
@@ -1641,7 +1641,7 @@
                                         </variation>
                                     </view>
                                 </subviews>
-                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="239" id="00Q-b5-bZY"/>
                                     <constraint firstAttribute="bottom" secondItem="WwP-GW-hSh" secondAttribute="bottom" constant="12" id="2NG-tv-vvC"/>
@@ -1709,7 +1709,7 @@
                                         <connections>
                                             <action selector="closePicker:" destination="pwE-sf-q0a" eventType="touchUpInside" id="cNn-LM-EKz"/>
                                             <action selector="selectDate:" destination="JUQ-nm-1zm" eventType="touchUpInside" id="6cM-5c-zfV"/>
-                                            <action selector="selectedDate:" destination="fQn-ZL-WLK" eventType="touchUpInside" id="JRu-Xh-USc"/>
+                                            <action selector="selectDate:" destination="fQn-ZL-WLK" eventType="touchUpInside" id="JRu-Xh-USc"/>
                                         </connections>
                                     </button>
                                     <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="rof-BC-2Vu">
@@ -2031,7 +2031,7 @@
                                         </connections>
                                     </button>
                                 </subviews>
-                                <color key="backgroundColor" red="0.1137254902" green="0.76078431369999999" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.14509689810000001" green="0.74653351310000005" blue="0.99635750059999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="7vK-4Q-ayA" firstAttribute="leading" secondItem="h8g-QD-d44" secondAttribute="leading" id="4AO-TL-u3m"/>
                                     <constraint firstAttribute="bottom" secondItem="xhr-Sl-VLh" secondAttribute="bottom" constant="10" id="4dN-G6-weD"/>
@@ -2077,8 +2077,8 @@
                                         <connections>
                                             <action selector="closePicker:" destination="pwE-sf-q0a" eventType="touchUpInside" id="jWt-iz-ezm"/>
                                             <action selector="selectDate:" destination="JUQ-nm-1zm" eventType="touchUpInside" id="YDA-9J-Gbs"/>
+                                            <action selector="selectDate:" destination="fQn-ZL-WLK" eventType="touchUpInside" id="gad-zo-p8G"/>
                                             <action selector="selectDate:" destination="cSb-bX-5fT" eventType="touchUpInside" id="qzX-zo-Qbh"/>
-                                            <action selector="selectedDate:" destination="fQn-ZL-WLK" eventType="touchUpInside" id="gad-zo-p8G"/>
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Exercises" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qe9-7t-rmb">

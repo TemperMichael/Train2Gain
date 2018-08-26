@@ -50,29 +50,18 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     @IBAction func selectDate(_ sender: AnyObject) {
-        let date = datePicker.date
-        UserDefaults.standard.set(datePicker.date,forKey: "dateUF")
-        UIView.animate(withDuration: 0.5, delay: 0, options: UIViewAnimationOptions(), animations: {
-            self.datePickerBackgroundView.alpha = 0
-        }, completion: { finished in
-            self.datePickerBackgroundView.isHidden = true
-        })
-        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
-        
+        _ = DateFormatHelper.setDate(datePicker.date, datePickerButton)
+        PickerViewHelper.hidePickerView(datePickerBackgroundView)
         viewDidAppear(true)
     }
     
     @IBAction func showNextDay(_ sender: AnyObject) {
-        var date: Date = UserDefaults.standard.object(forKey: "dateUF") as! Date
-        date = date.addingTimeInterval(60 * 60 * 24)
-        UserDefaults.standard.set(date, forKey: "dateUF")
+        _ = DateFormatHelper.setDate((UserDefaults.standard.object(forKey: "dateUF") as! Date).addingTimeInterval(60 * 60 * 24), datePickerButton)
         viewDidAppear(true)
     }
     
     @IBAction func showPreviousDay(_ sender: AnyObject) {
-        var date: Date = UserDefaults.standard.object(forKey: "dateUF") as! Date
-        date = date.addingTimeInterval(-60 * 60 * 24)
-        UserDefaults.standard.set(date, forKey: "dateUF")
+        _ = DateFormatHelper.setDate((UserDefaults.standard.object(forKey: "dateUF") as! Date).addingTimeInterval(-60 * 60 * 24), datePickerButton)
         viewDidAppear(true)
     }
     
@@ -147,7 +136,6 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-
         //Handle swipe to single tableview row
         //Handle the deletion of an row
         let deleteAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: NSLocalizedString("Delete", comment: "Delete")) { (action, index) -> Void in
@@ -168,7 +156,6 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
         deleteAction.backgroundColor = UIColor(red: 86 / 255 , green: 158 / 255, blue: 197 / 255 , alpha: 1)
-        
 
         // Handle the changings of the selected row item
         let editAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: NSLocalizedString("Edit", comment: "Edit")) { (action, index) -> Void in
@@ -181,7 +168,6 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         editAction.backgroundColor = UIColor(red: 112 / 255, green: 188 / 255, blue: 224 / 255 , alpha: 1)
         return [deleteAction,editAction]
-        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

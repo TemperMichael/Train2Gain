@@ -37,5 +37,13 @@ class PickerViewHelper {
         })
     }
     
+    static func hidePickerView(_ datePickerBackgroundView: UIView) {
+        UIView.animate(withDuration: 0.5, delay: 0, options: UIViewAnimationOptions(), animations: {
+            datePickerBackgroundView.alpha = 0
+        }, completion: { finished in
+            datePickerBackgroundView.isHidden = true
+        })
+    }
+    
     
 }

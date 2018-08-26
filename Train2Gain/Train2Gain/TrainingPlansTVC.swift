@@ -36,7 +36,6 @@ class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         self.tableView.backgroundColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
         tableView.delegate = self
         tableView.dataSource = self
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -72,7 +71,6 @@ class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         }
         tableView.reloadData()
         tableView.separatorColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
-        
     }
     
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
@@ -107,7 +105,6 @@ class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         }
         deleteAction.backgroundColor = UIColor(red: 86 / 255, green: 158 / 255, blue: 197 / 255, alpha: 1)
         
-        
         // Handle the changings of the selected row item
         let editAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: NSLocalizedString("Edit", comment: "Edit")) { (action, index) -> Void in
             for i in  0..<self.exercises.count {
@@ -119,7 +116,6 @@ class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         }
         editAction.backgroundColor = UIColor(red: 112 / 255, green: 188 / 255, blue: 224 / 255, alpha: 1)
         return [deleteAction, editAction]
-        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

@@ -38,14 +38,12 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var selectDateButton: UIButton!
     
     @IBAction func saveMeasurements(_ sender: AnyObject) {
-        
         var alreadyExists = true
         let  request = NSFetchRequest<NSFetchRequestResult>(entityName: "Dates")
         dates = (try! appDelegate.managedObjectContext?.fetch(request))  as! [Dates]
         
         measurements = (try! appDelegate.managedObjectContext?.fetch(requestedMeasurements))!
         date = UserDefaults.standard.object(forKey: "dateUF") as! Date
-        
         
         // Check if data already exists
         for i in 0 ..< dates.count {
@@ -104,14 +102,8 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func selectDate(_ sender: AnyObject) {
-        date = datePicker.date
-        UserDefaults.standard.set(datePicker.date,forKey: "dateUF")
-        UIView.animate(withDuration: 0.5, delay: 0, options: UIViewAnimationOptions(), animations: {
-            self.datePickerBackgroundView.alpha = 0
-        }, completion: { finished in
-            self.datePickerBackgroundView.isHidden = true
-        })
-        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
+        date = DateFormatHelper.setDate(datePicker.date, datePickerButton)
+        PickerViewHelper.hidePickerView(datePickerBackgroundView)
     }
     
     @IBAction func showDatePicker(_ sender: AnyObject) {
@@ -120,16 +112,11 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func showNextDay(_ sender: AnyObject) {
-        date = date.addingTimeInterval(60 * 60 * 24)
-        UserDefaults.standard.set(date, forKey: "dateUF")
-        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
-        
+        date = DateFormatHelper.setDate(date.addingTimeInterval(60 * 60 * 24), datePickerButton)
     }
     
     @IBAction func showPreviousDay(_ sender: AnyObject) {
-        date = date.addingTimeInterval(-60 * 60 * 24)
-        UserDefaults.standard.set(date, forKey: "dateUF")
-        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
+        date = DateFormatHelper.setDate(date.addingTimeInterval(-60 * 60 * 24), datePickerButton)
     }
     
     // MARK: View Methods
@@ -245,7 +232,6 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
         measurementsLegTextField.resignFirstResponder()
     }
     
-    
     // Move view to always show the selected textfield
     func textFieldDidBeginEditing(_ textField: UITextField) {
         switch textField {
@@ -259,7 +245,6 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
             print("Error textfield")
         }
     }
-    
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         switch textField {
@@ -294,7 +279,6 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
             }
         }
         var getDecimalNumbers = (textField.text! as NSString).components(separatedBy: ".")
-        
         
         if getDecimalNumbers.count > 1 && (getDecimalNumbers[1] as NSString).length > 1 && string != ""  {
             return false

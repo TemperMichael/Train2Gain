@@ -111,30 +111,17 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
         
     }
     
-    @IBAction func selectedDate(_ sender: AnyObject) {
-        // Save date
-        date = datePicker.date
-        UserDefaults.standard.set(datePicker.date,forKey: "dateUF")
-        UIView.animate(withDuration: 0.5, delay: 0, options: UIViewAnimationOptions(), animations: {
-            self.datePickerBackgroundView.alpha = 0
-        }, completion: { finished in
-            self.datePickerBackgroundView.isHidden = true
-        })
-        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
+    @IBAction func selectDate(_ sender: AnyObject) {
+        date = DateFormatHelper.setDate(datePicker.date, datePickerButton)
+        PickerViewHelper.hidePickerView(datePickerBackgroundView)
     }
     
     @IBAction func showNextDay(_ sender: AnyObject) {
-        //Go to next day
-        date = date.addingTimeInterval(60 * 60 * 24)
-        UserDefaults.standard.set(date , forKey: "dateUF")
-        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
+        date = DateFormatHelper.setDate(date.addingTimeInterval(60 * 60 * 24), datePickerButton)
     }
     
     @IBAction func showPreviousDay(_ sender: AnyObject) {
-        //Go to prevoius day
-        date = date.addingTimeInterval(-60 * 60 * 24)
-        UserDefaults.standard.set(date, forKey: "dateUF")
-        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
+        date = DateFormatHelper.setDate(date.addingTimeInterval(-60 * 60 * 24), datePickerButton)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -143,7 +130,7 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
     }
     
     // MARK: View methods
-    fileprivate func setupMoods() {
+    func setupMoods() {
         //Setup smileys for mood collection view
         moods.append(Moods(_moodName: NSLocalizedString("Normal", comment: "Normal"), _moodSmileyString: "SmileyNormal.png"))
         moods.append(Moods(_moodName: NSLocalizedString("Good", comment: "Good"), _moodSmileyString: "SmileyGood.png"))

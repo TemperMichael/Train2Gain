@@ -47,7 +47,6 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var selectDateButton: UIButton!
     @IBOutlet weak var stopWatchLabel: UILabel!
     
-    
     @IBAction func breakStopWatch(_ sender: AnyObject) {
         if !wasStopped {
             saveCurrentTime = startTime -  Date.timeIntervalSinceReferenceDate
@@ -56,7 +55,6 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func saveTrainingPlan(_ sender: AnyObject) {
-        
         var weight = (exerciseWeightsTextField.text! as NSString).doubleValue
         
         // Save all in kg
@@ -89,6 +87,7 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
             let newItem = NSEntityDescription.insertNewObject(forEntityName: "Dates", into: appDelegate.managedObjectContext!) as! Dates
             newItem.savedDate = date
         }
+        
         var i = 0
         
         //Save data
@@ -122,14 +121,8 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func selectDate(_ sender: AnyObject) {
-        date = datePicker.date
-        UserDefaults.standard.set(datePicker.date,forKey: "dateUF")
-        UIView.animate(withDuration: 0.5, delay: 0, options: UIViewAnimationOptions(), animations: {
-            self.datePickerBackgroundView.alpha = 0
-        }, completion: { finished in
-            self.datePickerBackgroundView.isHidden = true
-        })
-        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
+        date = DateFormatHelper.setDate(datePicker.date, datePickerButton)
+        PickerViewHelper.hidePickerView(datePickerBackgroundView)
     }
     
     @IBAction func showDatePicker(_ sender: AnyObject) {
@@ -138,9 +131,7 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func showNextDay(_ sender: AnyObject) {
-        date = date.addingTimeInterval(60 * 60 * 24)
-        UserDefaults.standard.set(date, forKey: "dateUF")
-        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
+        date = DateFormatHelper.setDate(date.addingTimeInterval(60 * 60 * 24), datePickerButton)
     }
     
     @IBAction func showNextExercise(_ sender: AnyObject) {
@@ -148,9 +139,7 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func showPreviousDay(_ sender: AnyObject) {
-        date = date.addingTimeInterval(-60 * 60 * 24)
-        UserDefaults.standard.set(date, forKey: "dateUF")
-        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
+        date = DateFormatHelper.setDate(date.addingTimeInterval(-60 * 60 * 24), datePickerButton)
     }
     
     @IBAction func showPreviousExercise(_ sender: AnyObject) {

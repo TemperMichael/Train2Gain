@@ -48,7 +48,6 @@ class TrainingDataDetailTVC: UITableViewController {
                 }
             }
         }
-        
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -68,9 +67,7 @@ class TrainingDataDetailTVC: UITableViewController {
         return doneExercises.count
     }
     
-    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         let cell = tableView.dequeueReusableCell(withIdentifier: "OwnCell", for: indexPath) as! TrainingDataDetailCell
         var weight = (doneExercises[(indexPath as NSIndexPath).row].weight).doubleValue
         
@@ -106,10 +103,6 @@ class TrainingDataDetailTVC: UITableViewController {
         cell.preservesSuperviewLayoutMargins = false
         cell.layoutMargins = UIEdgeInsets.zero
         return cell
-        
     }
-    
-    // MARK: Own Methods
-    // Get the date in a good format
-  
+
 }
