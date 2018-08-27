@@ -33,7 +33,7 @@ class TrainingPlanCreationVC: UIViewController, UITextFieldDelegate {
     @IBAction func addExercise(_ sender: AnyObject) {
         if isAllFilled() {
             exercises[userPosition] = [trainingPlanExerciseNameTextField.text!, trainingPlanRepsTextField.text!, trainingPlanSetsTextField.text!]
-            exercises.insert(["", "", ""], at: userPosition+1)
+            exercises.insert(["", "", ""], at: userPosition + 1)
             filterSpecificView(false)
             clearDetails()
         }
@@ -59,21 +59,10 @@ class TrainingPlanCreationVC: UIViewController, UITextFieldDelegate {
             
             // In edit mode remove old saved exercises and add the new edited one
             if editMode {
-                for singleExCD in exercisesCD {
-                    if singleExCD.dayID == editDayIDSaver {
-                        appDelegate.managedObjectContext!.delete(singleExCD as NSManagedObject)
-                    }
-                }
+                removePreviousExercises(exercisesCD)
             }
             appDelegate.saveContext()
-            for checkCells in self.exercises {
-                let newItem = NSEntityDescription.insertNewObject(forEntityName: "Exercise", into: appDelegate.managedObjectContext!) as! Exercise
-                newItem.dayID = dayId
-                newItem.name = checkCells[0]
-                newItem.reps = Int(checkCells[1])! as NSNumber
-                newItem.sets = Int(checkCells[2])! as NSNumber
-                appDelegate.saveContext()
-            }
+            saveExercises()
 
             AlertFormatHelper.showInfoAlert(self, "Your training plan was saved.")
         }
@@ -86,13 +75,12 @@ class TrainingPlanCreationVC: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func showNextExercise(_ sender: AnyObject) {
-        
         exercises[userPosition] = [trainingPlanExerciseNameTextField.text!, trainingPlanRepsTextField.text!, trainingPlanSetsTextField.text!]
         filterSpecificView(false)
-        
     }
     
     // MARK: View Methods
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -105,27 +93,7 @@ class TrainingPlanCreationVC: UIViewController, UITextFieldDelegate {
         
         //Prepare data if view was opened in edit mode
         if editMode {
-            self.title = NSLocalizedString("Edit Training plan", comment: "Edit Training plan")
-            editDayIDSaver = selectedExercise[0].dayID
-            var currentName = ""
-            var first = true
-            var prevName = ""
-            for singleEx in selectedExercise {
-                prevName = currentName
-                currentName = singleEx.name
-                if prevName != currentName {
-                    if first {
-                        exercises[userPosition] = [singleEx.name, "\(singleEx.reps)", "\(singleEx.sets)"]
-                        trainingPlanNameTextField.text = singleEx.dayID
-                        first = false
-                    } else {
-                        exercises.append([singleEx.name, "\(singleEx.reps)", "\(singleEx.sets)"])
-                    }
-                    trainingPlanExerciseNameTextField.text = exercises[userPosition][0]
-                    trainingPlanRepsTextField.text = exercises[userPosition][1]
-                    trainingPlanSetsTextField.text = exercises[userPosition][2]
-                }
-            }
+            loadSavedExercises()
         }
         
         if exercises.count <= 1 {
@@ -142,6 +110,7 @@ class TrainingPlanCreationVC: UIViewController, UITextFieldDelegate {
     }
 
     // MARK: Keyboard Methods
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         // Close Keyboard when clicking outside
         trainingPlanExerciseNameTextField.resignFirstResponder()
@@ -223,7 +192,8 @@ class TrainingPlanCreationVC: UIViewController, UITextFieldDelegate {
         return newLength <= back
     }
     
-    // Check if everything was entered
+    // MARK: Own Methods
+    
     func isAllFilled() -> Bool {
         var check = true
         if trainingPlanNameTextField.text == "" {
@@ -329,6 +299,49 @@ class TrainingPlanCreationVC: UIViewController, UITextFieldDelegate {
         // Add the animation to the View's layer
         (completionDelegate as! UIView).layer.add(slideInTransition, forKey: "slideInTransition")
         
+    }
+    
+    func removePreviousExercises(_ exercisesCD: [Exercise]) {
+        for singleExCD in exercisesCD {
+            if singleExCD.dayID == editDayIDSaver {
+                appDelegate.managedObjectContext!.delete(singleExCD as NSManagedObject)
+            }
+        }
+    }
+    
+    func saveExercises() {
+        for checkCells in self.exercises {
+            let newItem = NSEntityDescription.insertNewObject(forEntityName: "Exercise", into: appDelegate.managedObjectContext!) as! Exercise
+            newItem.dayID = dayId
+            newItem.name = checkCells[0]
+            newItem.reps = Int(checkCells[1])! as NSNumber
+            newItem.sets = Int(checkCells[2])! as NSNumber
+            appDelegate.saveContext()
+        }
+    }
+    
+    func loadSavedExercises() {
+        self.title = NSLocalizedString("Edit Training plan", comment: "Edit Training plan")
+        editDayIDSaver = selectedExercise[0].dayID
+        var currentName = ""
+        var first = true
+        var prevName = ""
+        for singleEx in selectedExercise {
+            prevName = currentName
+            currentName = singleEx.name
+            if prevName != currentName {
+                if first {
+                    exercises[userPosition] = [singleEx.name, "\(singleEx.reps)", "\(singleEx.sets)"]
+                    trainingPlanNameTextField.text = singleEx.dayID
+                    first = false
+                } else {
+                    exercises.append([singleEx.name, "\(singleEx.reps)", "\(singleEx.sets)"])
+                }
+                trainingPlanExerciseNameTextField.text = exercises[userPosition][0]
+                trainingPlanRepsTextField.text = exercises[userPosition][1]
+                trainingPlanSetsTextField.text = exercises[userPosition][2]
+            }
+        }
     }
     
 }

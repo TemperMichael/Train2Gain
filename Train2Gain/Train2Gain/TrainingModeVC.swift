@@ -54,48 +54,18 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func saveTrainingPlan(_ sender: AnyObject) {
-        var weight = (exerciseWeightsTextField.text! as NSString).doubleValue
-        
-        // Save all in kg
-        if weightUnit == "lbs" {
-            weight = weight /  2.20462262185
-        }
-        
-        // If nothing was entered save zero as weight and rep value
-        exercisesWithSets[userPosition].weight =  exerciseWeightsTextField.text != "" ?  NSDecimalNumber(value: weight as Double) : 0
-        exercisesWithSets[userPosition].doneReps = exerciseRepsTextField.text != "" ?  NSDecimalNumber(string: exerciseRepsTextField.text) : 0
-
-        var saveData: [[String]] = []
-        for i in 0  ..< exercisesWithSets.count {
-            saveData.append([exercisesWithSets[i].dayID, exercisesWithSets[i].name, "\(exercisesWithSets[i].reps)", "\(exercisesWithSets[i].doneReps)", "\(exercisesWithSets[i].sets)", "\(exercisesWithSets[i].weight)"])
-            
-        }
+        var preparedDataSet = prepareDataSet()
         
         // Rollback to don't save exerices which were needed to get done exercises
         appDelegate.rollBackContext()
         
-        var i = 0
-        
-        //Save data
-        for checkCells in saveData {
-            let newItem = NSEntityDescription.insertNewObject(forEntityName: "DoneExercise", into: appDelegate.managedObjectContext!) as! DoneExercise
-            newItem.date = date
-            newItem.dayID = checkCells[0]
-            newItem.name = checkCells[1]
-            newItem.reps = NSDecimalNumber(string: checkCells[2])
-            newItem.doneReps = NSDecimalNumber(string:checkCells[3])
-            newItem.sets = NSDecimalNumber(string:checkCells[4])
-            newItem.weight = NSDecimalNumber(string: checkCells[5])
-            newItem.setCounter = NSNumber(value: setCounter[i])
-            appDelegate.saveContext()
-            i += 1
-        }
+        saveDoneExercises(preparedDataSet)
         
         //Fabric - Analytic tool
         Answers.logLevelEnd("Finished Training",
                             score: nil,
                             success: true,
-                            customAttributes: ["Training name": saveData[0][0]])
+                            customAttributes: ["Training name": preparedDataSet[0][0]])
 
         AlertFormatHelper.showInfoAlert(self, "Your training was saved.")
     }
@@ -149,44 +119,15 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Setup start view
-        exerciseTrainingPlanNameLabel.text = selectedExercise[0].dayID
-        exerciseWeightsLabel.text = weightUnit
-        
-        Answers.logLevelStart("Started training", customAttributes: ["Training name": selectedExercise[0].dayID])
-        
-        //Load in exercises as many sets they have
-        for item in selectedExercise as [Exercise] {
-            for i in 0..<(item.sets as! Int) {
-                setCounter.append(i + 1)
-                let newItem = Exercise()
-                newItem.dayID = item.dayID
-                newItem.sets = item.sets
-                newItem.reps = item.reps
-                newItem.name = item.name
-                newItem.weight = item.weight
-                newItem.doneReps = item.doneReps
-                exercisesWithSets.append(newItem)
-            }
-        }
-        
-        //Set View start contents
-        exerciseNameLabel.text = exercisesWithSets[0].name
-        if (exercisesWithSets[0].reps as! Int) < 10 {
-            exerciseRepsLabel.text = "  / \(exercisesWithSets[0].reps)"
-        } else {
-            exerciseRepsLabel.text = " /\(exercisesWithSets[0].reps)"
-        }
-        previousExerciseButton.isEnabled = false
-        previousExerciseButton.setTitle("", for: UIControlState())
-        if exercisesWithSets.count < 2 {
-            nextExerciseButton.isEnabled = false
-            nextExerciseButton.setTitle("", for: UIControlState())
-        }
-        
         //Set delegate of textfields
         exerciseRepsTextField.delegate = self
         exerciseWeightsTextField.delegate = self
+        
+        Answers.logLevelStart("Started training", customAttributes: ["Training name": selectedExercise[0].dayID])
+        
+        loadSelectedExercises()
+        
+        setupStartView()
         
         PickerViewHelper.setupPickerView(datePicker, datePickerTitleLabel)
     }
@@ -195,19 +136,7 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
         exercisesWithSets = []
         date = UserDefaults.standard.object(forKey: "dateUF") as! Date
         datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
-        for item in selectedExercise as [Exercise] {
-            for i in 0..<(item.sets as! Int) {
-                setCounter.append(i + 1)
-                let newItem = Exercise()
-                newItem.dayID = item.dayID
-                newItem.sets = item.sets
-                newItem.reps = item.reps
-                newItem.name = item.name
-                newItem.weight = item.weight
-                newItem.doneReps = item.doneReps
-                exercisesWithSets.append(newItem)
-            }
-        }
+        loadSelectedExercises()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -220,121 +149,6 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
     
     override func viewDidDisappear(_ animated: Bool) {
         appDelegate.rollBackContext()
-    }
-    
-    // MARK: Own Methods
-    func filterSpecificView(_ animationDirection: Bool) {
-        for view in self.view.subviews {
-            if view.tag == 123 {
-                exerciseWeightsLabel.text = weightUnit
-                var weight = (exerciseWeightsTextField.text! as NSString).doubleValue
-                
-                //Save all in kg
-                if weightUnit == "lbs" {
-                    weight = weight /  2.20462262185
-                }
-                exercisesWithSets[userPosition].weight =  exerciseWeightsTextField.text != "" ? NSDecimalNumber(value: weight as Double) : 0
-                exercisesWithSets[userPosition].doneReps = exerciseRepsTextField.text != "" ?  NSDecimalNumber(string: exerciseRepsTextField.text) : 0
-                slideIn(1, completionDelegate: view, direction: animationDirection)
-                weight = (exercisesWithSets[userPosition].weight).doubleValue
-                
-                //Show as lbs
-                if weightUnit == "lbs" {
-                    weight = weight *  2.20462262185
-                }
-                if weight < 1000 {
-                    exerciseWeightsTextField.text = NSString(format: "%.2f", weight) as String
-                } else if weight < 10000 {
-                    exerciseWeightsTextField.text = NSString(format: "%.1f", weight) as String
-                } else {
-                    exerciseWeightsTextField.text = NSString(format: "%.0f", weight) as String
-                }
-                if weight == 0 {
-                    exerciseWeightsTextField.text = ""
-                }
-                
-                exerciseRepsTextField.text = exercisesWithSets[userPosition].doneReps == 0 ? "" :String(stringInterpolationSegment: exercisesWithSets[userPosition].doneReps)
-                let translationSet = NSLocalizedString("Set", comment: "Set")
-                exerciseSetLabel.text = "\(setCounter[userPosition]).\(translationSet)"
-                
-                exerciseNameLabel.text = exercisesWithSets[userPosition].name
-                
-                if (exercisesWithSets[userPosition].reps as! Int) < 10 {
-                    exerciseRepsLabel.text = "  / \(exercisesWithSets[userPosition].reps)"
-                } else {
-                    exerciseRepsLabel.text = " /\(exercisesWithSets[userPosition].reps)"
-                }
-                
-                // Disable / Enable buttons
-                if userPosition > 0 {
-                    previousExerciseButton.isEnabled = true
-                    previousExerciseButton.setTitle("<", for: UIControlState())
-                } else {
-                    previousExerciseButton.isEnabled = false
-                    previousExerciseButton.setTitle("", for: UIControlState())
-                }
-                if userPosition+1 < exercisesWithSets.count {
-                    nextExerciseButton.isEnabled = true
-                    nextExerciseButton.setTitle(">", for: UIControlState())
-                } else {
-                    nextExerciseButton.isEnabled = false
-                    nextExerciseButton.setTitle("", for: UIControlState())
-                }
-            }
-        }
-    }
-    
-    @objc func updateTime() {
-        currentTime = Date.timeIntervalSinceReferenceDate
-        
-        // Find the difference between current time and start time.
-        var elapsedTime: TimeInterval = currentTime! - startTime
-        
-        // Calculate the minutes in elapsed time.
-        let minutes = UInt8(elapsedTime / 60.0)
-        elapsedTime -= (TimeInterval(minutes) * 60)
-        
-        // Calculate the seconds in elapsed time.
-        let seconds = UInt8(elapsedTime)
-        elapsedTime -= TimeInterval(seconds)
-        
-        // Find out the fraction of milliseconds to be displayed.
-        let fraction = UInt8(elapsedTime * 100)
-        
-        // Add the leading zero for minutes, seconds and millseconds and store them as string constants
-        let strMinutes = String(format: "%02d", minutes)
-        let strSeconds = String(format: "%02d", seconds)
-        let strFraction = String(format: "%02d", fraction)
-        
-        // Concatenate minuets, seconds and milliseconds as assign it to the UILabel
-        stopWatchLabel.text = "\(strMinutes):\(strSeconds):\(strFraction)"
-    }
-    
-    // Animation
-    func slideIn(_ duration: TimeInterval = 1.0, completionDelegate: AnyObject? = nil, direction: Bool) {
-        // Create a CATransition animation
-        let slideInTransition = CATransition()
-        
-        // Set its callback delegate to the completionDelegate that was provided (if any)
-        if let delegate = completionDelegate as? CAAnimationDelegate {
-            slideInTransition.delegate = delegate
-        }
-        
-        // Customize the animation's properties
-        slideInTransition.type = kCATransitionMoveIn
-        if direction {
-            userPosition -= 1
-            slideInTransition.subtype = kCATransitionFromLeft
-        } else {
-            userPosition += 1
-            slideInTransition.subtype = kCATransitionFromRight
-        }
-        slideInTransition.duration = duration
-        slideInTransition.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
-        slideInTransition.fillMode = kCAFillModeRemoved
-        
-        // Add the animation to the View's layer
-        (completionDelegate as! UIView).layer.add(slideInTransition, forKey: "slideInTransition")
     }
     
     // MARK: Keyboard methods
@@ -366,7 +180,6 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
     
     // Set textfield input options
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        
         let text = (textField.text! as NSString).replacingCharacters(in: range, with: string)
         let disallowedCharacterSet = CharacterSet(charactersIn: "0123456789.").inverted
         let replacementStringIsLegal = string.rangeOfCharacter(from: disallowedCharacterSet) == nil
@@ -400,6 +213,204 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
             }
         }
         return newLength <= back
+    }
+    
+    // MARK: Own Methods
+    
+    func filterSpecificView(_ animationDirection: Bool) {
+        for view in self.view.subviews {
+            if view.tag == 123 {
+                exerciseWeightsLabel.text = weightUnit
+                var weight = (exerciseWeightsTextField.text! as NSString).doubleValue
+                
+                //Save all in kg
+                if weightUnit == "lbs" {
+                    weight = weight /  2.20462262185
+                }
+                exercisesWithSets[userPosition].weight =  exerciseWeightsTextField.text != "" ? NSDecimalNumber(value: weight as Double) : 0
+                exercisesWithSets[userPosition].doneReps = exerciseRepsTextField.text != "" ?  NSDecimalNumber(string: exerciseRepsTextField.text) : 0
+                slideIn(1, completionDelegate: view, direction: animationDirection)
+                weight = (exercisesWithSets[userPosition].weight).doubleValue
+                
+                showWeightCorrectly(&weight)
+                
+                exerciseRepsTextField.text = exercisesWithSets[userPosition].doneReps == 0 ? "" : String(stringInterpolationSegment: exercisesWithSets[userPosition].doneReps)
+                let translationSet = NSLocalizedString("Set", comment: "Set")
+                exerciseSetLabel.text = "\(setCounter[userPosition]).\(translationSet)"
+                
+                exerciseNameLabel.text = exercisesWithSets[userPosition].name
+                
+                if (exercisesWithSets[userPosition].reps as! Int) < 10 {
+                    exerciseRepsLabel.text = "  / \(exercisesWithSets[userPosition].reps)"
+                } else {
+                    exerciseRepsLabel.text = " /\(exercisesWithSets[userPosition].reps)"
+                }
+                
+                showNavigationButtonsCorrectly()
+            }
+        }
+    }
+    
+    func showWeightCorrectly(_ weight: inout Double) {
+        if weightUnit == "lbs" {
+            weight = weight *  2.20462262185
+        }
+        
+        if weight < 1000 {
+            exerciseWeightsTextField.text = NSString(format: "%.2f", weight) as String
+        } else if weight < 10000 {
+            exerciseWeightsTextField.text = NSString(format: "%.1f", weight) as String
+        } else {
+            exerciseWeightsTextField.text = NSString(format: "%.0f", weight) as String
+        }
+        
+        if weight == 0 {
+            exerciseWeightsTextField.text = ""
+        }
+    }
+    
+    func showNavigationButtonsCorrectly() {
+        if userPosition > 0 {
+            previousExerciseButton.isEnabled = true
+            previousExerciseButton.setTitle("<", for: UIControlState())
+        } else {
+            previousExerciseButton.isEnabled = false
+            previousExerciseButton.setTitle("", for: UIControlState())
+        }
+        
+        if userPosition+1 < exercisesWithSets.count {
+            nextExerciseButton.isEnabled = true
+            nextExerciseButton.setTitle(">", for: UIControlState())
+        } else {
+            nextExerciseButton.isEnabled = false
+            nextExerciseButton.setTitle("", for: UIControlState())
+        }
+    }
+    
+    @objc func updateTime() {
+        currentTime = Date.timeIntervalSinceReferenceDate
+        
+        // Find the difference between current time and start time.
+        var elapsedTime: TimeInterval = currentTime! - startTime
+        
+        // Calculate the minutes in elapsed time.
+        let minutes = UInt8(elapsedTime / 60.0)
+        elapsedTime -= (TimeInterval(minutes) * 60)
+        
+        // Calculate the seconds in elapsed time.
+        let seconds = UInt8(elapsedTime)
+        elapsedTime -= TimeInterval(seconds)
+        
+        // Find out the fraction of milliseconds to be displayed.
+        let fraction = UInt8(elapsedTime * 100)
+        
+        // Add the leading zero for minutes, seconds and millseconds and store them as string constants
+        let strMinutes = String(format: "%02d", minutes)
+        let strSeconds = String(format: "%02d", seconds)
+        let strFraction = String(format: "%02d", fraction)
+        
+        // Concatenate minuets, seconds and milliseconds as assign it to the UILabel
+        stopWatchLabel.text = "\(strMinutes):\(strSeconds):\(strFraction)"
+    }
+    
+    // Animation
+    
+    func slideIn(_ duration: TimeInterval = 1.0, completionDelegate: AnyObject? = nil, direction: Bool) {
+        // Create a CATransition animation
+        let slideInTransition = CATransition()
+        
+        // Set its callback delegate to the completionDelegate that was provided (if any)
+        if let delegate = completionDelegate as? CAAnimationDelegate {
+            slideInTransition.delegate = delegate
+        }
+        
+        // Customize the animation's properties
+        slideInTransition.type = kCATransitionMoveIn
+        if direction {
+            userPosition -= 1
+            slideInTransition.subtype = kCATransitionFromLeft
+        } else {
+            userPosition += 1
+            slideInTransition.subtype = kCATransitionFromRight
+        }
+        slideInTransition.duration = duration
+        slideInTransition.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+        slideInTransition.fillMode = kCAFillModeRemoved
+        
+        // Add the animation to the View's layer
+        (completionDelegate as! UIView).layer.add(slideInTransition, forKey: "slideInTransition")
+    }
+    
+    func saveDoneExercises(_ preparedDataSet: [[String]]) {
+        var i = 0
+        
+        //Save data
+        for checkCells in preparedDataSet {
+            let newItem = NSEntityDescription.insertNewObject(forEntityName: "DoneExercise", into: appDelegate.managedObjectContext!) as! DoneExercise
+            newItem.date = date
+            newItem.dayID = checkCells[0]
+            newItem.name = checkCells[1]
+            newItem.reps = NSDecimalNumber(string: checkCells[2])
+            newItem.doneReps = NSDecimalNumber(string:checkCells[3])
+            newItem.sets = NSDecimalNumber(string:checkCells[4])
+            newItem.weight = NSDecimalNumber(string: checkCells[5])
+            newItem.setCounter = NSNumber(value: setCounter[i])
+            appDelegate.saveContext()
+            i += 1
+        }
+    }
+    
+    func prepareDataSet() -> [Array<String>] {
+        var weight = (exerciseWeightsTextField.text! as NSString).doubleValue
+        
+        // Save all in kg
+        if weightUnit == "lbs" {
+            weight = weight /  2.20462262185
+        }
+        
+        // If nothing was entered save zero as weight and rep value
+        exercisesWithSets[userPosition].weight =  exerciseWeightsTextField.text != "" ?  NSDecimalNumber(value: weight as Double) : 0
+        exercisesWithSets[userPosition].doneReps = exerciseRepsTextField.text != "" ?  NSDecimalNumber(string: exerciseRepsTextField.text) : 0
+        
+        var dataSet: [[String]] = []
+        for i in 0  ..< exercisesWithSets.count {
+            dataSet.append([exercisesWithSets[i].dayID, exercisesWithSets[i].name, "\(exercisesWithSets[i].reps)", "\(exercisesWithSets[i].doneReps)", "\(exercisesWithSets[i].sets)", "\(exercisesWithSets[i].weight)"])
+            
+        }
+        return dataSet
+    }
+    
+    func loadSelectedExercises() {
+        for item in selectedExercise as [Exercise] {
+            for i in 0..<(item.sets as! Int) {
+                setCounter.append(i + 1)
+                let newItem = Exercise()
+                newItem.dayID = item.dayID
+                newItem.sets = item.sets
+                newItem.reps = item.reps
+                newItem.name = item.name
+                newItem.weight = item.weight
+                newItem.doneReps = item.doneReps
+                exercisesWithSets.append(newItem)
+            }
+        }
+    }
+    
+    func setupStartView() {
+        exerciseTrainingPlanNameLabel.text = selectedExercise[0].dayID
+        exerciseWeightsLabel.text = weightUnit
+        exerciseNameLabel.text = exercisesWithSets[0].name
+        if (exercisesWithSets[0].reps as! Int) < 10 {
+            exerciseRepsLabel.text = "  / \(exercisesWithSets[0].reps)"
+        } else {
+            exerciseRepsLabel.text = " /\(exercisesWithSets[0].reps)"
+        }
+        previousExerciseButton.isEnabled = false
+        previousExerciseButton.setTitle("", for: UIControlState())
+        if exercisesWithSets.count < 2 {
+            nextExerciseButton.isEnabled = false
+            nextExerciseButton.setTitle("", for: UIControlState())
+        }
     }
     
 }

@@ -42,12 +42,7 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
         measurements = (try! appDelegate.managedObjectContext?.fetch(requestedMeasurements))!
         date = UserDefaults.standard.object(forKey: "dateUF") as! Date
         
-        // Save data in correct way
-        if !editMode {
-            saveMeasurementsCorrectly()
-        } else {
-            saveEditedMeasurementsCorrectly()
-        }
+        saveMeasurementsCorrectly()
         
         appDelegate.saveContext()
         
@@ -275,19 +270,6 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
             } else {
                 addMeasure(lastMeasure)
             }
-        }
-    }
-    
-    func saveEditedMeasurementsCorrectly() {
-        var measurementExists = false
-        for singleMeasure in measurements {
-            if DateFormatHelper.returnDateForm(singleMeasure.date as Date) == DateFormatHelper.returnDateForm(date) {
-                measurementExists = true
-                addMeasure(singleMeasure)
-            }
-        }
-        if !measurementExists {
-            addNewMeasure()
         }
     }
     

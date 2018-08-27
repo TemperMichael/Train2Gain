@@ -44,40 +44,50 @@ class EditTrainingDataDetailVC: UIViewController, UITextFieldDelegate {
         }
     }
     
-    @IBAction func saveTrainingPlan(_ sender: AnyObject) {
-        var weight = (editWeightsTextField.text! as NSString).doubleValue
+    func prepareDataSet() -> [Array<String>] {
         
+        var weight = (editWeightsTextField.text! as NSString).doubleValue
         //Save all in kg
         if weightUnit == "lbs" {
             weight = weight /  2.20462262185
         }
+        
         //If nothing was entered save zero as weight and rep value
         exercisesWithSets[userPosition].weight =  editWeightsTextField.text != "" ?  NSDecimalNumber(value: weight as Double) : 0
         exercisesWithSets[userPosition].doneReps = editRepsTextField.text != "" ?  NSDecimalNumber(string: editRepsTextField.text) : 0
         
-        var saveData: [[String]] = []
         
+        var dataSet: [[String]] = []
         for i in 0 ..< exercisesWithSets.count {
-            saveData.append([exercisesWithSets[i].dayID, exercisesWithSets[i].name,"\(exercisesWithSets[i].reps)", "\(exercisesWithSets[i].doneReps)","\(exercisesWithSets[i].sets)","\(exercisesWithSets[i].weight)", "\(exercisesWithSets[i].setCounter)"])
-            
+            dataSet.append([exercisesWithSets[i].dayID, exercisesWithSets[i].name,"\(exercisesWithSets[i].reps)", "\(exercisesWithSets[i].doneReps)","\(exercisesWithSets[i].sets)","\(exercisesWithSets[i].weight)", "\(exercisesWithSets[i].setCounter)"])
         }
-        
-        //Rollback to don't save exerices which were needed to get done exercises
-        appDelegate.rollBackContext()
-        
+        return dataSet
+    }
+    
+    func saveDoneExercises(_ preparedDataSet: [[String]]) {
         let requestDoneEx = NSFetchRequest<NSFetchRequestResult>(entityName: "DoneExercise")
         let savedDoneExercises = (try! appDelegate.managedObjectContext?.fetch(requestDoneEx))  as! [DoneExercise]
         
         //setup data
-        for checkCells in saveData{
-            for singleDoneEx in savedDoneExercises{
-                if DateFormatHelper.returnDateForm(singleDoneEx.date) == DateFormatHelper.returnDateForm(editDate) && singleDoneEx.dayID == checkCells[0] && singleDoneEx.name == checkCells[1] && singleDoneEx.setCounter ==  NSDecimalNumber(string:checkCells[6]){
-                    singleDoneEx.doneReps = NSDecimalNumber(string:checkCells[3])
-                    singleDoneEx.weight = NSDecimalNumber(string: checkCells[5])
+        for doneExercises in preparedDataSet {
+            for singleSavedDoneExercise in savedDoneExercises{
+                if DateFormatHelper.returnDateForm(singleSavedDoneExercise.date) == DateFormatHelper.returnDateForm(editDate) && singleSavedDoneExercise.dayID == doneExercises[0] && singleSavedDoneExercise.name == doneExercises[1] && singleSavedDoneExercise.setCounter ==  NSDecimalNumber(string:doneExercises[6]){
+                    singleSavedDoneExercise.doneReps = NSDecimalNumber(string:doneExercises[3])
+                    singleSavedDoneExercise.weight = NSDecimalNumber(string: doneExercises[5])
                 }
             }
             appDelegate.saveContext()
         }
+        
+    }
+    
+    @IBAction func saveTrainingPlan(_ sender: AnyObject) {
+        let preparedDataSet: [[String]] = prepareDataSet()
+        
+        //Rollback to don't save exerices which were needed to get done exercises
+        appDelegate.rollBackContext()
+        
+        saveDoneExercises(preparedDataSet)
         
         AlertFormatHelper.showInfoAlert(self, "Your training was changed.")
     }
@@ -109,64 +119,103 @@ class EditTrainingDataDetailVC: UIViewController, UITextFieldDelegate {
     }
     
     // MARK: View Methods
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Setup start view
-        editTrainingPlanNameLabel.text = selectedExercise[0].dayID
-        editWeightsLabel.text = weightUnit
-        
-        // Load in exercises as many sets they have
-        var i = 1
-        var actualExerciseName = ""
-        var prevExerciseName = ""
-        for item in selectedExercise as [DoneExercise] {
-            prevExerciseName = actualExerciseName
-            actualExerciseName = item.name
-            if actualExerciseName != prevExerciseName {
-                i = 1
-            }
-            setCounter.append(i)
-            let newItem = DoneExercise()
-            newItem.dayID = item.dayID
-            newItem.sets = item.sets
-            newItem.reps = item.reps
-            newItem.weight = item.weight
-            newItem.doneReps = item.doneReps
-            newItem.name = item.name
-            newItem.date = item.date
-            newItem.setCounter = item.setCounter
-            exercisesWithSets.append(newItem)
-            i += 1
-        }
-        editDate = exercisesWithSets[0].date as Date?
-        
-        // Set start contents of the view
-        editExerciseNameLabel.text = exercisesWithSets[0].name
-        if (exercisesWithSets[0].reps as! Int) < 10 {
-            editRepsLabel.text = "  / \(exercisesWithSets[0].reps)"
-        } else {
-            editRepsLabel.text = " /\(exercisesWithSets[0].reps)"
-        }
-        previousExerciseButton.isEnabled = false
-        previousExerciseButton.setTitle("", for: UIControlState())
-        if exercisesWithSets.count < 2 {
-            nextExerciseButton.isEnabled = false
-            nextExerciseButton.setTitle("", for: UIControlState())
-        }
         
         // Set delegate of textfields
         editRepsTextField.delegate = self
         editWeightsTextField.delegate = self
-        var weight = (exercisesWithSets[0].weight).doubleValue
         
-        // Show as lbs
+        loadSelectedExercises()
+        editDate = exercisesWithSets[0].date as Date?
+        
+        setupStartView()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        self.navigationController?.setToolbarHidden(true, animated: true)
+    }
+    
+    // Cancel changings
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        appDelegate.rollBackContext()
+    }
+    
+    // MARK: Keyboard Methods
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        //Close Keyboard when clicking outside
+        editWeightsTextField.resignFirstResponder()
+        editRepsTextField.resignFirstResponder()
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.endEditing(true)
+        return false
+    }
+    
+    //Move view to always see the selected textfield
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        self.view.frame.origin.y -= 20
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        self.view.frame.origin.y += 20
+        if textField == editRepsTextField && editRepsTextField.text != "" {
+            exercisesWithSets[userPosition].doneReps = Int(editRepsTextField.text!)! as NSNumber
+        }
+        if textField == editWeightsTextField &&  editWeightsTextField.text != "" {
+            exercisesWithSets[userPosition].weight = NSDecimalNumber(string: editWeightsTextField.text)
+        }
+    }
+    
+    // Set textfield input options
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let text = (textField.text! as NSString).replacingCharacters(in: range, with: string)
+        let disallowedCharacterSet = CharacterSet(charactersIn: "0123456789.").inverted
+        let replacementStringIsLegal = string.rangeOfCharacter(from: disallowedCharacterSet) == nil
+        let scanner = Scanner(string: text)
+        let resultingTextIsNumeric = scanner.scanDecimal(nil) && scanner.isAtEnd
+        
+        var getDecimalNumbers = (textField.text! as NSString).components(separatedBy: ".")
+        if getDecimalNumbers.count > 1 && (getDecimalNumbers[1] as NSString).integerValue > 9 && string != ""  {
+            return false
+        }
+        let newLength = textField.text!.count + string.count - range.length
+        var back = 0
+        if textField == editWeightsTextField {
+            back = 6
+            let resultingStringLengthIsLegal = text.count <= 6
+            if text.count == 0 || (replacementStringIsLegal &&
+                resultingStringLengthIsLegal &&
+                resultingTextIsNumeric) {
+                if text != "." {
+                    return true
+                }
+            }
+            return false
+        } else if textField == editRepsTextField {
+            back = 2
+            if let checksum = Int(text), newLength <= back, checksum >= 0, checksum < 100 {
+                return true
+            } else if newLength <= back && text == "" {
+                return true
+            } else {
+                return false
+            }
+        }
+        return newLength <= back
+    }
+    
+    // MARK: Own Methods
+    
+    func showWeightCorrectly(_ weight: inout Double) {
+        //Show as lbs
         if weightUnit == "lbs" {
             weight = weight *  2.20462262185
         }
         
-        // Show first exercise in correct unit
-        editRepsTextField.text = exercisesWithSets[0].doneReps.stringValue
         if weight < 1000 {
             editWeightsTextField.text = exercisesWithSets[userPosition].weight == 0 ? "0" : NSString(format: "%.2f", weight) as String
         } else if weight < 10000 {
@@ -175,83 +224,12 @@ class EditTrainingDataDetailVC: UIViewController, UITextFieldDelegate {
             editWeightsTextField.text = NSString(format: "%.0f", weight) as String
         }
         if weight == 0 {
-            editWeightsTextField.text = "0"
+            editWeightsTextField.text = ""
         }
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        self.navigationController?.setToolbarHidden(true, animated: true)
-    }
+    // Animation
     
-    //Cancel changings
-    override func viewDidDisappear(_ animated: Bool) {
-        appDelegate.rollBackContext()
-    }
-
-    // MARK: Own Methods
-    
-    func filterSpecificView(_ animationDirection: Bool) {
-        for view in self.view.subviews {
-            if view.tag == 123 {
-                editWeightsLabel.text = weightUnit
-                var weight = (editWeightsTextField.text! as NSString).doubleValue
-                
-                //Save all in kg
-                if weightUnit == "lbs" {
-                    weight = weight /  2.20462262185
-                }
-                exercisesWithSets[userPosition].weight =  editWeightsTextField.text != "" ? NSDecimalNumber(value: weight as Double) : 0
-                exercisesWithSets[userPosition].doneReps = editRepsTextField.text != "" ?  NSDecimalNumber(string: editRepsTextField.text) : 0
-                slideIn(1, completionDelegate: view,direction: animationDirection)
-                weight = (exercisesWithSets[userPosition].weight).doubleValue
-                
-                //Show as lbs
-                if weightUnit == "lbs" {
-                    weight = weight *  2.20462262185
-                }
-                
-                if weight < 1000 {
-                    editWeightsTextField.text = exercisesWithSets[userPosition].weight == 0 ? "0" : NSString(format: "%.2f", weight) as String
-                } else if weight < 10000 {
-                    editWeightsTextField.text = exercisesWithSets[userPosition].weight == 0 ? "0" : NSString(format: "%.1f", weight) as String
-                } else {
-                    editWeightsTextField.text = NSString(format: "%.0f", weight) as String
-                }
-                if weight == 0 {
-                    editWeightsTextField.text = ""
-                }
-                
-                editRepsTextField.text = exercisesWithSets[userPosition].doneReps == 0 ? "0" : String(stringInterpolationSegment: exercisesWithSets[userPosition].doneReps)
-                let translationSet = NSLocalizedString("Set", comment: "Set")
-                editSetLabel.text = "\(setCounter[userPosition]).\(translationSet)"
-                editExerciseNameLabel.text = exercisesWithSets[userPosition].name
-                if (exercisesWithSets[userPosition].reps as! Int) < 10 {
-                    editRepsLabel.text = "  / \(exercisesWithSets[userPosition].reps)"
-                } else {
-                    editRepsLabel.text = " /\(exercisesWithSets[userPosition].reps)"
-                }
-                
-                //Disable/Enable buttons
-                if userPosition > 0 {
-                    previousExerciseButton.isEnabled = true
-                    previousExerciseButton.setTitle("<", for: UIControlState())
-                } else {
-                    previousExerciseButton.isEnabled = false
-                    previousExerciseButton.setTitle("", for: UIControlState())
-                }
-                
-                if userPosition + 1 < exercisesWithSets.count {
-                    nextExerciseButton.isEnabled = true
-                    nextExerciseButton.setTitle(">", for: UIControlState())
-                } else {
-                    nextExerciseButton.isEnabled = false
-                    nextExerciseButton.setTitle("", for: UIControlState())
-                }
-            }
-        }
-    }
-    
-    //Animation
     func slideIn(_ duration: TimeInterval = 1.0, completionDelegate: AnyObject? = nil, direction: Bool) {
         // Create a CATransition animation
         let slideInTransition = CATransition()
@@ -304,69 +282,104 @@ class EditTrainingDataDetailVC: UIViewController, UITextFieldDelegate {
         stopWatchLabel.text = "\(strMinutes):\(strSeconds):\(strFraction)"
     }
     
-    // MARK: Keyboard Methods
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        //Close Keyboard when clicking outside
-        editWeightsTextField.resignFirstResponder()
-        editRepsTextField.resignFirstResponder()
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.endEditing(true)
-        return false
-    }
-    
-    //Move view to always see the selected textfield
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        self.view.frame.origin.y -= 20
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        self.view.frame.origin.y += 20
-        if textField == editRepsTextField && editRepsTextField.text != "" {
-            exercisesWithSets[userPosition].doneReps = Int(editRepsTextField.text!)! as NSNumber
-        }
-        if textField == editWeightsTextField &&  editWeightsTextField.text != "" {
-            exercisesWithSets[userPosition].weight = NSDecimalNumber(string: editWeightsTextField.text)
-        }
-    }
-    
-    //Set textfield input options
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let text = (textField.text! as NSString).replacingCharacters(in: range, with: string)
-        let disallowedCharacterSet = CharacterSet(charactersIn: "0123456789.").inverted
-        let replacementStringIsLegal = string.rangeOfCharacter(from: disallowedCharacterSet) == nil
-        let scanner = Scanner(string: text)
-        let resultingTextIsNumeric = scanner.scanDecimal(nil) && scanner.isAtEnd
-        
-        var getDecimalNumbers = (textField.text! as NSString).components(separatedBy: ".")
-        if getDecimalNumbers.count > 1 && (getDecimalNumbers[1] as NSString).integerValue > 9 && string != ""  {
-            return false
-        }
-        let newLength = textField.text!.count + string.count - range.length
-        var back = 0
-        if textField == editWeightsTextField {
-            back = 6
-            let resultingStringLengthIsLegal = text.count <= 6
-            if text.count == 0 || (replacementStringIsLegal &&
-                resultingStringLengthIsLegal &&
-                resultingTextIsNumeric) {
-                if text != "." {
-                    return true
+    func filterSpecificView(_ animationDirection: Bool) {
+        for view in self.view.subviews {
+            if view.tag == 123 {
+                editWeightsLabel.text = weightUnit
+                var weight = (editWeightsTextField.text! as NSString).doubleValue
+                
+                //Save all in kg
+                if weightUnit == "lbs" {
+                    weight = weight /  2.20462262185
                 }
-            }
-            return false
-        } else if textField == editRepsTextField {
-            back = 2
-            if let checksum = Int(text), newLength <= back, checksum >= 0, checksum < 100 {
-                return true
-            } else if newLength <= back && text == "" {
-                return true
-            } else {
-                return false
+                exercisesWithSets[userPosition].weight = editWeightsTextField.text != "" ? NSDecimalNumber(value: weight as Double) : 0
+                exercisesWithSets[userPosition].doneReps = editRepsTextField.text != "" ?  NSDecimalNumber(string: editRepsTextField.text) : 0
+                slideIn(1, completionDelegate: view,direction: animationDirection)
+                weight = (exercisesWithSets[userPosition].weight).doubleValue
+                
+                showWeightCorrectly(&weight)
+                
+                editRepsTextField.text = exercisesWithSets[userPosition].doneReps == 0 ? "0" : String(stringInterpolationSegment: exercisesWithSets[userPosition].doneReps)
+                let translationSet = NSLocalizedString("Set", comment: "Set")
+                editSetLabel.text = "\(setCounter[userPosition]).\(translationSet)"
+                editExerciseNameLabel.text = exercisesWithSets[userPosition].name
+                if (exercisesWithSets[userPosition].reps as! Int) < 10 {
+                    editRepsLabel.text = "  / \(exercisesWithSets[userPosition].reps)"
+                } else {
+                    editRepsLabel.text = " /\(exercisesWithSets[userPosition].reps)"
+                }
+                
+                showNavigationButtonsCorrectly()
             }
         }
-        return newLength <= back
+    }
+    
+    func loadSelectedExercises() {
+        var i = 1
+        var actualExerciseName = ""
+        var prevExerciseName = ""
+        for item in selectedExercise as [DoneExercise] {
+            prevExerciseName = actualExerciseName
+            actualExerciseName = item.name
+            if actualExerciseName != prevExerciseName {
+                i = 1
+            }
+            setCounter.append(i)
+            let newItem = DoneExercise()
+            newItem.dayID = item.dayID
+            newItem.sets = item.sets
+            newItem.reps = item.reps
+            newItem.weight = item.weight
+            newItem.doneReps = item.doneReps
+            newItem.name = item.name
+            newItem.date = item.date
+            newItem.setCounter = item.setCounter
+            exercisesWithSets.append(newItem)
+            i += 1
+        }
+    }
+    
+    func showNavigationButtonsCorrectly() {
+        if userPosition > 0 {
+            previousExerciseButton.isEnabled = true
+            previousExerciseButton.setTitle("<", for: UIControlState())
+        } else {
+            previousExerciseButton.isEnabled = false
+            previousExerciseButton.setTitle("", for: UIControlState())
+        }
+        
+        if userPosition + 1 < exercisesWithSets.count {
+            nextExerciseButton.isEnabled = true
+            nextExerciseButton.setTitle(">", for: UIControlState())
+        } else {
+            nextExerciseButton.isEnabled = false
+            nextExerciseButton.setTitle("", for: UIControlState())
+        }
+    }
+    
+    func setupStartView() {
+        // Set start contents of the view
+        editTrainingPlanNameLabel.text = selectedExercise[0].dayID
+        editWeightsLabel.text = weightUnit
+        editExerciseNameLabel.text = exercisesWithSets[0].name
+        if (exercisesWithSets[0].reps as! Int) < 10 {
+            editRepsLabel.text = "  / \(exercisesWithSets[0].reps)"
+        } else {
+            editRepsLabel.text = " /\(exercisesWithSets[0].reps)"
+        }
+        previousExerciseButton.isEnabled = false
+        previousExerciseButton.setTitle("", for: UIControlState())
+        if exercisesWithSets.count < 2 {
+            nextExerciseButton.isEnabled = false
+            nextExerciseButton.setTitle("", for: UIControlState())
+        }
+        
+        var weight = (exercisesWithSets[0].weight).doubleValue
+        
+        // Show first exercise in correct unit
+        editRepsTextField.text = exercisesWithSets[0].doneReps.stringValue
+        
+        showWeightCorrectly(&weight)
     }
     
 }

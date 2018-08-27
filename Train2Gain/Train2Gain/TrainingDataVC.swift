@@ -16,7 +16,9 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
     let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.dark))
+    let cellIdentifier = "TrainingDataCell"
     var dayIDs: [String] = []
+    var dayHasContent = false
     var doneExercises: [DoneExercise] = []
     var lengthUnit = UserDefaults.standard.object(forKey: "lengthUnit")! as! String
     var measurements: [Measurements] = []
@@ -123,6 +125,48 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         //Handle swipe to single tableview row
         //Handle the deletion of an row
+        let deleteAction = setupDeleteAction(indexPath, tableView)
+
+        // Handle the changings of the selected row item
+        let editAction = setupEditAction(indexPath)
+        return [deleteAction, editAction]
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return setupCell(tableView, indexPath)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        //Reset lists
+        selectedDayDetails = []
+        dayIDs = []
+        selectedDoneExercises = []
+        dayHasContent = false
+        
+        //Show date of chosen day
+        datePickerButton.setTitle(DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date), for: UIControlState())
+        
+        loadTrainingData()
+        
+        getDoneTrainingPlans()
+        
+        setupMeasurementData()
+        
+        setupMoodData()
+        
+        trainingDataDateLabel.text = DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)
+        
+        trainingDataDayIDTableView.reloadData()
+        
+        if !dayHasContent {
+            trainingDataDateLabel.text = NSLocalizedString("No entry at this date", comment: "No entry at this date")
+        }
+        trainingDataDayIDTableView.separatorColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
+    }
+    
+    // MARK: Own Methods
+    
+    func setupDeleteAction(_ indexPath: IndexPath, _ tableView: UITableView) -> UITableViewRowAction {
         let deleteAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: NSLocalizedString("Delete", comment: "Delete")) { (action, index) -> Void in
             let context:NSManagedObjectContext = self.appDelegate.managedObjectContext!
             var count = self.doneExercises.count - 1
@@ -137,12 +181,15 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             do {
                 try context.save()
             } catch _ {
+                print("Error delete action training data")
             }
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
         deleteAction.backgroundColor = UIColor(red: 86 / 255 , green: 158 / 255, blue: 197 / 255 , alpha: 1)
-
-        // Handle the changings of the selected row item
+        return deleteAction
+    }
+    
+    func setupEditAction(_ indexPath: IndexPath) -> UITableViewRowAction {
         let editAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: NSLocalizedString("Edit", comment: "Edit")) { (action, index) -> Void in
             for i in 0  ..< self.doneExercises.count {
                 if self.doneExercises[i].dayID == self.dayIDs[(indexPath as NSIndexPath).row] && DateFormatHelper.returnDateForm(self.doneExercises[i].date as Date) == DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date) {
@@ -152,11 +199,11 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             self.performSegue(withIdentifier: "editSegue", sender: nil)
         }
         editAction.backgroundColor = UIColor(red: 112 / 255, green: 188 / 255, blue: 224 / 255 , alpha: 1)
-        return [deleteAction,editAction]
+        return editAction
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TrainingDataCell", for: indexPath)
+    func setupCell(_ tableView: UITableView, _ indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
         
         // Set Seperator left to zero
         cell.separatorInset = UIEdgeInsets.zero
@@ -170,31 +217,11 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         return cell
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        //Reset lists
-        selectedDayDetails = []
-        dayIDs = []
-        selectedDoneExercises = []
-        
-        var dayHasContent = false
-        
-        //Show date of chosen day
-        datePickerButton.setTitle(DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date), for: UIControlState())
-        
-        let requestDoneExercises = NSFetchRequest<NSFetchRequestResult>(entityName: "DoneExercise")
-        doneExercises = (try! appDelegate.managedObjectContext?.fetch(requestDoneExercises))  as! [DoneExercise]
-        
-        let  requestMeasurements = NSFetchRequest<NSFetchRequestResult>(entityName: "Measurements")
-        measurements = (try! appDelegate.managedObjectContext?.fetch(requestMeasurements))  as! [Measurements]
-        
-        let  requestMood = NSFetchRequest<NSFetchRequestResult>(entityName: "Mood")
-        moods = (try! appDelegate.managedObjectContext?.fetch(requestMood))  as! [Mood]
-        
+    func getDoneTrainingPlans() {
         var checkString = ""
         var checkBefore = ""
         var dayIDExists = true
         
-        //Only get different done trainings plans
         for checkIDAmount in doneExercises {
             if(DateFormatHelper.returnDateForm(checkIDAmount.date as Date) ==  DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)) {
                 dayHasContent = true
@@ -214,6 +241,20 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
                 trainingDataDateLabel.text = DateFormatHelper.returnDateForm(checkIDAmount.date as Date)
             }
         }
+    }
+    
+    func loadTrainingData() {
+        let requestDoneExercises = NSFetchRequest<NSFetchRequestResult>(entityName: "DoneExercise")
+        doneExercises = (try! appDelegate.managedObjectContext?.fetch(requestDoneExercises))  as! [DoneExercise]
+        
+        let  requestMeasurements = NSFetchRequest<NSFetchRequestResult>(entityName: "Measurements")
+        measurements = (try! appDelegate.managedObjectContext?.fetch(requestMeasurements))  as! [Measurements]
+        
+        let  requestMood = NSFetchRequest<NSFetchRequestResult>(entityName: "Mood")
+        moods = (try! appDelegate.managedObjectContext?.fetch(requestMood))  as! [Mood]
+    }
+    
+    func setupMeasurementData() {
         //Default text
         
         let translationWeight = NSLocalizedString("Weight", comment: "Weight")
@@ -265,8 +306,9 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
             
         }
-        
-        //Default text/mood
+    }
+    
+    func setupMoodData() {
         trainingDataMoodNameLabel.text = "---"
         trainingDataMoodImageView.image = UIImage(named: "SmileyNormal.png")
         
@@ -279,15 +321,6 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
             
         }
-        
-        trainingDataDateLabel.text = DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)
-        
-        trainingDataDayIDTableView.reloadData()
-        
-        if !dayHasContent {
-            trainingDataDateLabel.text = NSLocalizedString("No entry at this date", comment: "No entry at this date")
-        }
-        trainingDataDayIDTableView.separatorColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
     }
     
 }

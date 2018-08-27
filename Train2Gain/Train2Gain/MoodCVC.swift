@@ -17,7 +17,6 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
     let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.dark))
     let cellIdentifier = "MoodCell"
     var date: Date!
-    var editMode = false
     var imagePaths: [String] = ["SmileyNormal.png", "SmileyNormal.png", "SmileyGood.png", "SmileyAggressive.png", "SmileyAwesome.png", "SmileySad.png", "SmileyIrritated.png", "SmileySick.png", "SmileyTired.png", "SmileyGreat.png", "SmileyStressed.png", "SmileyFantastic.png", "SmileyKO.png"]
     var moods: [Moods] = []
     var selectedIndexPath: IndexPath?
@@ -43,12 +42,8 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
             let savedMoods = (try! appDelegate.managedObjectContext?.fetch(requestMood))  as! [Mood]
             
             date = UserDefaults.standard.object(forKey: "dateUF") as! Date
-            
-            if !editMode {
-                saveMoodCorrectly(savedMoods)
-            } else {
-                saveEditedMoodCorrectly(savedMoods)
-            }
+
+            saveMoodCorrectly(savedMoods)
             
             //Save context
             appDelegate.saveContext()
@@ -162,19 +157,6 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
             } else {
                 addMood(lastMeasure)
             }
-        }
-    }
-    
-    func saveEditedMoodCorrectly(_ savedMoods: [Mood]) {
-        var moodExists = false
-        for singleMood in savedMoods{
-            if DateFormatHelper.returnDateForm(singleMood.date) == DateFormatHelper.returnDateForm(date) {
-                moodExists = true
-                addMood(singleMood)
-            }
-        }
-        if !moodExists {
-            addNewMood()
         }
     }
     

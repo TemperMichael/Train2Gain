@@ -38,10 +38,6 @@ class EditTrainingDataVC: UIViewController {
                 let bodyMeasurementsViewController = segue.destination as! BodyMeasurementsVC
                 bodyMeasurementsViewController.editMode = true
             }
-            if button == moodButton {
-                let moodCollectionViewController = segue.destination as! MoodCVC
-                moodCollectionViewController.editMode = true
-            }
         }
     }
     

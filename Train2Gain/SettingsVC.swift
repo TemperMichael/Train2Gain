@@ -33,7 +33,7 @@ class SettingsVC: UIViewController {
                         UserDefaults.standard.set("", forKey: "Password")
                     }
                 } else {
-                    // Handl other possible situations
+                    // Handle other possible situations
                     switch policyError!._code {
                     case LAError.Code.systemCancel.rawValue :
                         UIAlertView(title: "Error", message: "Authentication was cancelled by the system", delegate: self, cancelButtonTitle: "OK").show()
@@ -49,14 +49,12 @@ class SettingsVC: UIViewController {
         }
     }
     
+  
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        weightUnitSwitch.isOn = UserDefaults.standard.object(forKey: "weightUnit") as! String == "kg" ? true : false
-        lengthUnitSwitch.isOn = UserDefaults.standard.object(forKey: "lengthUnit") as! String == "cm" ? true : false
-        weightUnitSwitch.tintColor = UIColor.white
-        lengthUnitSwitch.tintColor = UIColor.white
-        privacyModeSwitch.tintColor = UIColor.white
+        setupView()
         
         //Get password
         if let pw = UserDefaults.standard.object(forKey: "Password") as? String {
@@ -112,7 +110,7 @@ class SettingsVC: UIViewController {
                     self.privacyModeSwitch.setOn(false, animated: true)
                     UserDefaults.standard.set("", forKey: "Password")
                 } else {
-                    self.showPasswordAlert(NSLocalizedString("Password was wrong", comment: "Password was wrong"),single: true)
+                    self.showPasswordAlert(NSLocalizedString("Password was wrong", comment: "Password was wrong"), single: true)
                 }
             } else {
                 // Setup password
@@ -140,6 +138,14 @@ class SettingsVC: UIViewController {
         }
         
         present(passwordPrompt, animated: true, completion: nil)
+    }
+    
+    func setupView() {
+        weightUnitSwitch.isOn = UserDefaults.standard.object(forKey: "weightUnit") as! String == "kg" ? true : false
+        lengthUnitSwitch.isOn = UserDefaults.standard.object(forKey: "lengthUnit") as! String == "cm" ? true : false
+        weightUnitSwitch.tintColor = UIColor.white
+        lengthUnitSwitch.tintColor = UIColor.white
+        privacyModeSwitch.tintColor = UIColor.white
     }
     
 }
