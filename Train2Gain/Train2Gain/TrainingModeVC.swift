@@ -17,7 +17,6 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
     let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.dark))
     var currentTime: TimeInterval?
     var date = UserDefaults.standard.object(forKey: "dateUF") as! Date
-    var dates: [Dates] = []
     var exercisesWithSets: [Exercise] = []
     var lengthUnit = UserDefaults.standard.object(forKey: "lengthUnit")! as! String
     var saveCurrentTime: TimeInterval?
@@ -65,14 +64,7 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
         // If nothing was entered save zero as weight and rep value
         exercisesWithSets[userPosition].weight =  exerciseWeightsTextField.text != "" ?  NSDecimalNumber(value: weight as Double) : 0
         exercisesWithSets[userPosition].doneReps = exerciseRepsTextField.text != "" ?  NSDecimalNumber(string: exerciseRepsTextField.text) : 0
-        var alreadyExists = true
-        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Dates")
-        dates = (try! appDelegate.managedObjectContext?.fetch(request))  as! [Dates]
-        for i in 0  ..< dates.count {
-            if DateFormatHelper.returnDateForm(dates[i].savedDate as Date) == DateFormatHelper.returnDateForm(date) {
-                alreadyExists = false
-            }
-        }
+
         var saveData: [[String]] = []
         for i in 0  ..< exercisesWithSets.count {
             saveData.append([exercisesWithSets[i].dayID, exercisesWithSets[i].name, "\(exercisesWithSets[i].reps)", "\(exercisesWithSets[i].doneReps)", "\(exercisesWithSets[i].sets)", "\(exercisesWithSets[i].weight)"])
@@ -81,12 +73,6 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
         
         // Rollback to don't save exerices which were needed to get done exercises
         appDelegate.rollBackContext()
-        
-        //Replace date
-        if alreadyExists {
-            let newItem = NSEntityDescription.insertNewObject(forEntityName: "Dates", into: appDelegate.managedObjectContext!) as! Dates
-            newItem.savedDate = date
-        }
         
         var i = 0
         

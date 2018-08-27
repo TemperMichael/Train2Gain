@@ -13,7 +13,6 @@ class EditTrainingDataDetailVC: UIViewController, UITextFieldDelegate {
     
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
     var currentTime: TimeInterval?
-    var dates: [Dates] = []
     var editDate: Date!
     var exercisesWithSets: [DoneExercise] = []
     var lengthUnit = UserDefaults.standard.object(forKey: "lengthUnit")! as! String
@@ -56,18 +55,6 @@ class EditTrainingDataDetailVC: UIViewController, UITextFieldDelegate {
         exercisesWithSets[userPosition].weight =  editWeightsTextField.text != "" ?  NSDecimalNumber(value: weight as Double) : 0
         exercisesWithSets[userPosition].doneReps = editRepsTextField.text != "" ?  NSDecimalNumber(string: editRepsTextField.text) : 0
         
-        //Check if data already exists
-        var alreadyExists = false
-        let  request = NSFetchRequest<NSFetchRequestResult>(entityName: "Dates")
-        dates = (try! appDelegate.managedObjectContext?.fetch(request))  as! [Dates]
-        
-        for i in 0 ..< dates.count {
-            if dates[i].isEqual(Date()) {
-                alreadyExists = true
-            }
-        }
-        
-        
         var saveData: [[String]] = []
         
         for i in 0 ..< exercisesWithSets.count {
@@ -77,12 +64,6 @@ class EditTrainingDataDetailVC: UIViewController, UITextFieldDelegate {
         
         //Rollback to don't save exerices which were needed to get done exercises
         appDelegate.rollBackContext()
-        
-        //Replace date
-        if !alreadyExists {
-            let newItem = NSEntityDescription.insertNewObject(forEntityName: "Dates", into: appDelegate.managedObjectContext!) as! Dates
-            newItem.savedDate = Date()
-        }
         
         let requestDoneEx = NSFetchRequest<NSFetchRequestResult>(entityName: "DoneExercise")
         let savedDoneExercises = (try! appDelegate.managedObjectContext?.fetch(requestDoneEx))  as! [DoneExercise]

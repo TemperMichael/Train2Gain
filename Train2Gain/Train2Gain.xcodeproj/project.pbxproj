@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		06034FC91AD7290300EAB2D6 /* Measurements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06034FC81AD7290300EAB2D6 /* Measurements.swift */; };
-		06170B0F1AD49408009D78EF /* Dates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06170B0E1AD49408009D78EF /* Dates.swift */; };
 		0618BA6F1AC78DEB00BDFBC0 /* Exercise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0618BA6E1AC78DEB00BDFBC0 /* Exercise.swift */; };
 		0618BA711AC7A11A00BDFBC0 /* TrainingModeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0618BA701AC7A11A00BDFBC0 /* TrainingModeVC.swift */; };
 		06197B6F1AD5F1C9002794A3 /* TrainingDataVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06197B6E1AD5F1C9002794A3 /* TrainingDataVC.swift */; };
@@ -70,7 +69,6 @@
 
 /* Begin PBXFileReference section */
 		06034FC81AD7290300EAB2D6 /* Measurements.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Measurements.swift; path = Train2Gain/Measurements.swift; sourceTree = "<group>"; };
-		06170B0E1AD49408009D78EF /* Dates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Dates.swift; path = Train2Gain/Dates.swift; sourceTree = "<group>"; };
 		0618BA6E1AC78DEB00BDFBC0 /* Exercise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Exercise.swift; path = Train2Gain/Exercise.swift; sourceTree = "<group>"; };
 		0618BA701AC7A11A00BDFBC0 /* TrainingModeVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrainingModeVC.swift; sourceTree = "<group>"; };
 		06197B6E1AD5F1C9002794A3 /* TrainingDataVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrainingDataVC.swift; sourceTree = "<group>"; };
@@ -137,7 +135,6 @@
 		06197B711AD67383002794A3 /* CoreDataClasses */ = {
 			isa = PBXGroup;
 			children = (
-				06170B0E1AD49408009D78EF /* Dates.swift */,
 				0694D5D81AD48863001BC64C /* DoneExercise.swift */,
 				0618BA6E1AC78DEB00BDFBC0 /* Exercise.swift */,
 				06034FC81AD7290300EAB2D6 /* Measurements.swift */,
@@ -389,7 +386,6 @@
 				06DF4D4F1AC5A02C00FA2A01 /* OverviewTVC.swift in Sources */,
 				06FF572F1AC5B5AF0059129D /* TrainingPlansTVC.swift in Sources */,
 				463D47721AED15FE0097E480 /* MoodCVC.swift in Sources */,
-				06170B0F1AD49408009D78EF /* Dates.swift in Sources */,
 				46CEDEFF1B6C137A00B6E7D0 /* EditTrainingDataVC.swift in Sources */,
 				06DF4D2F1AC59FEB00FA2A01 /* Train2Gain.xcdatamodeld in Sources */,
 				06197B6F1AD5F1C9002794A3 /* TrainingDataVC.swift in Sources */,

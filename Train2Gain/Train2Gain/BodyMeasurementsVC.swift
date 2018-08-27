@@ -21,7 +21,6 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
     var lengthUnit = UserDefaults.standard.object(forKey: "lengthUnit")! as! String
     var measurements: [Measurements] = []
     let requestedMeasurements = NSFetchRequest<Measurements>(entityName: "Measurements")
-    var savedDates: [Dates] = []
     var weightUnit = UserDefaults.standard.object(forKey: "weightUnit")! as! String
     
     // MARK: IBOutles & IBActions
@@ -40,25 +39,14 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
     
     @IBAction func saveMeasurements(_ sender: AnyObject) {
         
-        let  request = NSFetchRequest<NSFetchRequestResult>(entityName: "Dates")
-        savedDates = (try! appDelegate.managedObjectContext?.fetch(request))  as! [Dates]
-        
         measurements = (try! appDelegate.managedObjectContext?.fetch(requestedMeasurements))!
         date = UserDefaults.standard.object(forKey: "dateUF") as! Date
-        
-        // Check if data already exists
-        let alreadyExists = isDateAlreadySaved(savedDates)
-        
-        //Replace date
-        if !alreadyExists {
-            createNewDate()
-        }
         
         // Save data in correct way
         if !editMode {
             saveMeasurementsCorrectly()
         } else {
-            saveEditedMeasurementsCorrectly(alreadyExists)
+            saveEditedMeasurementsCorrectly()
         }
         
         appDelegate.saveContext()
@@ -94,7 +82,7 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    
+        
         date = UserDefaults.standard.object(forKey: "dateUF") as! Date
         datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
         
@@ -277,20 +265,6 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
         }
     }
     
-    func isDateAlreadySaved(_ savedDates: [Dates]) -> Bool {
-        for i in 0 ..< savedDates.count {
-            if DateFormatHelper.returnDateForm(savedDates[i].savedDate) == DateFormatHelper.returnDateForm(date) {
-                return true
-            }
-        }
-        return false
-    }
-    
-    func createNewDate() {
-        let newItem = NSEntityDescription.insertNewObject(forEntityName: "Dates", into: appDelegate.managedObjectContext!) as! Dates
-        newItem.savedDate = Date()
-    }
-    
     func saveMeasurementsCorrectly() {
         if measurements.count <= 0 {
             addNewMeasure()
@@ -304,14 +278,12 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
         }
     }
     
-    func saveEditedMeasurementsCorrectly(_ alreadyExists: Bool) {
+    func saveEditedMeasurementsCorrectly() {
         var measurementExists = false
-        if alreadyExists {
-            for singleMeasure in measurements {
-                if DateFormatHelper.returnDateForm(singleMeasure.date as Date) == DateFormatHelper.returnDateForm(date) {
-                    measurementExists = true
-                    addMeasure(singleMeasure)
-                }
+        for singleMeasure in measurements {
+            if DateFormatHelper.returnDateForm(singleMeasure.date as Date) == DateFormatHelper.returnDateForm(date) {
+                measurementExists = true
+                addMeasure(singleMeasure)
             }
         }
         if !measurementExists {

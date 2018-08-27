@@ -42,23 +42,12 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
             let requestMood = NSFetchRequest<NSFetchRequestResult>(entityName: "Mood")
             let savedMoods = (try! appDelegate.managedObjectContext?.fetch(requestMood))  as! [Mood]
             
-            //Get dates where something was saved
-            let requestDates = NSFetchRequest<NSFetchRequestResult>(entityName: "Dates")
-            let savedDates = (try! appDelegate.managedObjectContext?.fetch(requestDates))  as! [Dates]
-            
             date = UserDefaults.standard.object(forKey: "dateUF") as! Date
-            
-            //Check if data already exists
-            let alreadyExists = isDateAlreadySaved(savedDates)
-            
-            if !alreadyExists {
-                createNewDate()
-            }
             
             if !editMode {
                 saveMoodCorrectly(savedMoods)
             } else {
-                saveEditedMoodCorrectly(alreadyExists, savedMoods)
+                saveEditedMoodCorrectly(savedMoods)
             }
             
             //Save context
@@ -162,20 +151,6 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
         moods.append(Moods(_moodName: NSLocalizedString("K.O.", comment: "K.O."), _moodSmileyString: "SmileyKO.png"))
     }
     
-    func isDateAlreadySaved(_ savedDates: [Dates]) -> Bool {
-        for i in 0 ..< savedDates.count {
-            if DateFormatHelper.returnDateForm(savedDates[i].savedDate) == DateFormatHelper.returnDateForm(date) {
-                return true
-            }
-        }
-        return false
-    }
-    
-    func createNewDate() {
-        let newItem = NSEntityDescription.insertNewObject(forEntityName: "Dates", into: appDelegate.managedObjectContext!) as! Dates
-        newItem.savedDate = Date()
-    }
-    
     func saveMoodCorrectly(_ savedMoods: [Mood]) {
         //Either create a new mood entry or rewrite the todays one
         if savedMoods.count <= 0 {
@@ -190,14 +165,12 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
         }
     }
     
-    func saveEditedMoodCorrectly(_ alreadyExists: Bool, _ savedMoods: [Mood]) {
+    func saveEditedMoodCorrectly(_ savedMoods: [Mood]) {
         var moodExists = false
-        if alreadyExists {
-            for singleMood in savedMoods{
-                if DateFormatHelper.returnDateForm(singleMood.date) == DateFormatHelper.returnDateForm(date) {
-                    moodExists = true
-                    addMood(singleMood)
-                }
+        for singleMood in savedMoods{
+            if DateFormatHelper.returnDateForm(singleMood.date) == DateFormatHelper.returnDateForm(date) {
+                moodExists = true
+                addMood(singleMood)
             }
         }
         if !moodExists {
