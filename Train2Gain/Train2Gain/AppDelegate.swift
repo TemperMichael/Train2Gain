@@ -28,6 +28,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             shouldRotate = true
         }
         
+        // Get the actual chosen units
+        if UserDefaults.standard.object(forKey: "weightUnit") == nil {
+            UserDefaults.standard.set("lbs", forKey: "weightUnit")
+        }
+        if UserDefaults.standard.object(forKey: "lengthUnit") == nil {
+            UserDefaults.standard.set("inch", forKey: "lengthUnit")
+        }
+        
         UIApplication.shared.setStatusBarStyle(UIStatusBarStyle.lightContent, animated: true)
         Fabric.with([Crashlytics.self()])
         

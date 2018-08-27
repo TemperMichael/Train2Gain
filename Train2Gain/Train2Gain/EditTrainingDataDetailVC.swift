@@ -57,14 +57,17 @@ class EditTrainingDataDetailVC: UIViewController, UITextFieldDelegate {
         exercisesWithSets[userPosition].doneReps = editRepsTextField.text != "" ?  NSDecimalNumber(string: editRepsTextField.text) : 0
         
         //Check if data already exists
-        var alreadyExists = true
+        var alreadyExists = false
         let  request = NSFetchRequest<NSFetchRequestResult>(entityName: "Dates")
         dates = (try! appDelegate.managedObjectContext?.fetch(request))  as! [Dates]
+        
         for i in 0 ..< dates.count {
             if dates[i].isEqual(Date()) {
-                alreadyExists = false
+                alreadyExists = true
             }
         }
+        
+        
         var saveData: [[String]] = []
         
         for i in 0 ..< exercisesWithSets.count {
@@ -76,17 +79,17 @@ class EditTrainingDataDetailVC: UIViewController, UITextFieldDelegate {
         appDelegate.rollBackContext()
         
         //Replace date
-        if alreadyExists {
+        if !alreadyExists {
             let newItem = NSEntityDescription.insertNewObject(forEntityName: "Dates", into: appDelegate.managedObjectContext!) as! Dates
             newItem.savedDate = Date()
         }
         
         let requestDoneEx = NSFetchRequest<NSFetchRequestResult>(entityName: "DoneExercise")
-        let doneEx = (try! appDelegate.managedObjectContext?.fetch(requestDoneEx))  as! [DoneExercise]
+        let savedDoneExercises = (try! appDelegate.managedObjectContext?.fetch(requestDoneEx))  as! [DoneExercise]
         
         //setup data
         for checkCells in saveData{
-            for singleDoneEx in doneEx{
+            for singleDoneEx in savedDoneExercises{
                 if DateFormatHelper.returnDateForm(singleDoneEx.date) == DateFormatHelper.returnDateForm(editDate) && singleDoneEx.dayID == checkCells[0] && singleDoneEx.name == checkCells[1] && singleDoneEx.setCounter ==  NSDecimalNumber(string:checkCells[6]){
                     singleDoneEx.doneReps = NSDecimalNumber(string:checkCells[3])
                     singleDoneEx.weight = NSDecimalNumber(string: checkCells[5])
@@ -95,13 +98,7 @@ class EditTrainingDataDetailVC: UIViewController, UITextFieldDelegate {
             appDelegate.saveContext()
         }
         
-        //Inform user that data was saved
-        let informUser = UIAlertController(title: NSLocalizedString("Saved", comment: "Saved"), message:NSLocalizedString("Your training was changed", comment: "Your training was changed"), preferredStyle: UIAlertControllerStyle.alert)
-        informUser.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: UIAlertActionStyle.default, handler: { (action) -> Void in
-            self.navigationController?.popViewController(animated: true)
-        }))
-        
-        present(informUser, animated: true, completion: nil)
+        AlertFormatHelper.showInfoAlert(self, "Your training was changed.")
     }
     
     @IBAction func showNextExercise(_ sender: AnyObject) {

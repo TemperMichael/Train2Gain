@@ -69,10 +69,6 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Hide empty cells
-        let backgroundView = UIView(frame: CGRect.zero)
-        self.trainingDataDayIDTableView.tableFooterView = backgroundView
-        self.trainingDataDayIDTableView.backgroundColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
         selectedDoneExercises = []
         
         datePickerButton.titleLabel?.text = DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)
@@ -86,14 +82,7 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             customAttributes: [:])
         doneExercises = (try! appDelegate.managedObjectContext?.fetch(requestedDoneExercises))  as! [DoneExercise]
         
-        datePicker.setDate(UserDefaults.standard.object(forKey: "dateUF") as! Date, animated: true)
-        datePicker.forBaselineLayout().setValue(UIColor.white, forKeyPath: "tintColor")
-        for sub in datePicker.subviews {
-            sub.setValue(UIColor.white, forKeyPath: "textColor")
-            sub.setValue(UIColor.white, forKey: "tintColor")
-        }
-        
-        datePickerTitleLabel.text = NSLocalizedString("Choose a date", comment: "Choose a date")
+        PickerViewHelper.setupPickerView(datePicker, datePickerTitleLabel)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -191,13 +180,6 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         //Show date of chosen day
         datePickerButton.setTitle(DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date), for: UIControlState())
-        
-        //Hide empty cells
-        let backgroundView = UIView(frame: CGRect.zero)
-        
-        self.trainingDataDayIDTableView.tableFooterView = backgroundView
-        
-        self.trainingDataDayIDTableView.backgroundColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
         
         let requestDoneExercises = NSFetchRequest<NSFetchRequestResult>(entityName: "DoneExercise")
         doneExercises = (try! appDelegate.managedObjectContext?.fetch(requestDoneExercises))  as! [DoneExercise]

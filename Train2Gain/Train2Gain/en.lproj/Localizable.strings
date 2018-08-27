@@ -40,11 +40,11 @@
 // Infoalert
 
 "Saved" = "Saved";
-"Your body measurements were saved" = "Your body measurements were saved";
-"Your mood was saved" = "Your mood was saved";
-"Your training plan was saved" = "Your training plan was saved";
-"Your training was changed" = "Your training was changed";
-"Your training was saved" = "Your training was saved";
+"Your body measurements were saved." = "Your body measurements were saved.";
+"Your mood was saved." = "Your mood was saved.";
+"Your training plan was saved." = "Your training plan was saved.";
+"Your training was changed." = "Your training was changed.";
+"Your training was saved." = "Your training was saved.";
 "OK" = "OK";
 
 // AddExerciseVC

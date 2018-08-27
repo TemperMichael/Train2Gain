@@ -13,9 +13,10 @@ class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
     var dayIDs: [String] = []
-    var exercises: [Exercise] = []
+    var savedExercises: [Exercise] = []
     var selectedDayID: String!
-    var selectedExercise: [Exercise] = []
+    var selectedExercises: [Exercise] = []
+    var trainingPlanCell = "TrainingPlanCell"
     
     // MARK: IBOutlets & IBActions
     @IBOutlet weak var tableView: UITableView!
@@ -23,14 +24,10 @@ class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        selectedExercise = []
-        
-        //Hide empty cells
-        let backgroundView = UIView(frame: CGRect.zero)
-        self.tableView.tableFooterView = backgroundView
-        self.tableView.backgroundColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
         tableView.delegate = self
         tableView.dataSource = self
+        
+        selectedExercises = []
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -39,91 +36,41 @@ class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         
         // Reset lists
         dayIDs = []
-        selectedExercise = []
-        exercises = []
+        selectedExercises = []
+        savedExercises = []
         
-        // Hide empty cells
-        let backgroundView = UIView(frame: CGRect.zero)
-        self.tableView.tableFooterView = backgroundView
-        self.tableView.backgroundColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
-        
-        // Get exercises core data
-        let  request = NSFetchRequest<NSFetchRequestResult>(entityName: "Exercise")
-        exercises = (try! appDelegate.managedObjectContext?.fetch(request))  as! [Exercise]
-        var exists = false
-        
-        // Check if data already exists
-        for checkIDAmount in exercises {
-            exists = false
-            for singleDayId in dayIDs {
-                if checkIDAmount.dayID == singleDayId {
-                    exists = true
-                }
-            }
-            if !exists {
-                dayIDs.append(checkIDAmount.dayID)
-            }
-        }
+        setupDayIds()
         tableView.reloadData()
-        tableView.separatorColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
     }
     
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        // Save the selected exercises for the next view
-        for i in 0  ..< exercises.count {
-            if exercises[i].dayID == dayIDs[(indexPath as NSIndexPath).row] {
-                selectedExercise.append(exercises[i])
-            }
-        }
+        prepareSelectedExercises(indexPath)
         return indexPath
     }
+    
+    
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         // Handle swipe to single tableview row
         // Handle the deletion of an row
-        let deleteAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: NSLocalizedString("Delete", comment: "Delete")) { (action, index) -> Void in
-            let context: NSManagedObjectContext = self.appDelegate.managedObjectContext!
-            var count = self.exercises.count - 1
-            for _ in 0..<self.exercises.count  {
-                if self.exercises[count].dayID == self.dayIDs[(indexPath as NSIndexPath).row] {
-                    context.delete(self.exercises[count] as NSManagedObject)
-                    self.exercises.remove(at: count)
-                    count = count - 1
-                }
-            }
-            self.dayIDs.remove(at: (indexPath as NSIndexPath).row)
-            do {
-                try context.save()
-            } catch _ {
-            }
-            self.tableView.deleteRows(at: [indexPath], with: .fade)
-        }
-        deleteAction.backgroundColor = UIColor(red: 86 / 255, green: 158 / 255, blue: 197 / 255, alpha: 1)
+        let deleteAction = setupDeleteAction(indexPath)
         
         // Handle the changings of the selected row item
-        let editAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: NSLocalizedString("Edit", comment: "Edit")) { (action, index) -> Void in
-            for i in  0..<self.exercises.count {
-                if self.exercises[i].dayID == self.dayIDs[(indexPath as NSIndexPath).row] {
-                    self.selectedExercise.append(self.exercises[i])
-                }
-            }
-            self.performSegue(withIdentifier: "AddExercise", sender: UITableViewRowAction())
-        }
-        editAction.backgroundColor = UIColor(red: 112 / 255, green: 188 / 255, blue: 224 / 255, alpha: 1)
+        let editAction = setupEditAction(indexPath)
         return [deleteAction, editAction]
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         //Give the next view the selected exercises
-        if segue.identifier == "ExerciseChosen" {
-            let vc = segue.destination as! TrainingModeVC
-            vc.selectedExercise = selectedExercise
+        if segue.identifier == "TrainingPlanChosen" {
+            let trainingModeViewController = segue.destination as! TrainingModeVC
+            trainingModeViewController.selectedExercise = selectedExercises
         }
-        if segue.identifier == "AddExercise" {
+        if segue.identifier == "AddTrainingPlan" {
             if let _ = sender as? UITableViewRowAction {
-                let vc = segue.destination as! TrainingPlanCreationVC
-                vc.editMode = true
-                vc.selectedExercise = self.selectedExercise
+                let trainingPlanCreationViewController = segue.destination as! TrainingPlanCreationVC
+                trainingPlanCreationViewController.editMode = true
+                trainingPlanCreationViewController.selectedExercise = self.selectedExercises
             }
         }
     }
@@ -142,7 +89,77 @@ class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         //Setup cell
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ExerciseCell", for: indexPath) 
+        return setupCell(tableView, indexPath)
+    }
+    
+    // MARK: Own Methods
+
+    func setupDayIds() {
+        // Get exercises core data
+        let  request = NSFetchRequest<NSFetchRequestResult>(entityName: "Exercise")
+        savedExercises = (try! appDelegate.managedObjectContext?.fetch(request))  as! [Exercise]
+        var alreadyExists = false
+        
+        // Check if data already exists
+        for checkIDAmount in savedExercises {
+            alreadyExists = false
+            for singleDayId in dayIDs {
+                if checkIDAmount.dayID == singleDayId {
+                    alreadyExists = true
+                }
+            }
+            if !alreadyExists {
+                dayIDs.append(checkIDAmount.dayID)
+            }
+        }
+    }
+    
+    func prepareSelectedExercises(_ indexPath: IndexPath) {
+        for i in 0  ..< savedExercises.count {
+            if savedExercises[i].dayID == dayIDs[(indexPath as NSIndexPath).row] {
+                selectedExercises.append(savedExercises[i])
+            }
+        }
+    }
+    
+    func setupDeleteAction(_ indexPath: IndexPath) -> UITableViewRowAction {
+        let deleteAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: NSLocalizedString("Delete", comment: "Delete")) { (action, index) -> Void in
+            let context: NSManagedObjectContext = self.appDelegate.managedObjectContext!
+            var count = self.savedExercises.count - 1
+            for _ in 0..<self.savedExercises.count  {
+                if self.savedExercises[count].dayID == self.dayIDs[(indexPath as NSIndexPath).row] {
+                    context.delete(self.savedExercises[count] as NSManagedObject)
+                    self.savedExercises.remove(at: count)
+                    count = count - 1
+                }
+            }
+            self.dayIDs.remove(at: (indexPath as NSIndexPath).row)
+            do {
+                try context.save()
+            } catch _ {
+                print("Error save context training plans")
+            }
+            self.tableView.deleteRows(at: [indexPath], with: .fade)
+        }
+        deleteAction.backgroundColor = UIColor(red: 86 / 255, green: 158 / 255, blue: 197 / 255, alpha: 1)
+        return deleteAction
+    }
+    
+    func setupEditAction(_ indexPath: IndexPath) -> UITableViewRowAction {
+        let editAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: NSLocalizedString("Edit", comment: "Edit")) { (action, index) -> Void in
+            for i in  0..<self.savedExercises.count {
+                if self.savedExercises[i].dayID == self.dayIDs[(indexPath as NSIndexPath).row] {
+                    self.selectedExercises.append(self.savedExercises[i])
+                }
+            }
+            self.performSegue(withIdentifier: "AddExercise", sender: UITableViewRowAction())
+        }
+        editAction.backgroundColor = UIColor(red: 112 / 255, green: 188 / 255, blue: 224 / 255, alpha: 1)
+        return editAction
+    }
+    
+    func setupCell(_ tableView: UITableView, _ indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: trainingPlanCell, for: indexPath)
         cell.textLabel?.font = UIFont(name: "HelveticaNeue-Light", size: 18)
         cell.textLabel?.textColor = UIColor(red: 22 / 255, green: 204 / 255, blue: 255 / 255, alpha: 1)
         cell.textLabel?.text = dayIDs[(indexPath as NSIndexPath).row]

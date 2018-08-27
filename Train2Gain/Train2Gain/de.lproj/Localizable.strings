@@ -42,11 +42,11 @@
 // INFOALERT
 
 "Saved" = "Gespeichert";
-"Your body measurements were saved" = "Deine Körpermaße wurden gespeichert";
-"Your mood was saved" = "Deine Stimmung wurde gespeichert";
-"Your training plan was saved" = "Dein Trainingsplan wurde gespeichert";
-"Your training was changed" = "Dein Training wurde geändert";
-"Your training was saved" = "Dein Training wurde gespeichert";
+"Your body measurements were saved." = "Deine Körpermaße wurden gespeichert.";
+"Your mood was saved." = "Deine Stimmung wurde gespeichert.";
+"Your training plan was saved." = "Dein Trainingsplan wurde gespeichert.";
+"Your training was changed." = "Dein Training wurde geändert.";
+"Your training was saved." = "Dein Training wurde gespeichert.";
 "OK" = "OK";
 
 // AddExerciseVC

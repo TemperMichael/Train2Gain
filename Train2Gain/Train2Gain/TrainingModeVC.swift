@@ -105,19 +105,13 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
             i += 1
         }
         
-        
-        let informUser = UIAlertController(title: NSLocalizedString("Saved", comment: "Saved"), message:NSLocalizedString("Your training was saved", comment: "Your training was saved"), preferredStyle: UIAlertControllerStyle.alert)
-        informUser.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: UIAlertActionStyle.default, handler: { (action) -> Void in
-            self.navigationController?.popViewController(animated: true)
-        }))
-        
         //Fabric - Analytic tool
         Answers.logLevelEnd("Finished Training",
                             score: nil,
                             success: true,
                             customAttributes: ["Training name": saveData[0][0]])
-        present(informUser, animated: true, completion: nil)
-        
+
+        AlertFormatHelper.showInfoAlert(self, "Your training was saved.")
     }
     
     @IBAction func selectDate(_ sender: AnyObject) {
@@ -165,6 +159,7 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
     }
     
     // MARK: View Methods
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -207,14 +202,7 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
         exerciseRepsTextField.delegate = self
         exerciseWeightsTextField.delegate = self
         
-        datePicker.setDate(UserDefaults.standard.object(forKey: "dateUF") as! Date, animated: true)
-        datePicker.forBaselineLayout().setValue(UIColor.white, forKeyPath: "tintColor")
-        for subview in datePicker.subviews {
-            subview.setValue(UIColor.white, forKeyPath: "textColor")
-            subview.setValue(UIColor.white, forKey: "tintColor")
-        }
-        
-        datePickerTitleLabel.text = NSLocalizedString("Choose a date", comment: "Choose a date")
+        PickerViewHelper.setupPickerView(datePicker, datePickerTitleLabel)
     }
     
     override func viewDidAppear(_ animated: Bool) {

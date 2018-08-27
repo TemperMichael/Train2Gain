@@ -74,11 +74,8 @@ class TrainingPlanCreationVC: UIViewController, UITextFieldDelegate {
                 newItem.sets = Int(checkCells[2])! as NSNumber
                 appDelegate.saveContext()
             }
-            let informUser = UIAlertController(title: "Saved", message: "Your training plan was saved", preferredStyle: UIAlertControllerStyle.alert)
-            informUser.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: { (action) -> Void in
-                self.navigationController?.popViewController(animated: true)
-            }))
-            present(informUser, animated: true, completion: nil)
+
+            AlertFormatHelper.showInfoAlert(self, "Your training plan was saved.")
         }
         
     }

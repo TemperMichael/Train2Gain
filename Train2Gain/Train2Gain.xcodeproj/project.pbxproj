@@ -17,7 +17,7 @@
 		06DF4D2C1AC59FEB00FA2A01 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DF4D2B1AC59FEB00FA2A01 /* AppDelegate.swift */; };
 		06DF4D2F1AC59FEB00FA2A01 /* Train2Gain.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 06DF4D2D1AC59FEB00FA2A01 /* Train2Gain.xcdatamodeld */; };
 		06DF4D451AC59FEB00FA2A01 /* Train2GainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DF4D441AC59FEB00FA2A01 /* Train2GainTests.swift */; };
-		06DF4D4F1AC5A02C00FA2A01 /* OverViewTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DF4D4E1AC5A02C00FA2A01 /* OverViewTVC.swift */; };
+		06DF4D4F1AC5A02C00FA2A01 /* OverviewTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DF4D4E1AC5A02C00FA2A01 /* OverviewTVC.swift */; };
 		06FF572F1AC5B5AF0059129D /* TrainingPlansTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FF572E1AC5B5AF0059129D /* TrainingPlansTVC.swift */; };
 		06FF57371AC633EB0059129D /* BodyMeasurementsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FF57361AC633EB0059129D /* BodyMeasurementsVC.swift */; };
 		461E95821F17EB24001CDCA8 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 461E95811F17EB24001CDCA8 /* Charts.framework */; };
@@ -31,6 +31,7 @@
 		463D47771AED18180097E480 /* MoodCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463D47761AED18180097E480 /* MoodCell.swift */; };
 		466EF3912132F198005A3BFA /* DateFormatHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 466EF3902132F198005A3BFA /* DateFormatHelper.swift */; };
 		466EF3932132F503005A3BFA /* PickerViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 466EF3922132F503005A3BFA /* PickerViewHelper.swift */; };
+		466EF39B21343493005A3BFA /* AlertFormatHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 466EF39A21343493005A3BFA /* AlertFormatHelper.swift */; };
 		469121FF1AF7AB260097D22D /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 469121FE1AF7AB260097D22D /* LocalAuthentication.framework */; };
 		46AD66631C383A060040E685 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 46AD66651C383A060040E685 /* Main.storyboard */; };
 		46AD666C1C3A09B20040E685 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 46AD666E1C3A09B20040E685 /* Localizable.strings */; };
@@ -82,7 +83,7 @@
 		06DF4D3E1AC59FEB00FA2A01 /* Train2GainTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Train2GainTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		06DF4D431AC59FEB00FA2A01 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		06DF4D441AC59FEB00FA2A01 /* Train2GainTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Train2GainTests.swift; sourceTree = "<group>"; };
-		06DF4D4E1AC5A02C00FA2A01 /* OverViewTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OverViewTVC.swift; path = ../OverViewTVC.swift; sourceTree = "<group>"; };
+		06DF4D4E1AC5A02C00FA2A01 /* OverviewTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OverviewTVC.swift; path = ../OverviewTVC.swift; sourceTree = "<group>"; };
 		06FF572E1AC5B5AF0059129D /* TrainingPlansTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrainingPlansTVC.swift; sourceTree = "<group>"; };
 		06FF57361AC633EB0059129D /* BodyMeasurementsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BodyMeasurementsVC.swift; sourceTree = "<group>"; };
 		461E95811F17EB24001CDCA8 /* Charts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Charts.framework; path = Carthage/Build/iOS/Charts.framework; sourceTree = "<group>"; };
@@ -97,6 +98,7 @@
 		466EF3902132F198005A3BFA /* DateFormatHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatHelper.swift; sourceTree = "<group>"; };
 		466EF3922132F503005A3BFA /* PickerViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerViewHelper.swift; sourceTree = "<group>"; };
 		466EF399213418F2005A3BFA /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Main.strings; sourceTree = "<group>"; };
+		466EF39A21343493005A3BFA /* AlertFormatHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertFormatHelper.swift; sourceTree = "<group>"; };
 		469121FE1AF7AB260097D22D /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
 		46AD666D1C3A09B20040E685 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		46AD666F1C3A09B50040E685 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -165,7 +167,7 @@
 			children = (
 				4628E8041AED99F300D9DDF5 /* TrainingDataDetailTVC.swift */,
 				06FF572E1AC5B5AF0059129D /* TrainingPlansTVC.swift */,
-				06DF4D4E1AC5A02C00FA2A01 /* OverViewTVC.swift */,
+				06DF4D4E1AC5A02C00FA2A01 /* OverviewTVC.swift */,
 			);
 			name = TableViewController;
 			sourceTree = "<group>";
@@ -215,10 +217,11 @@
 			isa = PBXGroup;
 			children = (
 				06DF4D2B1AC59FEB00FA2A01 /* AppDelegate.swift */,
-				463D47741AED17520097E480 /* Moods.swift */,
-				06DF4D2A1AC59FEB00FA2A01 /* Info.plist */,
 				466EF3902132F198005A3BFA /* DateFormatHelper.swift */,
+				06DF4D2A1AC59FEB00FA2A01 /* Info.plist */,
+				463D47741AED17520097E480 /* Moods.swift */,
 				466EF3922132F503005A3BFA /* PickerViewHelper.swift */,
+				466EF39A21343493005A3BFA /* AlertFormatHelper.swift */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -383,7 +386,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				463D47771AED18180097E480 /* MoodCell.swift in Sources */,
-				06DF4D4F1AC5A02C00FA2A01 /* OverViewTVC.swift in Sources */,
+				06DF4D4F1AC5A02C00FA2A01 /* OverviewTVC.swift in Sources */,
 				06FF572F1AC5B5AF0059129D /* TrainingPlansTVC.swift in Sources */,
 				463D47721AED15FE0097E480 /* MoodCVC.swift in Sources */,
 				06170B0F1AD49408009D78EF /* Dates.swift in Sources */,
@@ -392,6 +395,7 @@
 				06197B6F1AD5F1C9002794A3 /* TrainingDataVC.swift in Sources */,
 				06DF4D2C1AC59FEB00FA2A01 /* AppDelegate.swift in Sources */,
 				46E50E581B6AF29D003F381E /* EditTrainingDataDetailVC.swift in Sources */,
+				466EF39B21343493005A3BFA /* AlertFormatHelper.swift in Sources */,
 				46C220B41BC168F30045940F /* StatisticVC.swift in Sources */,
 				463D47751AED17520097E480 /* Moods.swift in Sources */,
 				4635A4621AED72E10017CE30 /* Mood.swift in Sources */,

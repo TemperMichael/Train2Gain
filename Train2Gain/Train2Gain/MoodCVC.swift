@@ -64,7 +64,15 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
             //Save context
             appDelegate.saveContext()
             
-            presentInfoAlert()
+            let cell = moodCollectionView.cellForItem(at: selectedIndexPath!) as! MoodCell
+            
+            //Fabric - Analytic Tool
+            Answers.logContentView(withName: "Mood",
+                                   contentType: "Saved data",
+                                   contentId: cell.moodNameLabel.text!,
+                                   customAttributes: [:])
+            
+            AlertFormatHelper.showInfoAlert(self, "Your mood was saved.")
         }
         
     }
@@ -96,7 +104,7 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
         moodCollectionView.dataSource = self
         
         setupMoods()
-        setupDatePicker()
+        PickerViewHelper.setupPickerView(datePicker, datePickerTitleLabel)
     }
     
     // MARK: CollectionView
@@ -138,23 +146,6 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
         _Object.moodImagePath = imagePaths[(selectedIndexPath! as NSIndexPath).row + 1]
     }
     
-    func presentInfoAlert() {
-        // Go one view back
-        let informUser = UIAlertController(title: NSLocalizedString("Saved", comment: "Saved"), message:NSLocalizedString("Your mood was saved", comment: "Your mood was saved"), preferredStyle: UIAlertControllerStyle.alert)
-        informUser.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: UIAlertActionStyle.default, handler: { (action) -> Void in
-            self.navigationController?.popViewController(animated: true)
-        }))
-        let cell = moodCollectionView.cellForItem(at: selectedIndexPath!) as! MoodCell
-        
-        //Fabric - Analytic Tool
-        Answers.logContentView(withName: "Mood",
-                               contentType: "Saved data",
-                               contentId: cell.moodNameLabel.text!,
-                               customAttributes: [:])
-        
-        present(informUser, animated: true, completion: nil)
-    }
-    
     func setupMoods() {
         //Setup smileys for mood collection view
         moods.append(Moods(_moodName: NSLocalizedString("Normal", comment: "Normal"), _moodSmileyString: "SmileyNormal.png"))
@@ -171,24 +162,13 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
         moods.append(Moods(_moodName: NSLocalizedString("K.O.", comment: "K.O."), _moodSmileyString: "SmileyKO.png"))
     }
     
-    func setupDatePicker() {
-        datePicker.setDate(UserDefaults.standard.object(forKey: "dateUF") as! Date, animated: true)
-        datePicker.forBaselineLayout().setValue(UIColor.white, forKeyPath: "tintColor")
-        for sub in datePicker.subviews {
-            sub.setValue(UIColor.white, forKeyPath: "textColor")
-            sub.setValue(UIColor.white, forKey: "tintColor")
-        }
-        datePickerTitleLabel.text = NSLocalizedString("Choose a date", comment: "Choose a date")
-    }
-    
     func isDateAlreadySaved(_ savedDates: [Dates]) -> Bool {
-        var alreadyExists = false
         for i in 0 ..< savedDates.count {
             if DateFormatHelper.returnDateForm(savedDates[i].savedDate) == DateFormatHelper.returnDateForm(date) {
-                alreadyExists = true
+                return true
             }
         }
-        return alreadyExists
+        return false
     }
     
     func createNewDate() {
@@ -201,7 +181,7 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
         if savedMoods.count <= 0 {
             addNewMood()
         } else {
-            let lastMeasure = savedMoods[savedMoods.count-1]
+            let lastMeasure = savedMoods[savedMoods.count - 1]
             if DateFormatHelper.returnDateForm(lastMeasure.date) != DateFormatHelper.returnDateForm(Date()) {
                 addNewMood()
             } else {

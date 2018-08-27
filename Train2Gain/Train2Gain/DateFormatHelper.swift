@@ -11,8 +11,6 @@ import UIKit
 
 class DateFormatHelper {
     
-    var date = Date()
-    
     static func returnDateForm(_ date: Date) -> String {
         let dateFormatter = DateFormatter()
         let dateFormat = DateFormatter.Style.short
@@ -22,7 +20,6 @@ class DateFormatHelper {
         return dateFormatter.string(from: date)
     }
 
-    
     static func setDate(_ date: Date, _ datePickerButton : UIButton) -> Date {
         UserDefaults.standard.set(date , forKey: "dateUF")
         datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())

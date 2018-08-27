@@ -13,8 +13,8 @@
         <!--Train2Gain-->
         <scene sceneID="hZA-H5-xFy">
             <objects>
-                <tableViewController title="Train2Gain" id="iVH-Ak-oNh" customClass="OverViewTVC" customModule="Train2Gain" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" sectionIndexMinimumDisplayRowCount="1" rowHeight="84" sectionHeaderHeight="22" sectionFooterHeight="22" id="rLz-gl-jWP">
+                <tableViewController title="Train2Gain" id="iVH-Ak-oNh" customClass="OverviewTVC" customModule="Train2Gain" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" scrollEnabled="NO" dataMode="prototypes" style="plain" sectionIndexMinimumDisplayRowCount="1" rowHeight="84" sectionHeaderHeight="22" sectionFooterHeight="22" id="rLz-gl-jWP">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.086274509803921567" green="0.84078826431888543" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -24,7 +24,7 @@
                         <color key="sectionIndexBackgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="sectionIndexTrackingBackgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="MenuPointCell" id="IOA-kY-2cm">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="OverviewCell" id="IOA-kY-2cm">
                                 <rect key="frame" x="0.0" y="22" width="375" height="84"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="IOA-kY-2cm" id="CZZ-Fu-Iwp">
@@ -67,18 +67,19 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="38" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="zjx-Al-7Ur">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="38" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="zjx-Al-7Ur">
                                 <rect key="frame" x="16" y="126" width="343" height="415"/>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.14509689810000001" green="0.74653351310000005" blue="0.99635750059999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="separatorColor" red="0.14509689810000001" green="0.74653351310000005" blue="0.99635750059999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ExerciseCell" id="cPd-cc-7iI">
-                                        <rect key="frame" x="0.0" y="22" width="343" height="38"/>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="TrainingPlanCell" id="cPd-cc-7iI">
+                                        <rect key="frame" x="0.0" y="28" width="343" height="38"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="cPd-cc-7iI" id="sYe-VC-zfs">
                                             <rect key="frame" x="0.0" y="0.0" width="343" height="37.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" red="0.97521605879999995" green="1" blue="0.9692982751" alpha="0.32000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
@@ -89,7 +90,7 @@
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
-                                            <segue destination="cSb-bX-5fT" kind="show" identifier="ExerciseChosen" id="CSe-wx-8rT"/>
+                                            <segue destination="cSb-bX-5fT" kind="show" identifier="TrainingPlanChosen" id="CSe-wx-8rT"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -116,7 +117,7 @@
                         <barButtonItem key="backBarButtonItem" title=" " id="IWk-Z5-1wl"/>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="aGB-F7-EDt">
                             <connections>
-                                <segue destination="YzC-Bi-ZU5" kind="show" identifier="AddExercise" id="5Jf-9M-5TX"/>
+                                <segue destination="YzC-Bi-ZU5" kind="show" identifier="AddTrainingPlan" id="5Jf-9M-5TX"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -1671,8 +1672,8 @@
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" bounces="NO" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="40" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="9jI-M5-ede">
                                 <rect key="frame" x="8" y="303" width="359" height="223"/>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <color key="separatorColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.14509689810000001" green="0.74653351310000005" blue="0.99635750059999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="separatorColor" red="0.14509689810000001" green="0.74653351310000005" blue="0.99635750059999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="TrainingDataCell" id="XR7-ak-KCu">
                                         <rect key="frame" x="0.0" y="22" width="359" height="40"/>
@@ -1689,6 +1690,7 @@
                                                 </userDefinedRuntimeAttribute>
                                             </userDefinedRuntimeAttributes>
                                         </tableViewCellContentView>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
                                                 <integer key="value" value="0"/>
@@ -2424,7 +2426,7 @@
         <image name="trash" width="128" height="128"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="E5g-gP-udT"/>
-        <segue reference="w3a-f3-MJa"/>
+        <segue reference="CwC-AL-zBw"/>
+        <segue reference="eEj-sw-KZ0"/>
     </inferredMetricsTieBreakers>
 </document>

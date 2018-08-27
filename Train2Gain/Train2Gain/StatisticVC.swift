@@ -128,9 +128,7 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        
         appDelegate.shouldRotate = false
-        
     }
     
     override func viewDidLoad() {

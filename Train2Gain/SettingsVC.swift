@@ -20,7 +20,7 @@ class SettingsVC: UIViewController {
     
     @IBAction func togglePrivacyMode(_ sender: AnyObject) {
         if privacyModeSwitch.isOn {
-            callPWAlert("Enter your password", single: false)
+            showPasswordAlert("Enter your password", single: false)
         } else {
             let context = LAContext()
             var error: NSError?
@@ -40,9 +40,9 @@ class SettingsVC: UIViewController {
                     case LAError.Code.userCancel.rawValue :
                         self.privacyModeSwitch.setOn(true, animated: true)
                     case LAError.Code.userFallback.rawValue :
-                        self.callPWAlert("Enter your password", single: true)
+                        self.showPasswordAlert("Enter your password", single: true)
                     default :
-                        self.callPWAlert("Enter your password", single: true)
+                        self.showPasswordAlert("Enter your password", single: true)
                     }
                 }
             })
@@ -94,7 +94,7 @@ class SettingsVC: UIViewController {
 
     // Create password dialog: single = false for setup password
     //                         single = true for entering password
-    func callPWAlert(_ _Message: String, single: Bool) {
+    func showPasswordAlert(_ _Message: String, single: Bool) {
         let passwordPrompt = UIAlertController(title: NSLocalizedString("Enter Password", comment: "Enter Password"), message: _Message, preferredStyle: UIAlertControllerStyle.alert)
         passwordPrompt.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel"), style: UIAlertActionStyle.default, handler: { (action) -> Void in
             if self.privacyModeSwitch.isOn {
@@ -112,7 +112,7 @@ class SettingsVC: UIViewController {
                     self.privacyModeSwitch.setOn(false, animated: true)
                     UserDefaults.standard.set("", forKey: "Password")
                 } else {
-                    self.callPWAlert(NSLocalizedString("Password was wrong", comment: "Password was wrong"),single: true)
+                    self.showPasswordAlert(NSLocalizedString("Password was wrong", comment: "Password was wrong"),single: true)
                 }
             } else {
                 // Setup password
@@ -124,7 +124,7 @@ class SettingsVC: UIViewController {
                     self.password = passwordConfirmend!
                     UserDefaults.standard.set(passwordConfirmend, forKey: "Password")
                 } else {
-                    self.callPWAlert(NSLocalizedString("Confirmed password was wrong or empty", comment: "Confirmed password was wrong or empty"),single: false)
+                    self.showPasswordAlert(NSLocalizedString("Confirmed password was wrong or empty", comment: "Confirmed password was wrong or empty"),single: false)
                 }
             }
         }))

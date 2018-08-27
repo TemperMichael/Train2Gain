@@ -16,11 +16,12 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
     let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.dark))
     var date: Date!
-    var dates: [Dates] = []
+    
     var editMode = false
     var lengthUnit = UserDefaults.standard.object(forKey: "lengthUnit")! as! String
     var measurements: [Measurements] = []
     let requestedMeasurements = NSFetchRequest<Measurements>(entityName: "Measurements")
+    var savedDates: [Dates] = []
     var weightUnit = UserDefaults.standard.object(forKey: "weightUnit")! as! String
     
     // MARK: IBOutles & IBActions
@@ -38,59 +39,29 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var selectDateButton: UIButton!
     
     @IBAction func saveMeasurements(_ sender: AnyObject) {
-        var alreadyExists = true
+        
         let  request = NSFetchRequest<NSFetchRequestResult>(entityName: "Dates")
-        dates = (try! appDelegate.managedObjectContext?.fetch(request))  as! [Dates]
+        savedDates = (try! appDelegate.managedObjectContext?.fetch(request))  as! [Dates]
         
         measurements = (try! appDelegate.managedObjectContext?.fetch(requestedMeasurements))!
         date = UserDefaults.standard.object(forKey: "dateUF") as! Date
         
         // Check if data already exists
-        for i in 0 ..< dates.count {
-            if(DateFormatHelper.returnDateForm(dates[i].savedDate as Date) == DateFormatHelper.returnDateForm(date)){
-                alreadyExists = false
-            }
-        }
+        let alreadyExists = isDateAlreadySaved(savedDates)
         
         //Replace date
-        if alreadyExists {
-            let newItem = NSEntityDescription.insertNewObject(forEntityName: "Dates", into: appDelegate.managedObjectContext!) as! Dates
-            newItem.savedDate = Date()
+        if !alreadyExists {
+            createNewDate()
         }
         
         // Save data in correct way
         if !editMode {
-            if measurements.count <= 0 {
-                addNewMeasure()
-            } else {
-                let lastMeasure = measurements[measurements.count-1]
-                if DateFormatHelper.returnDateForm(lastMeasure.date as Date) != DateFormatHelper.returnDateForm(Date()) {
-                    addNewMeasure()
-                } else {
-                    addMeasure(lastMeasure)
-                }
-            }
+            saveMeasurementsCorrectly()
         } else {
-            var measurementExists = false
-            if !alreadyExists {
-                for singleMeasure in measurements {
-                    if DateFormatHelper.returnDateForm(singleMeasure.date as Date) == DateFormatHelper.returnDateForm(date) {
-                        measurementExists = true
-                        addMeasure(singleMeasure)
-                    }
-                }
-            }
-            if !measurementExists {
-                addNewMeasure()
-            }
+            saveEditedMeasurementsCorrectly(alreadyExists)
         }
         
         appDelegate.saveContext()
-        
-        let informUser = UIAlertController(title: NSLocalizedString("Saved", comment: "Saved"), message:NSLocalizedString("Your body measurements were saved", comment: "Your body measurements were saved"), preferredStyle: UIAlertControllerStyle.alert)
-        informUser.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: UIAlertActionStyle.default, handler: { (action) -> Void in
-            self.navigationController?.popViewController(animated: true)
-        }))
         
         // Fabric - Analytic tool
         Answers.logContentView(withName: "Body Measurement",
@@ -98,7 +69,7 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
                                contentId: String(stringInterpolationSegment: editMode),
                                customAttributes: [:])
         
-        present(informUser, animated: true, completion: nil)
+        AlertFormatHelper.showInfoAlert(self, "Your body measurements were saved.")
     }
     
     @IBAction func selectDate(_ sender: AnyObject) {
@@ -120,10 +91,13 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
     }
     
     // MARK: View Methods
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     
         date = UserDefaults.standard.object(forKey: "dateUF") as! Date
+        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
+        
         measurementsWeightTextField.delegate = self
         measurementsChestTextField.delegate = self
         measurementsArmTextField.delegate = self
@@ -132,31 +106,15 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
         
         // Setup content of view
         if editMode {
-            measurements = (try! appDelegate.managedObjectContext?.fetch(requestedMeasurements))!
-            for singleMeasure in measurements {
-                if DateFormatHelper.returnDateForm(singleMeasure.date as Date) == DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date) {
-                    measurementsWeightTextField.text = getCorrectString(singleMeasure.weight.doubleValue,id: 0)
-                    measurementsArmTextField.text = getCorrectString(singleMeasure.arm.doubleValue,id: 1)
-                    measurementsLegTextField.text = getCorrectString(singleMeasure.leg.doubleValue,id: 1)
-                    measurementsChestTextField.text = getCorrectString(singleMeasure.chest.doubleValue,id: 1)
-                    measurementsWaistTextField.text = getCorrectString(singleMeasure.waist.doubleValue,id: 1)
-                }
-            }
+            loadSavedMeasurements()
         }
+        
         for singleLabel in measurementsLengthUnitLabels {
             singleLabel.text = lengthUnit
         }
         measurementWeightUnitLabel.text = weightUnit
-        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
         
-        datePicker.setDate(UserDefaults.standard.object(forKey: "dateUF") as! Date, animated: true)
-        datePicker.forBaselineLayout().setValue(UIColor.white, forKeyPath: "tintColor")
-        for subview in datePicker.subviews {
-            subview.setValue(UIColor.white, forKeyPath: "textColor")
-            subview.setValue(UIColor.white, forKey: "tintColor")
-        }
-        
-        datePickerTitleLabel.text = NSLocalizedString("Choose a date", comment: "Choose a date")
+        PickerViewHelper.setupPickerView(datePicker, datePickerTitleLabel)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -164,22 +122,66 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
         datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
     }
     
+    // MARK: Textfield Methods
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        // Close Keyboard when clicking outside
+        measurementsWeightTextField.resignFirstResponder()
+        measurementsChestTextField.resignFirstResponder()
+        measurementsArmTextField.resignFirstResponder()
+        measurementsWaistTextField.resignFirstResponder()
+        measurementsLegTextField.resignFirstResponder()
+    }
+    
+    // Move view to always show the selected textfield
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        switch textField {
+        case measurementsArmTextField:
+            self.view.frame.origin.y -= 80
+        case measurementsWaistTextField:
+            self.view.frame.origin.y -= 150
+        case measurementsLegTextField:
+            self.view.frame.origin.y -= 150
+        default :
+            print("Error textfield")
+        }
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        switch textField {
+        case measurementsArmTextField:
+            self.view.frame.origin.y += 80
+        case measurementsWaistTextField:
+            self.view.frame.origin.y += 150
+        case measurementsLegTextField:
+            self.view.frame.origin.y += 150
+        default :
+            print("Error textfield")
+        }
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if string == "\n" {
+            handleReturnButtonClick(textField)
+        }
+        return detectValidInput(textField, string, range)
+    }
+    
     // MARK: Own Methods
     
-    func getCorrectString(_ amount: Double, id: Int) -> String{
-        var amount = amount
+    func getCorrectString(_ measurementValue: Double, id: Int) -> String{
+        var value = measurementValue
         
         //Show as lbs
         if id == 0 && weightUnit == "lbs" {
-            amount = amount *  2.20462262185
+            value = value *  2.20462262185
         }
         
         if id == 1 && lengthUnit == "inch" {
-            amount = amount / 2.54
+            value = value / 2.54
         }
-        var returnString = NSString(format:"%.2f", amount) as String
+        var returnString = NSString(format:"%.2f", value) as String
         
-        if amount == 0 {
+        if value == 0 {
             returnString = "0"
         }
         return returnString
@@ -222,62 +224,25 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
         _Object.leg = NSDecimalNumber(string: !measurementsLegTextField.text!.isEmpty ? "\(value)" : "0")
     }
     
-    // MARK: Textfield Methods
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        // Close Keyboard when clicking outside
-        measurementsWeightTextField.resignFirstResponder()
-        measurementsChestTextField.resignFirstResponder()
-        measurementsArmTextField.resignFirstResponder()
-        measurementsWaistTextField.resignFirstResponder()
-        measurementsLegTextField.resignFirstResponder()
-    }
-    
-    // Move view to always show the selected textfield
-    func textFieldDidBeginEditing(_ textField: UITextField) {
+    func handleReturnButtonClick(_ textField: UITextField) {
+        textField.endEditing(true)
         switch textField {
+        case measurementsWeightTextField:
+            measurementsChestTextField.becomeFirstResponder()
+        case measurementsChestTextField:
+            measurementsArmTextField.becomeFirstResponder()
         case measurementsArmTextField:
-            self.view.frame.origin.y -= 80
+            measurementsWaistTextField.becomeFirstResponder()
         case measurementsWaistTextField:
-            self.view.frame.origin.y -= 150
+            measurementsLegTextField.becomeFirstResponder()
         case measurementsLegTextField:
-            self.view.frame.origin.y -= 150
-        default :
+            break
+        default:
             print("Error textfield")
         }
     }
     
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        switch textField {
-        case measurementsArmTextField:
-            self.view.frame.origin.y += 80
-        case measurementsWaistTextField:
-            self.view.frame.origin.y += 150
-        case measurementsLegTextField:
-            self.view.frame.origin.y += 150
-        default :
-            print("Error textfield")
-        }
-    }
-    
-    // Setup textfield input settings
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if string == "\n" {
-            textField.endEditing(true)
-            switch textField {
-            case measurementsWeightTextField:
-                measurementsChestTextField.becomeFirstResponder()
-            case measurementsChestTextField:
-                measurementsArmTextField.becomeFirstResponder()
-            case measurementsArmTextField:
-                measurementsWaistTextField.becomeFirstResponder()
-            case measurementsWaistTextField:
-                measurementsLegTextField.becomeFirstResponder()
-            case measurementsLegTextField:
-                break
-            default:
-                print("Error textfield")
-            }
-        }
+    func detectValidInput(_ textField: UITextField, _ string: String, _ range: NSRange) -> Bool {
         var getDecimalNumbers = (textField.text! as NSString).components(separatedBy: ".")
         
         if getDecimalNumbers.count > 1 && (getDecimalNumbers[1] as NSString).length > 1 && string != ""  {
@@ -297,6 +262,61 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
             }
         }
         return false
+    }
+    
+    func loadSavedMeasurements() {
+        measurements = (try! appDelegate.managedObjectContext?.fetch(requestedMeasurements))!
+        for singleMeasure in measurements {
+            if DateFormatHelper.returnDateForm(singleMeasure.date as Date) == DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date) {
+                measurementsWeightTextField.text = getCorrectString(singleMeasure.weight.doubleValue,id: 0)
+                measurementsArmTextField.text = getCorrectString(singleMeasure.arm.doubleValue,id: 1)
+                measurementsLegTextField.text = getCorrectString(singleMeasure.leg.doubleValue,id: 1)
+                measurementsChestTextField.text = getCorrectString(singleMeasure.chest.doubleValue,id: 1)
+                measurementsWaistTextField.text = getCorrectString(singleMeasure.waist.doubleValue,id: 1)
+            }
+        }
+    }
+    
+    func isDateAlreadySaved(_ savedDates: [Dates]) -> Bool {
+        for i in 0 ..< savedDates.count {
+            if DateFormatHelper.returnDateForm(savedDates[i].savedDate) == DateFormatHelper.returnDateForm(date) {
+                return true
+            }
+        }
+        return false
+    }
+    
+    func createNewDate() {
+        let newItem = NSEntityDescription.insertNewObject(forEntityName: "Dates", into: appDelegate.managedObjectContext!) as! Dates
+        newItem.savedDate = Date()
+    }
+    
+    func saveMeasurementsCorrectly() {
+        if measurements.count <= 0 {
+            addNewMeasure()
+        } else {
+            let lastMeasure = measurements[measurements.count - 1]
+            if DateFormatHelper.returnDateForm(lastMeasure.date as Date) != DateFormatHelper.returnDateForm(Date()) {
+                addNewMeasure()
+            } else {
+                addMeasure(lastMeasure)
+            }
+        }
+    }
+    
+    func saveEditedMeasurementsCorrectly(_ alreadyExists: Bool) {
+        var measurementExists = false
+        if alreadyExists {
+            for singleMeasure in measurements {
+                if DateFormatHelper.returnDateForm(singleMeasure.date as Date) == DateFormatHelper.returnDateForm(date) {
+                    measurementExists = true
+                    addMeasure(singleMeasure)
+                }
+            }
+        }
+        if !measurementExists {
+            addNewMeasure()
+        }
     }
     
 }

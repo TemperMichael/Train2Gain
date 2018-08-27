@@ -27,6 +27,16 @@ class PickerViewHelper {
         datePickerBackground.isHidden = false
     }
     
+    static func setupPickerView(_ datePicker: UIDatePicker, _ datePickerTitleLabel: UILabel) {
+        datePicker.setDate(UserDefaults.standard.object(forKey: "dateUF") as! Date, animated: true)
+        datePicker.forBaselineLayout().setValue(UIColor.white, forKeyPath: "tintColor")
+        for subview in datePicker.subviews {
+            subview.setValue(UIColor.white, forKeyPath: "textColor")
+            subview.setValue(UIColor.white, forKey: "tintColor")
+        }
+        datePickerTitleLabel.text = NSLocalizedString("Choose a date", comment: "Choose a date")
+    }
+    
     static func bringPickerToFront(_ datePickerBackground: UIView, _ datePicker: UIView, _ finishButton: UIButton, _ pickerTitleLabel: UILabel) {
         datePickerBackground.bringSubview(toFront: datePicker)
         datePickerBackground.bringSubview(toFront: finishButton)
