@@ -75,10 +75,6 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.trainingDataDayIDTableView.backgroundColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
         selectedDoneExercises = []
         
-        // Remove text from back button
-        let backButton = UIBarButtonItem(title: " ", style: UIBarButtonItemStyle.plain, target: self, action: nil)
-        backButton.setTitleTextAttributes([NSAttributedStringKey.font: UIFont(name: "Chalkduster", size: 20)!], for: UIControlState())
-        navigationItem.backBarButtonItem = backButton
         datePickerButton.titleLabel?.text = DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)
         trainingDataDayIDTableView.dataSource = self
         trainingDataDayIDTableView.delegate = self

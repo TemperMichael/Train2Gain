@@ -13,13 +13,13 @@ import Crashlytics
 
 class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     
-    var appdel = UIApplication.shared.delegate as! AppDelegate
+    var appDelegate = UIApplication.shared.delegate as! AppDelegate
     let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.dark))
+    let cellIdentifier = "MoodCell"
     var date: Date!
     var editMode = false
     var imagePaths: [String] = ["SmileyNormal.png", "SmileyNormal.png", "SmileyGood.png", "SmileyAggressive.png", "SmileyAwesome.png", "SmileySad.png", "SmileyIrritated.png", "SmileySick.png", "SmileyTired.png", "SmileyGreat.png", "SmileyStressed.png", "SmileyFantastic.png", "SmileyKO.png"]
     var moods: [Moods] = []
-    let reuseIdentifier = "MoodCell"
     var selectedIndexPath: IndexPath?
     
     // MARK: IBOutlets & IBActions
@@ -37,76 +37,34 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
     
     @IBAction func saveMood(_ sender: AnyObject) {
         if selectedIndexPath != nil {
-            //Check if today an mood was already chosen to rewrite it if it already exists
-            var alreadyExists = true
             
             //Get the saved moods
-            let  requestMood = NSFetchRequest<NSFetchRequestResult>(entityName: "Mood")
-            var savedMoods = (try! appdel.managedObjectContext?.fetch(requestMood))  as! [Mood]
-            let  request = NSFetchRequest<NSFetchRequestResult>(entityName: "Dates")
+            let requestMood = NSFetchRequest<NSFetchRequestResult>(entityName: "Mood")
+            let savedMoods = (try! appDelegate.managedObjectContext?.fetch(requestMood))  as! [Mood]
             
             //Get dates where something was saved
-            var dates = (try! appdel.managedObjectContext?.fetch(request))  as! [Dates]
+            let requestDates = NSFetchRequest<NSFetchRequestResult>(entityName: "Dates")
+            let savedDates = (try! appDelegate.managedObjectContext?.fetch(requestDates))  as! [Dates]
+            
             date = UserDefaults.standard.object(forKey: "dateUF") as! Date
             
             //Check if data already exists
-            for i in 0 ..< dates.count {
-                if DateFormatHelper.returnDateForm(dates[i].savedDate) == DateFormatHelper.returnDateForm(date) {
-                    alreadyExists = false
-                }
-            }
+            let alreadyExists = isDateAlreadySaved(savedDates)
             
-            //Rewrite date
-            if alreadyExists {
-                let newItem = NSEntityDescription.insertNewObject(forEntityName: "Dates", into: appdel.managedObjectContext!) as! Dates
-                newItem.savedDate = Date()
+            if !alreadyExists {
+                createNewDate()
             }
-            
             
             if !editMode {
-                //Either create a new mood entry or rewrite the todays one
-                if savedMoods.count <= 0 {
-                    addNewMood()
-                } else {
-                    let lastMeasure = savedMoods[savedMoods.count-1]
-                    if DateFormatHelper.returnDateForm(lastMeasure.date) != DateFormatHelper.returnDateForm(Date()) {
-                        addNewMood()
-                    } else {
-                        addMood(lastMeasure)
-                    }
-                }
+                saveMoodCorrectly(savedMoods)
             } else {
-                var moodExists = false
-                if !alreadyExists {
-                    for singleMood in savedMoods{
-                        if DateFormatHelper.returnDateForm(singleMood.date) == DateFormatHelper.returnDateForm(date) {
-                            moodExists = true
-                            addMood(singleMood)
-                        }
-                    }
-                }
-                if !moodExists {
-                    addNewMood()
-                }
+                saveEditedMoodCorrectly(alreadyExists, savedMoods)
             }
             
             //Save context
-            appdel.saveContext()
+            appDelegate.saveContext()
             
-            // Go one view back
-            let informUser = UIAlertController(title: NSLocalizedString("Saved", comment: "Saved"), message:NSLocalizedString("Your mood was saved", comment: "Your mood was saved"), preferredStyle: UIAlertControllerStyle.alert)
-            informUser.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: UIAlertActionStyle.default, handler: { (action) -> Void in
-                self.navigationController?.popViewController(animated: true)
-            }))
-            let cell = moodCollectionView.cellForItem(at: selectedIndexPath!) as! MoodCell
-            
-            //Fabric - Analytic Tool
-            Answers.logContentView(withName: "Mood",
-                                   contentType: "Saved data",
-                                   contentId: cell.moodNameLabel.text!,
-                                   customAttributes: [:])
-            
-            present(informUser, animated: true, completion: nil)
+            presentInfoAlert()
         }
         
     }
@@ -130,21 +88,6 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
     }
     
     // MARK: View methods
-    func setupMoods() {
-        //Setup smileys for mood collection view
-        moods.append(Moods(_moodName: NSLocalizedString("Normal", comment: "Normal"), _moodSmileyString: "SmileyNormal.png"))
-        moods.append(Moods(_moodName: NSLocalizedString("Good", comment: "Good"), _moodSmileyString: "SmileyGood.png"))
-        moods.append(Moods(_moodName: NSLocalizedString("Agressiv", comment: "Agressiv"), _moodSmileyString: "SmileyAggressive.png"))
-        moods.append(Moods(_moodName: NSLocalizedString("Awesome", comment: "Awesome"), _moodSmileyString: "SmileyAwesome.png"))
-        moods.append(Moods(_moodName: NSLocalizedString("Sad", comment: "Sad"), _moodSmileyString: "SmileySad.png"))
-        moods.append(Moods(_moodName: NSLocalizedString("Irritated", comment: "Irritated"), _moodSmileyString: "SmileyIrritated.png"))
-        moods.append(Moods(_moodName: NSLocalizedString("Sick", comment: "Sick"), _moodSmileyString: "SmileySick.png"))
-        moods.append(Moods(_moodName: NSLocalizedString("Tired", comment: "Tired"), _moodSmileyString: "SmileyTired.png"))
-        moods.append(Moods(_moodName: NSLocalizedString("Great", comment: "Great"), _moodSmileyString: "SmileyGreat.png"))
-        moods.append(Moods(_moodName: NSLocalizedString("Stressed", comment: "Stressed"), _moodSmileyString: "SmileyStressed.png"))
-        moods.append(Moods(_moodName: NSLocalizedString("Fantastic", comment: "Fantastic"), _moodSmileyString: "SmileyFantastic.png"))
-        moods.append(Moods(_moodName: NSLocalizedString("K.O.", comment: "K.O."), _moodSmileyString: "SmileyKO.png"))
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -153,14 +96,7 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
         moodCollectionView.dataSource = self
         
         setupMoods()
-        
-        datePicker.setDate(UserDefaults.standard.object(forKey: "dateUF") as! Date, animated: true)
-        datePicker.forBaselineLayout().setValue(UIColor.white, forKeyPath: "tintColor")
-        for sub in datePicker.subviews {
-            sub.setValue(UIColor.white, forKeyPath: "textColor")
-            sub.setValue(UIColor.white, forKey: "tintColor")
-        }
-        datePickerTitleLabel.text = NSLocalizedString("Choose a date", comment: "Choose a date")
+        setupDatePicker()
     }
     
     // MARK: CollectionView
@@ -182,14 +118,16 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! MoodCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as! MoodCell
         cell.moodNameLabel.text = moods[(indexPath as NSIndexPath).row].moodName
         cell.moodImageView.image = moods[(indexPath as NSIndexPath).row].moodSmiley
         return cell
     }
     
+    // MARK: Own Methods
+    
     func addNewMood(){
-        let newItem = NSEntityDescription.insertNewObject(forEntityName: "Mood", into: appdel.managedObjectContext!) as! Mood
+        let newItem = NSEntityDescription.insertNewObject(forEntityName: "Mood", into: appDelegate.managedObjectContext!) as! Mood
         addMood(newItem)
     }
     
@@ -198,6 +136,93 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
         _Object.date = date
         _Object.moodName = cell.moodNameLabel.text!
         _Object.moodImagePath = imagePaths[(selectedIndexPath! as NSIndexPath).row + 1]
+    }
+    
+    func presentInfoAlert() {
+        // Go one view back
+        let informUser = UIAlertController(title: NSLocalizedString("Saved", comment: "Saved"), message:NSLocalizedString("Your mood was saved", comment: "Your mood was saved"), preferredStyle: UIAlertControllerStyle.alert)
+        informUser.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: UIAlertActionStyle.default, handler: { (action) -> Void in
+            self.navigationController?.popViewController(animated: true)
+        }))
+        let cell = moodCollectionView.cellForItem(at: selectedIndexPath!) as! MoodCell
+        
+        //Fabric - Analytic Tool
+        Answers.logContentView(withName: "Mood",
+                               contentType: "Saved data",
+                               contentId: cell.moodNameLabel.text!,
+                               customAttributes: [:])
+        
+        present(informUser, animated: true, completion: nil)
+    }
+    
+    func setupMoods() {
+        //Setup smileys for mood collection view
+        moods.append(Moods(_moodName: NSLocalizedString("Normal", comment: "Normal"), _moodSmileyString: "SmileyNormal.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Good", comment: "Good"), _moodSmileyString: "SmileyGood.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Agressiv", comment: "Agressiv"), _moodSmileyString: "SmileyAggressive.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Awesome", comment: "Awesome"), _moodSmileyString: "SmileyAwesome.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Sad", comment: "Sad"), _moodSmileyString: "SmileySad.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Irritated", comment: "Irritated"), _moodSmileyString: "SmileyIrritated.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Sick", comment: "Sick"), _moodSmileyString: "SmileySick.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Tired", comment: "Tired"), _moodSmileyString: "SmileyTired.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Great", comment: "Great"), _moodSmileyString: "SmileyGreat.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Stressed", comment: "Stressed"), _moodSmileyString: "SmileyStressed.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("Fantastic", comment: "Fantastic"), _moodSmileyString: "SmileyFantastic.png"))
+        moods.append(Moods(_moodName: NSLocalizedString("K.O.", comment: "K.O."), _moodSmileyString: "SmileyKO.png"))
+    }
+    
+    func setupDatePicker() {
+        datePicker.setDate(UserDefaults.standard.object(forKey: "dateUF") as! Date, animated: true)
+        datePicker.forBaselineLayout().setValue(UIColor.white, forKeyPath: "tintColor")
+        for sub in datePicker.subviews {
+            sub.setValue(UIColor.white, forKeyPath: "textColor")
+            sub.setValue(UIColor.white, forKey: "tintColor")
+        }
+        datePickerTitleLabel.text = NSLocalizedString("Choose a date", comment: "Choose a date")
+    }
+    
+    func isDateAlreadySaved(_ savedDates: [Dates]) -> Bool {
+        var alreadyExists = false
+        for i in 0 ..< savedDates.count {
+            if DateFormatHelper.returnDateForm(savedDates[i].savedDate) == DateFormatHelper.returnDateForm(date) {
+                alreadyExists = true
+            }
+        }
+        return alreadyExists
+    }
+    
+    func createNewDate() {
+        let newItem = NSEntityDescription.insertNewObject(forEntityName: "Dates", into: appDelegate.managedObjectContext!) as! Dates
+        newItem.savedDate = Date()
+    }
+    
+    func saveMoodCorrectly(_ savedMoods: [Mood]) {
+        //Either create a new mood entry or rewrite the todays one
+        if savedMoods.count <= 0 {
+            addNewMood()
+        } else {
+            let lastMeasure = savedMoods[savedMoods.count-1]
+            if DateFormatHelper.returnDateForm(lastMeasure.date) != DateFormatHelper.returnDateForm(Date()) {
+                addNewMood()
+            } else {
+                addMood(lastMeasure)
+            }
+        }
+    }
+    
+    func saveEditedMoodCorrectly(_ alreadyExists: Bool, _ savedMoods: [Mood]) {
+        var moodExists = false
+        if alreadyExists {
+            for singleMood in savedMoods{
+                if DateFormatHelper.returnDateForm(singleMood.date) == DateFormatHelper.returnDateForm(date) {
+                    moodExists = true
+                    addMood(singleMood)
+                }
+            }
+        }
+        if !moodExists {
+            addNewMood()
+        }
     }
     
 }

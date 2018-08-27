@@ -25,11 +25,6 @@ class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         
         selectedExercise = []
         
-        // Remove text from the back button
-        let backButton = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.plain, target: self, action: nil)
-        backButton.setTitleTextAttributes([NSAttributedStringKey.font: UIFont(name: "Heiti SC", size: 18)!], for: UIControlState())
-        navigationItem.backBarButtonItem = backButton
-        
         //Hide empty cells
         let backgroundView = UIView(frame: CGRect.zero)
         self.tableView.tableFooterView = backgroundView

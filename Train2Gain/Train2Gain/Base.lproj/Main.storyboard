@@ -39,7 +39,9 @@
                             </tableViewCell>
                         </prototypes>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Overview" id="3kh-6a-CNk"/>
+                    <navigationItem key="navigationItem" title="Overview" id="3kh-6a-CNk">
+                        <barButtonItem key="backBarButtonItem" title=" " id="12H-BV-GWs"/>
+                    </navigationItem>
                     <connections>
                         <segue destination="y16-dY-flm" kind="show" identifier="MeasurementSegue" id="eEj-sw-KZ0"/>
                         <segue destination="JUQ-nm-1zm" kind="show" identifier="TrainingData" id="2Ff-OB-L56"/>
@@ -111,6 +113,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Training" id="SOC-5T-UPJ">
+                        <barButtonItem key="backBarButtonItem" title=" " id="IWk-Z5-1wl"/>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="aGB-F7-EDt">
                             <connections>
                                 <segue destination="YzC-Bi-ZU5" kind="show" identifier="AddExercise" id="5Jf-9M-5TX"/>
@@ -967,6 +970,9 @@
                             </mask>
                         </variation>
                     </view>
+                    <navigationItem key="navigationItem" title="Edit" id="nLf-Xl-zEC">
+                        <barButtonItem key="backBarButtonItem" title=" " id="rp6-FB-9LS"/>
+                    </navigationItem>
                     <connections>
                         <outlet property="bodyMeasurementsButton" destination="vNs-NL-3S1" id="Idm-HP-jkZ"/>
                         <outlet property="editTitleLabel" destination="IrE-aB-Cjm" id="uBZ-PO-rLG"/>
@@ -987,7 +993,7 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="separatorColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <prototypes>
-                            <tableViewCell userInteractionEnabled="NO" tag="100" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="OwnCell" rowHeight="135" id="u4a-J6-egD" customClass="TrainingDataDetailCell" customModule="Train2Gain" customModuleProvider="target">
+                            <tableViewCell userInteractionEnabled="NO" tag="100" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="TrainingDataDetailCell" rowHeight="135" id="u4a-J6-egD" customClass="TrainingDataDetailCell" customModule="Train2Gain" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="22" width="375" height="135"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="u4a-J6-egD" id="C8L-Qj-T4Q">
@@ -1752,6 +1758,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Training Data" id="N9t-jn-bKP">
+                        <barButtonItem key="backBarButtonItem" title=" " id="spx-LE-3B0"/>
                         <barButtonItem key="rightBarButtonItem" systemItem="compose" id="bjj-DZ-VRF">
                             <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <connections>
@@ -2417,7 +2424,7 @@
         <image name="trash" width="128" height="128"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="CwC-AL-zBw"/>
-        <segue reference="eEj-sw-KZ0"/>
+        <segue reference="E5g-gP-udT"/>
+        <segue reference="w3a-f3-MJa"/>
     </inferredMetricsTieBreakers>
 </document>

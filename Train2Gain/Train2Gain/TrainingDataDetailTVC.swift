@@ -12,42 +12,24 @@ import CoreData
 class TrainingDataDetailTVC: UITableViewController {
     
     var doneExercises: [DoneExercise] = []
+    var cellIdentifier = "TrainingDataDetailCell"
     var selectedDayDetails: [String] = []
     var setCountValues: [String] = []
     var weightUnit = UserDefaults.standard.object(forKey: "weightUnit")! as! String
     
     // MARK: View Methods
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        // Set background
+    func setupView() {
         let backgroundView = UIView(frame: CGRect.zero)
         self.tableView.tableFooterView = backgroundView
         self.tableView.backgroundColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
-        
-        let appDelegate =  UIApplication.shared.delegate as! AppDelegate
-        let requestDoneEx = NSFetchRequest<NSFetchRequestResult>(entityName: "DoneExercise")
-        let doneExercise = (try! appDelegate.managedObjectContext?.fetch(requestDoneEx)) as! [DoneExercise]
         self.title = "\(selectedDayDetails[0])"
-        var checkString = ""
-        var checkBefore = ""
-        var counter = 2
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
         
-        // Get done exercises of this day
-        for singleEx in doneExercise {
-            checkBefore = checkString
-            if singleEx.dayID == selectedDayDetails[0] && DateFormatHelper.returnDateForm(singleEx.date) == selectedDayDetails [1] {
-                checkString = singleEx.name
-                doneExercises.append(singleEx)
-                if checkString == checkBefore {
-                   setCountValues.append("\(counter)")
-                    counter += 1
-                } else {
-                    setCountValues.append("1")
-                    counter = 2
-                }
-            }
-        }
+        setupView()
+        setupDoneTrainingData()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -68,26 +50,56 @@ class TrainingDataDetailTVC: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "OwnCell", for: indexPath) as! TrainingDataDetailCell
-        var weight = (doneExercises[(indexPath as NSIndexPath).row].weight).doubleValue
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! TrainingDataDetailCell
+        setupCell(indexPath, cell)
+        return cell
+    }
+    
+    // MARK: Own Methods
+    
+    func setupDoneTrainingData() {
+        let appDelegate =  UIApplication.shared.delegate as! AppDelegate
+        let requestDoneExercises = NSFetchRequest<NSFetchRequestResult>(entityName: "DoneExercise")
+        let savedDoneExercises = (try! appDelegate.managedObjectContext?.fetch(requestDoneExercises)) as! [DoneExercise]
+        var checkString = ""
+        var checkBefore = ""
+        var setCounter = 0
         
+        // Get done exercises of this day
+        for singleExercise in savedDoneExercises {
+            checkBefore = checkString
+            if singleExercise.dayID == selectedDayDetails[0] && DateFormatHelper.returnDateForm(singleExercise.date) == selectedDayDetails [1] {
+                checkString = singleExercise.name
+                doneExercises.append(singleExercise)
+                if checkString == checkBefore {
+                    setCountValues.append("\(setCounter)")
+                    setCounter += 1
+                } else {
+                    setCountValues.append("1")
+                    setCounter = 2
+                }
+            }
+        }
+    }
+    
+    func setupCell(_ indexPath: IndexPath, _ cell: TrainingDataDetailCell) {
         // Calculation for actual chosen unit
+        var weight = (doneExercises[(indexPath as NSIndexPath).row].weight).doubleValue
         if weightUnit == "lbs" {
             weight = weight * 2.20462262185
         }
-        
-        // Setup cells
+
         cell.trainingDataTrainingPlanNameLabel.text = doneExercises[(indexPath as NSIndexPath).row].name
         cell.trainingDataRepsLabel.text = "\(doneExercises[(indexPath as NSIndexPath).row].reps)"
         cell.trainingDataDoneRepsLabel.text = "\(doneExercises[(indexPath as NSIndexPath).row].doneReps)"
         cell.trainingDataWeightLabel.text = NSString(format: "%.2f", weight) as String
         
         if weight < 1000 {
-             cell.trainingDataWeightLabel.text = NSString(format: "%.2f",weight) as String
+            cell.trainingDataWeightLabel.text = NSString(format: "%.2f",weight) as String
         } else if weight < 10000 {
             cell.trainingDataWeightLabel.text = NSString(format: "%.1f", weight) as String
         } else {
-           cell.trainingDataWeightLabel.text = NSString(format: "%.0f", weight) as String
+            cell.trainingDataWeightLabel.text = NSString(format: "%.0f", weight) as String
         }
         
         if weight == 0 {
@@ -102,7 +114,6 @@ class TrainingDataDetailTVC: UITableViewController {
         cell.separatorInset = UIEdgeInsets.zero
         cell.preservesSuperviewLayoutMargins = false
         cell.layoutMargins = UIEdgeInsets.zero
-        return cell
     }
-
+    
 }

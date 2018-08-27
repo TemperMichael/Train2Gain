@@ -33,11 +33,6 @@ class OverViewTVC: UITableViewController {
         self.navigationController?.toolbar.setShadowImage(UIImage(), forToolbarPosition: UIBarPosition.any)
         tableView.reloadData()
         
-        // Remove text from back button
-        let backButton = UIBarButtonItem(title: " ", style: UIBarButtonItemStyle.plain, target: self, action: nil)
-        backButton.setTitleTextAttributes([NSAttributedStringKey.font: UIFont(name: "Chalkduster", size: 20)!], for: UIControlState())
-        navigationItem.backBarButtonItem = backButton
-        
         // Get the actual chosen units
         if UserDefaults.standard.object(forKey: "weightUnit") == nil {
             UserDefaults.standard.set("lbs", forKey: "weightUnit")

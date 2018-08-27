@@ -19,11 +19,6 @@ class EditTrainingDataVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Remove text from back button
-        let backButton = UIBarButtonItem(title: " ", style: UIBarButtonItemStyle.plain, target: self, action: nil)
-        backButton.setTitleTextAttributes([NSAttributedStringKey.font: UIFont(name: "Chalkduster", size: 20)!], for: UIControlState())
-        navigationItem.backBarButtonItem = backButton
-        
         // Set bordercolor of buttons
         bodyMeasurementsButton.layer.borderColor = UIColor.white.cgColor
         moodButton.layer.borderColor = UIColor.white.cgColor
