@@ -129,8 +129,8 @@ class TrainingDataVC: UIViewController {
                 if self.doneExercises[count].dayID == self.dayIDs[(indexPath as NSIndexPath).row] && DateFormatHelper.returnDateForm(self.doneExercises[count].date as Date) == DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date) {
                     context.delete(self.doneExercises[count] as NSManagedObject)
                     self.doneExercises.remove(at: count)
-                    count = count - 1
                 }
+                count = count - 1
             }
             self.dayIDs.remove(at: (indexPath as NSIndexPath).row)
             do {

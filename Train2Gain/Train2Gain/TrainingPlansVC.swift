@@ -96,8 +96,8 @@ class TrainingPlansVC: UIViewController {
                 if self.savedExercises[count].dayID == self.dayIDs[(indexPath as NSIndexPath).row] {
                     context.delete(self.savedExercises[count] as NSManagedObject)
                     self.savedExercises.remove(at: count)
-                    count = count - 1
                 }
+                count = count - 1
             }
             self.dayIDs.remove(at: (indexPath as NSIndexPath).row)
             do {
