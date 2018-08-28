@@ -148,7 +148,7 @@
                                 </constraints>
                                 <color key="textColor" red="0.14509689810000001" green="0.74653351310000005" blue="0.99635750059999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="18"/>
-                                <textInputTraits key="textInputTraits" returnKeyType="next"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="words" returnKeyType="next"/>
                             </textField>
                             <view tag="123" contentMode="scaleToFill" restorationIdentifier="SubView" translatesAutoresizingMaskIntoConstraints="NO" id="NTG-Ny-D8i">
                                 <rect key="frame" x="16" y="183" width="343" height="250"/>
@@ -163,7 +163,7 @@
                                         <rect key="frame" x="0.0" y="34" width="343" height="30"/>
                                         <color key="textColor" red="0.14509689810000001" green="0.74653351310000005" blue="0.99635750059999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <fontDescription key="fontDescription" type="system" weight="light" pointSize="18"/>
-                                        <textInputTraits key="textInputTraits" keyboardAppearance="light" returnKeyType="next"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="words" keyboardAppearance="light" returnKeyType="next"/>
                                     </textField>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Number of Sets :" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="N2l-9b-XaA">
                                         <rect key="frame" x="0.0" y="81" width="139" height="22"/>
@@ -1145,10 +1145,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oFR-Il-LRJ" customClass="LineChartView" customModule="Charts">
-                                <rect key="frame" x="0.0" y="174" width="375" height="493"/>
+                                <rect key="frame" x="5" y="174" width="365" height="488"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Val.:666666 lbs" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6sW-QV-t0j">
-                                        <rect key="frame" x="287" y="468" width="83" height="14"/>
+                                        <rect key="frame" x="277" y="463" width="83" height="14"/>
                                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <fontDescription key="fontDescription" type="system" weight="light" pointSize="11"/>
                                         <color key="textColor" red="0.14509689810000001" green="0.74653351310000005" blue="0.99635750059999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -1305,14 +1305,14 @@
                             <constraint firstItem="rra-0M-JSX" firstAttribute="leading" secondItem="KDL-Nf-qNs" secondAttribute="leading" id="EBd-On-Cgx"/>
                             <constraint firstItem="nyd-sb-Dir" firstAttribute="leading" secondItem="KDL-Nf-qNs" secondAttribute="leadingMargin" constant="-20" id="TiM-4B-Ek4"/>
                             <constraint firstAttribute="trailingMargin" secondItem="nyd-sb-Dir" secondAttribute="trailing" constant="-20" id="VSi-si-bml"/>
-                            <constraint firstItem="rbo-es-dMj" firstAttribute="top" secondItem="oFR-Il-LRJ" secondAttribute="bottom" id="W0m-bA-hOu"/>
+                            <constraint firstItem="rbo-es-dMj" firstAttribute="top" secondItem="oFR-Il-LRJ" secondAttribute="bottom" constant="5" id="W0m-bA-hOu"/>
                             <constraint firstItem="oFR-Il-LRJ" firstAttribute="top" secondItem="nyd-sb-Dir" secondAttribute="bottom" id="Yz7-j2-qta"/>
                             <constraint firstItem="rra-0M-JSX" firstAttribute="top" secondItem="nyd-sb-Dir" secondAttribute="top" id="bnn-8Z-pLe"/>
                             <constraint firstItem="rra-0M-JSX" firstAttribute="top" secondItem="JEc-n7-MF7" secondAttribute="bottom" id="eBq-e8-vps"/>
-                            <constraint firstItem="oFR-Il-LRJ" firstAttribute="leading" secondItem="KDL-Nf-qNs" secondAttribute="leading" id="hHm-BN-IIo"/>
+                            <constraint firstItem="oFR-Il-LRJ" firstAttribute="leading" secondItem="KDL-Nf-qNs" secondAttribute="leading" constant="5" id="hHm-BN-IIo"/>
                             <constraint firstItem="rbo-es-dMj" firstAttribute="top" secondItem="rra-0M-JSX" secondAttribute="bottom" id="hh3-eO-yiZ"/>
                             <constraint firstItem="rbo-es-dMj" firstAttribute="top" secondItem="rra-0M-JSX" secondAttribute="bottom" id="mdj-YK-w87"/>
-                            <constraint firstAttribute="trailing" secondItem="oFR-Il-LRJ" secondAttribute="trailing" id="sdn-Cs-NAY"/>
+                            <constraint firstAttribute="trailing" secondItem="oFR-Il-LRJ" secondAttribute="trailing" constant="5" id="sdn-Cs-NAY"/>
                             <constraint firstItem="nyd-sb-Dir" firstAttribute="top" secondItem="JEc-n7-MF7" secondAttribute="bottom" id="udx-qG-ygO"/>
                             <constraint firstAttribute="trailing" secondItem="rra-0M-JSX" secondAttribute="trailing" id="wAz-1J-KoY"/>
                         </constraints>

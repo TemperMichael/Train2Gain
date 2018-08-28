@@ -50,7 +50,6 @@ class StatisticVC: UIViewController {
     var setAmount = 0
     var sets: [String] = ["1. Set", "2. Set", "3. Set"]
     var weightUnit = UserDefaults.standard.object(forKey: "weightUnit")! as! String
-    var xAxisValues: [String] = []
     var years: [String] = []
     
     // MARK: IBOutlets & IBActions
@@ -159,10 +158,6 @@ class StatisticVC: UIViewController {
         
         setupChartView()
     }
-
-    
-    
-    
     
     // MARK: Own Methods
 
@@ -171,9 +166,8 @@ class StatisticVC: UIViewController {
         setAmount = 0
         setButton.isEnabled = false
         setButton.setTitleColor(UIColor.lightText, for: UIControlState.disabled)
-        xAxisValues = []
         for singleMonth in selectedMonths {
-            addEmptyDays(singleMonth)
+            setXAxisMaximum(singleMonth)
         }
         var yAxisValues: [ChartDataEntry] = []
         var yAxisValuesRight: [ChartDataEntry] = []
@@ -258,26 +252,17 @@ class StatisticVC: UIViewController {
     }
     
     // Add correct number of days for x-Axis
-    func addEmptyDays(_ month: String) {
-        self.xAxisValues.append("\(month)")
-        
+    func setXAxisMaximum(_ month: String) {
         switch month {
         case NSLocalizedString("Jan", comment: "Jan"),NSLocalizedString("Mar", comment: "Mar"),NSLocalizedString("May", comment: "May"),NSLocalizedString("Jul", comment: "Jul"),NSLocalizedString("Aug", comment: "Aug"),NSLocalizedString("Oct", comment: "Oct"),NSLocalizedString("Dec", comment: "Dec"):
-            for i in 2 ..< 32 {
-                self.xAxisValues.append(String(i))
-            }
+            chartView.xAxis.axisMaximum = 31
         case NSLocalizedString("Apr", comment: "Apr"),NSLocalizedString("Jun", comment: "Jun"),NSLocalizedString("Sep", comment: "Sep"),NSLocalizedString("Nov", comment: "Nov"):
-            for i in 2 ..< 31 {
-                self.xAxisValues.append(String(i))
-            }
+            chartView.xAxis.axisMaximum = 30
         case NSLocalizedString("Feb", comment: "Feb"):
-            for i in 2  ..< 29 {
-                self.xAxisValues.append(String(i))
-            }
+            chartView.xAxis.axisMaximum = 28
             if let year = Int(selectedYear) {
                 if ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0) {
-                    //Leap year
-                    self.xAxisValues.append(String(29))
+                    chartView.xAxis.axisMaximum = 29
                 }
             }
         default:
@@ -344,6 +329,7 @@ class StatisticVC: UIViewController {
         chartView.legend.horizontalAlignment = Legend.HorizontalAlignment.left
         chartView.legend.verticalAlignment = Legend.VerticalAlignment.bottom
         chartView.legend.xOffset = -10
+        chartView.xAxis.axisMinimum = 1
         
         let xAxis = chartView.xAxis
         xAxis.labelFont =  UIFont(name: "HelveticaNeue-Light", size: 12)!
@@ -371,11 +357,8 @@ class StatisticVC: UIViewController {
     }
     
     func showWholeYear(_ year: Int?, _ singleMonth: String, _ day: inout Int?) {
-        if ((year! % 4 == 0) && (year! % 100 != 0)) || (year! % 400 == 0) && monthDateDictionary.value(forKey: singleMonth) as! Int > 2 {
-            
-            // Leap year
-            day! += 1
-        }
+        print("wholeYear")
+        chartView.xAxis.axisMaximum = 365
         
         // Add days to set data to correct day in correct month
         switch monthDateDictionary.value(forKey: singleMonth) as! Int {
@@ -404,6 +387,13 @@ class StatisticVC: UIViewController {
         default :
             print("Month Error")
         }
+        
+        if ((year! % 4 == 0) && (year! % 100 != 0)) || (year! % 400 == 0) && monthDateDictionary.value(forKey: singleMonth) as! Int > 2 {
+            
+            // Leap year
+            day! += 1
+            chartView.xAxis.axisMaximum = 366
+        }
     }
     
     func setAxisMaxima(_ leftMax: inout Double, _ rightMax: inout Double) {
@@ -421,7 +411,7 @@ class StatisticVC: UIViewController {
     }
     
     func fillChartView(_ yAxisValues: [ChartDataEntry], _ yAxisValuesRight: [ChartDataEntry]) {
-        if xAxisValues != [] && yAxisValues != [] {
+        if yAxisValues != [] {
             chartView.leftAxis.enabled = true
             chartView.xAxis.enabled = true
             chartView.rightAxis.enabled = true
@@ -444,6 +434,7 @@ class StatisticVC: UIViewController {
             set2.drawCircleHoleEnabled = true
             set2.valueFont = UIFont(name: "HelveticaNeue-Light", size: 9)!
             set2.fillAlpha = 255 / 255.0
+            
             let dataSets = [set1, set2]
             let data = LineChartData(dataSets: dataSets)
             chartView.data = data
@@ -452,7 +443,7 @@ class StatisticVC: UIViewController {
             chartView.xAxis.enabled = false
             chartView.rightAxis.enabled = false
             selectedValueLabel.isHidden = true
-            chartView.data?.clearValues()
+            chartView.clear()
         }
     }
     
@@ -475,11 +466,6 @@ extension StatisticVC: ChartViewDelegate {
     
     func chartValueNothingSelected(_ chartView: ChartViewBase) {
         selectedValueLabel.isHidden = true
-    }
-    
-    func stringForValue(_ value: Double,
-                        axis: AxisBase?) -> String {
-        return ""
     }
     
 }
