@@ -1,5 +1,5 @@
 //
-//  MeasureVC.swift
+//  BodyMeasurementsVC.swift
 //  Train2Gain
 //
 //  Created by Michael Temper on 28.03.15.
@@ -11,7 +11,7 @@ import CoreData
 import Fabric
 import Crashlytics
 
-class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
+class BodyMeasurementsVC: UIViewController {
     
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
     let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.dark))
@@ -103,50 +103,6 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
     override func viewDidAppear(_ animated: Bool) {
         date = UserDefaults.standard.object(forKey: "dateUF") as! Date
         datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
-    }
-    
-    // MARK: Textfield Methods
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        // Close Keyboard when clicking outside
-        measurementsWeightTextField.resignFirstResponder()
-        measurementsChestTextField.resignFirstResponder()
-        measurementsArmTextField.resignFirstResponder()
-        measurementsWaistTextField.resignFirstResponder()
-        measurementsLegTextField.resignFirstResponder()
-    }
-    
-    // Move view to always show the selected textfield
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        switch textField {
-        case measurementsArmTextField:
-            self.view.frame.origin.y -= 80
-        case measurementsWaistTextField:
-            self.view.frame.origin.y -= 150
-        case measurementsLegTextField:
-            self.view.frame.origin.y -= 150
-        default :
-            print("Error textfield")
-        }
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        switch textField {
-        case measurementsArmTextField:
-            self.view.frame.origin.y += 80
-        case measurementsWaistTextField:
-            self.view.frame.origin.y += 150
-        case measurementsLegTextField:
-            self.view.frame.origin.y += 150
-        default :
-            print("Error textfield")
-        }
-    }
-    
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if string == "\n" {
-            handleReturnButtonClick(textField)
-        }
-        return detectValidInput(textField, string, range)
     }
     
     // MARK: Own Methods
@@ -271,6 +227,56 @@ class BodyMeasurementsVC: UIViewController, UITextFieldDelegate {
                 addMeasure(lastMeasure)
             }
         }
+    }
+    
+}
+
+// MARK: TextField
+
+extension BodyMeasurementsVC: UITextFieldDelegate {
+    
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        // Close Keyboard when clicking outside
+        measurementsWeightTextField.resignFirstResponder()
+        measurementsChestTextField.resignFirstResponder()
+        measurementsArmTextField.resignFirstResponder()
+        measurementsWaistTextField.resignFirstResponder()
+        measurementsLegTextField.resignFirstResponder()
+    }
+    
+    // Move view to always show the selected textfield
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        switch textField {
+        case measurementsArmTextField:
+            self.view.frame.origin.y -= 80
+        case measurementsWaistTextField:
+            self.view.frame.origin.y -= 150
+        case measurementsLegTextField:
+            self.view.frame.origin.y -= 150
+        default :
+            print("Error textfield")
+        }
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        switch textField {
+        case measurementsArmTextField:
+            self.view.frame.origin.y += 80
+        case measurementsWaistTextField:
+            self.view.frame.origin.y += 150
+        case measurementsLegTextField:
+            self.view.frame.origin.y += 150
+        default :
+            print("Error textfield")
+        }
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if string == "\n" {
+            handleReturnButtonClick(textField)
+        }
+        return detectValidInput(textField, string, range)
     }
     
 }

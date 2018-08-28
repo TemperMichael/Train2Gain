@@ -18,6 +18,7 @@ class OverviewTVC: UITableViewController {
     var selectedSection: String = ""
     
     // MARK: View Methods
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -33,6 +34,7 @@ class OverviewTVC: UITableViewController {
     }
     
     // MARK: TableView Methods
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }

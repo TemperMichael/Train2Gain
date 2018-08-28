@@ -1,5 +1,5 @@
 //
-//  ExerciseChosenVC.swift
+//  TrainingModeVC.swift
 //  Train2Gain
 //
 //  Created by Michael Temper on 29.03.15.
@@ -11,7 +11,7 @@ import CoreData
 import Fabric
 import Crashlytics
 
-class TrainingModeVC: UIViewController, UITextFieldDelegate {
+class TrainingModeVC: UIViewController {
     
     var appDelegate =  UIApplication.shared.delegate as! AppDelegate
     let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.dark))
@@ -149,70 +149,6 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
     
     override func viewDidDisappear(_ animated: Bool) {
         appDelegate.rollBackContext()
-    }
-    
-    // MARK: Keyboard methods
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        //Close Keyboard when clicking outside
-        exerciseWeightsTextField.resignFirstResponder()
-        exerciseRepsTextField.resignFirstResponder()
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.endEditing(true)
-        return false
-    }
-    
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        self.view.frame.origin.y -= 20
-    }
-    
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        self.view.frame.origin.y += 20
-        if textField == exerciseRepsTextField && exerciseRepsTextField.text != "" {
-            exercisesWithSets[userPosition].doneReps = Int(exerciseRepsTextField.text!)! as NSNumber
-        }
-        if textField == exerciseWeightsTextField &&  exerciseWeightsTextField.text != "" {
-            exercisesWithSets[userPosition].weight = NSDecimalNumber(string: exerciseWeightsTextField.text)
-        }
-    }
-    
-    // Set textfield input options
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let text = (textField.text! as NSString).replacingCharacters(in: range, with: string)
-        let disallowedCharacterSet = CharacterSet(charactersIn: "0123456789.").inverted
-        let replacementStringIsLegal = string.rangeOfCharacter(from: disallowedCharacterSet) == nil
-        let scanner = Scanner(string: text)
-        let resultingTextIsNumeric = scanner.scanDecimal(nil) && scanner.isAtEnd
-        var getDecimalNumbers = (textField.text! as NSString).components(separatedBy: ".")
-        if getDecimalNumbers.count > 1 && (getDecimalNumbers[1] as NSString).integerValue > 9 && string != ""  {
-            return false
-        }
-        let newLength = textField.text!.count + string.count - range.length
-        var back = 0
-        if textField == exerciseWeightsTextField {
-            back = 6
-            let resultingStringLengthIsLegal = text.count <= 6
-            if text.count == 0 || (replacementStringIsLegal &&
-                resultingStringLengthIsLegal &&
-                resultingTextIsNumeric) {
-                if text != "." {
-                    return true
-                }
-            }
-            return false
-        } else if textField == exerciseRepsTextField {
-            back = 2
-            if let checksum = Int(text), newLength <= back, checksum >= 0, checksum < 100 {
-                return true
-            } else if newLength <= back && text == "" {
-                return true
-            } else {
-                return false
-            }
-        }
-        return newLength <= back
     }
     
     // MARK: Own Methods
@@ -413,4 +349,72 @@ class TrainingModeVC: UIViewController, UITextFieldDelegate {
         }
     }
     
+}
+
+// MARK: TextField
+
+extension TrainingModeVC: UITextFieldDelegate {
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        //Close Keyboard when clicking outside
+        exerciseWeightsTextField.resignFirstResponder()
+        exerciseRepsTextField.resignFirstResponder()
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.endEditing(true)
+        return false
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        self.view.frame.origin.y -= 20
+    }
+    
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        self.view.frame.origin.y += 20
+        if textField == exerciseRepsTextField && exerciseRepsTextField.text != "" {
+            exercisesWithSets[userPosition].doneReps = Int(exerciseRepsTextField.text!)! as NSNumber
+        }
+        if textField == exerciseWeightsTextField &&  exerciseWeightsTextField.text != "" {
+            exercisesWithSets[userPosition].weight = NSDecimalNumber(string: exerciseWeightsTextField.text)
+        }
+    }
+    
+    // Set textfield input options
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let text = (textField.text! as NSString).replacingCharacters(in: range, with: string)
+        let disallowedCharacterSet = CharacterSet(charactersIn: "0123456789.").inverted
+        let replacementStringIsLegal = string.rangeOfCharacter(from: disallowedCharacterSet) == nil
+        let scanner = Scanner(string: text)
+        let resultingTextIsNumeric = scanner.scanDecimal(nil) && scanner.isAtEnd
+        var getDecimalNumbers = (textField.text! as NSString).components(separatedBy: ".")
+        if getDecimalNumbers.count > 1 && (getDecimalNumbers[1] as NSString).integerValue > 9 && string != ""  {
+            return false
+        }
+        let newLength = textField.text!.count + string.count - range.length
+        var back = 0
+        if textField == exerciseWeightsTextField {
+            back = 6
+            let resultingStringLengthIsLegal = text.count <= 6
+            if text.count == 0 || (replacementStringIsLegal &&
+                resultingStringLengthIsLegal &&
+                resultingTextIsNumeric) {
+                if text != "." {
+                    return true
+                }
+            }
+            return false
+        } else if textField == exerciseRepsTextField {
+            back = 2
+            if let checksum = Int(text), newLength <= back, checksum >= 0, checksum < 100 {
+                return true
+            } else if newLength <= back && text == "" {
+                return true
+            } else {
+                return false
+            }
+        }
+        return newLength <= back
+    }
 }

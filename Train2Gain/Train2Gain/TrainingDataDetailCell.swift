@@ -1,5 +1,5 @@
 //
-//  DayIDChosenCell.swift
+//  TrainingDataDetailCell.swift
 //  Train2Gain
 //
 //  Created by Michael Temper on 27.04.15.

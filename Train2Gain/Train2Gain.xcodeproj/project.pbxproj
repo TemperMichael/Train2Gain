@@ -17,7 +17,7 @@
 		06DF4D2F1AC59FEB00FA2A01 /* Train2Gain.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 06DF4D2D1AC59FEB00FA2A01 /* Train2Gain.xcdatamodeld */; };
 		06DF4D451AC59FEB00FA2A01 /* Train2GainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DF4D441AC59FEB00FA2A01 /* Train2GainTests.swift */; };
 		06DF4D4F1AC5A02C00FA2A01 /* OverviewTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DF4D4E1AC5A02C00FA2A01 /* OverviewTVC.swift */; };
-		06FF572F1AC5B5AF0059129D /* TrainingPlansTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FF572E1AC5B5AF0059129D /* TrainingPlansTVC.swift */; };
+		06FF572F1AC5B5AF0059129D /* TrainingPlansVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FF572E1AC5B5AF0059129D /* TrainingPlansVC.swift */; };
 		06FF57371AC633EB0059129D /* BodyMeasurementsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FF57361AC633EB0059129D /* BodyMeasurementsVC.swift */; };
 		461E95821F17EB24001CDCA8 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 461E95811F17EB24001CDCA8 /* Charts.framework */; };
 		461E95831F17EB24001CDCA8 /* Charts.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 461E95811F17EB24001CDCA8 /* Charts.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -82,7 +82,7 @@
 		06DF4D431AC59FEB00FA2A01 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		06DF4D441AC59FEB00FA2A01 /* Train2GainTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Train2GainTests.swift; sourceTree = "<group>"; };
 		06DF4D4E1AC5A02C00FA2A01 /* OverviewTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OverviewTVC.swift; path = ../OverviewTVC.swift; sourceTree = "<group>"; };
-		06FF572E1AC5B5AF0059129D /* TrainingPlansTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrainingPlansTVC.swift; sourceTree = "<group>"; };
+		06FF572E1AC5B5AF0059129D /* TrainingPlansVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrainingPlansVC.swift; sourceTree = "<group>"; };
 		06FF57361AC633EB0059129D /* BodyMeasurementsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BodyMeasurementsVC.swift; sourceTree = "<group>"; };
 		461E95811F17EB24001CDCA8 /* Charts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Charts.framework; path = Carthage/Build/iOS/Charts.framework; sourceTree = "<group>"; };
 		4628E8041AED99F300D9DDF5 /* TrainingDataDetailTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrainingDataDetailTVC.swift; sourceTree = "<group>"; };
@@ -153,6 +153,7 @@
 				06197B6E1AD5F1C9002794A3 /* TrainingDataVC.swift */,
 				0618BA701AC7A11A00BDFBC0 /* TrainingModeVC.swift */,
 				06879C671ACB462E00C6FEE3 /* TrainingPlanCreationVC.swift */,
+				06FF572E1AC5B5AF0059129D /* TrainingPlansVC.swift */,
 				46306FFF1AEE21F600B19267 /* SettingsVC.swift */,
 				46C220B31BC168F30045940F /* StatisticVC.swift */,
 			);
@@ -163,7 +164,6 @@
 			isa = PBXGroup;
 			children = (
 				4628E8041AED99F300D9DDF5 /* TrainingDataDetailTVC.swift */,
-				06FF572E1AC5B5AF0059129D /* TrainingPlansTVC.swift */,
 				06DF4D4E1AC5A02C00FA2A01 /* OverviewTVC.swift */,
 			);
 			name = TableViewController;
@@ -384,7 +384,7 @@
 			files = (
 				463D47771AED18180097E480 /* MoodCell.swift in Sources */,
 				06DF4D4F1AC5A02C00FA2A01 /* OverviewTVC.swift in Sources */,
-				06FF572F1AC5B5AF0059129D /* TrainingPlansTVC.swift in Sources */,
+				06FF572F1AC5B5AF0059129D /* TrainingPlansVC.swift in Sources */,
 				463D47721AED15FE0097E480 /* MoodCVC.swift in Sources */,
 				46CEDEFF1B6C137A00B6E7D0 /* EditTrainingDataVC.swift in Sources */,
 				06DF4D2F1AC59FEB00FA2A01 /* Train2Gain.xcdatamodeld in Sources */,

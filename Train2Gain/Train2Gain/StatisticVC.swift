@@ -33,7 +33,7 @@ import UIKit
 import CoreData
 import Charts
 
-class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource, IAxisValueFormatter {
+class StatisticVC: UIViewController {
     
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
     let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.dark))
@@ -88,7 +88,7 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
             print("Error PickerChoose")
             
         }
-        self.setDataCount()
+        self.setChartViewData()
     }
     
     @IBAction func selectExercise(_ sender: AnyObject) {
@@ -160,57 +160,13 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         setupChartView()
     }
 
-    // MARK: PickerView
     
-    func setupPickerView() {
-        pickerView.reloadAllComponents()
-        PickerViewHelper.setupPickerViewBackground(blurView, pickerBackgroundView)
-        PickerViewHelper.bringPickerToFront(pickerBackgroundView, pickerView, pickerSelectButton, pickerTitle)
-    }
     
-    // The number of columns of data
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
     
-    // The number of rows of data
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return pickerData.count
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
-        let backValue = UILabel(frame: CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 100))
-        backValue.font = UIFont(name: "HelveticaNeue-Thin" , size: 22)
-        backValue.textColor = UIColor.white
-        backValue.textAlignment = .center
-        backValue.text =  pickerData[row]
-        return backValue
-    }
-    
-    func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
-        selectedValueLabel.isHidden = false
-        if highlight.dataSetIndex == 1 {
-            selectedValueLabel.textColor = UIColor(red: 51 / 255, green: 181 / 255, blue: 229 / 255, alpha: 1)
-            selectedValueLabel.text = NSString(format: "Val.:%.2f \(weightUnit)" as NSString,entry.y ) as String
-        } else {
-            selectedValueLabel.textColor = UIColor.gray
-            let translationReps = NSLocalizedString("reps", comment: "reps")
-            selectedValueLabel.text = "Val.:\(entry.y) \(translationReps)"
-        }
-    }
-    
-    func chartValueNothingSelected(_ chartView: ChartViewBase) {
-        selectedValueLabel.isHidden = true
-    }
-    
-    func stringForValue(_ value: Double,
-                        axis: AxisBase?) -> String {
-        return ""
-    }
     
     // MARK: Own Methods
 
-    func setDataCount() {
+    func setChartViewData() {
         
         setAmount = 0
         setButton.isEnabled = false
@@ -373,7 +329,7 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         }
     }
     
-    fileprivate func setupChartView() {
+    func setupChartView() {
         chartView.delegate = self
         chartView.chartDescription?.text = ""
         chartView.noDataText = NSLocalizedString("No data available for this setup!", comment: "No data available for this setup!")
@@ -410,7 +366,8 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
         rightAxis.drawGridLinesEnabled = false
         
         chartView.rightAxis.enabled = true
-        setDataCount()
+        
+        setChartViewData()
     }
     
     func showWholeYear(_ year: Int?, _ singleMonth: String, _ day: inout Int?) {
@@ -497,6 +454,63 @@ class StatisticVC: UIViewController, ChartViewDelegate, UIPickerViewDelegate, UI
             selectedValueLabel.isHidden = true
             chartView.data?.clearValues()
         }
+    }
+    
+}
+
+// MARK: ChartView
+
+extension StatisticVC: ChartViewDelegate {
+    func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
+        selectedValueLabel.isHidden = false
+        if highlight.dataSetIndex == 1 {
+            selectedValueLabel.textColor = UIColor(red: 51 / 255, green: 181 / 255, blue: 229 / 255, alpha: 1)
+            selectedValueLabel.text = NSString(format: "Val.:%.2f \(weightUnit)" as NSString,entry.y ) as String
+        } else {
+            selectedValueLabel.textColor = UIColor.gray
+            let translationReps = NSLocalizedString("reps", comment: "reps")
+            selectedValueLabel.text = "Val.:\(entry.y) \(translationReps)"
+        }
+    }
+    
+    func chartValueNothingSelected(_ chartView: ChartViewBase) {
+        selectedValueLabel.isHidden = true
+    }
+    
+    func stringForValue(_ value: Double,
+                        axis: AxisBase?) -> String {
+        return ""
+    }
+    
+}
+
+// MARK: PickerView
+
+extension StatisticVC: UIPickerViewDelegate, UIPickerViewDataSource {
+    
+    func setupPickerView() {
+        pickerView.reloadAllComponents()
+        PickerViewHelper.setupPickerViewBackground(blurView, pickerBackgroundView)
+        PickerViewHelper.bringPickerToFront(pickerBackgroundView, pickerView, pickerSelectButton, pickerTitle)
+    }
+    
+    // The number of columns of data
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    // The number of rows of data
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return pickerData.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+        let backValue = UILabel(frame: CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 100))
+        backValue.font = UIFont(name: "HelveticaNeue-Thin" , size: 22)
+        backValue.textColor = UIColor.white
+        backValue.textAlignment = .center
+        backValue.text =  pickerData[row]
+        return backValue
     }
     
 }

@@ -58,7 +58,7 @@
         <!--Training-->
         <scene sceneID="cU3-gb-3Ie">
             <objects>
-                <viewController id="3qZ-WK-JKU" customClass="TrainingPlansTVC" customModule="Train2Gain" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="3qZ-WK-JKU" customClass="TrainingPlansVC" customModule="Train2Gain" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="oO0-Gv-CwM"/>
                         <viewControllerLayoutGuide type="bottom" id="0iP-QJ-JZi"/>

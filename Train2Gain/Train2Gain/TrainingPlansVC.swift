@@ -1,5 +1,5 @@
 //
-//  ExercisesTVC.swift
+//  TrainingPlansVC.swift
 //  Train2Gain
 //
 //  Created by Michael Temper on 27.03.15.
@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class TrainingPlansVC: UIViewController {
     
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
     var dayIDs: [String] = []
@@ -43,23 +43,6 @@ class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         tableView.reloadData()
     }
     
-    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        prepareSelectedExercises(indexPath)
-        return indexPath
-    }
-    
-    
-    
-    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        // Handle swipe to single tableview row
-        // Handle the deletion of an row
-        let deleteAction = setupDeleteAction(indexPath)
-        
-        // Handle the changings of the selected row item
-        let editAction = setupEditAction(indexPath)
-        return [deleteAction, editAction]
-    }
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         //Give the next view the selected exercises
         if segue.identifier == "TrainingPlanChosen" {
@@ -73,23 +56,6 @@ class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSo
                 trainingPlanCreationViewController.selectedExercise = self.selectedExercises
             }
         }
-    }
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        // Has to be here so custom action can be used
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dayIDs.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        //Setup cell
-        return setupCell(tableView, indexPath)
     }
     
     // MARK: Own Methods
@@ -152,7 +118,7 @@ class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSo
                     self.selectedExercises.append(self.savedExercises[i])
                 }
             }
-            self.performSegue(withIdentifier: "AddExercise", sender: UITableViewRowAction())
+            self.performSegue(withIdentifier: "AddTrainingPlan", sender: UITableViewRowAction())
         }
         editAction.backgroundColor = UIColor(red: 112 / 255, green: 188 / 255, blue: 224 / 255, alpha: 1)
         return editAction
@@ -170,6 +136,39 @@ class TrainingPlansTVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         cell.preservesSuperviewLayoutMargins = false
         cell.layoutMargins = UIEdgeInsets.zero
         return cell
+    }
+    
+}
+
+// MARK: TableView
+
+extension TrainingPlansVC: UITableViewDelegate, UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        prepareSelectedExercises(indexPath)
+        return indexPath
+    }
+    
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        // Handle swipe to single tableview row
+        // Handle the deletion of an row
+        let deleteAction = setupDeleteAction(indexPath)
+        
+        // Handle the changings of the selected row item
+        let editAction = setupEditAction(indexPath)
+        return [deleteAction, editAction]
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return dayIDs.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return setupCell(tableView, indexPath)
     }
     
 }

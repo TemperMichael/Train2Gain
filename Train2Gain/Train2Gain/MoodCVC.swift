@@ -11,7 +11,7 @@ import CoreData
 import Fabric
 import Crashlytics
 
-class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+class MoodCVC: UIViewController {
     
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
     let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.dark))
@@ -91,31 +91,6 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
         PickerViewHelper.setupPickerView(datePicker, datePickerTitleLabel)
     }
     
-    // MARK: CollectionView
-    // Save selected mood by index
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        selectedIndexPath = indexPath
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-    }
-    
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return moods.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as! MoodCell
-        cell.moodNameLabel.text = moods[(indexPath as NSIndexPath).row].moodName
-        cell.moodImageView.image = moods[(indexPath as NSIndexPath).row].moodSmiley
-        return cell
-    }
-    
     // MARK: Own Methods
     
     func addNewMood(){
@@ -158,6 +133,36 @@ class MoodCVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataS
                 addMood(lastMeasure)
             }
         }
+    }
+    
+}
+
+// MARK: CollectionView
+
+extension MoodCVC: UICollectionViewDelegate, UICollectionViewDataSource {
+    
+    // Save selected mood by index
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        selectedIndexPath = indexPath
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return moods.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as! MoodCell
+        cell.moodNameLabel.text = moods[(indexPath as NSIndexPath).row].moodName
+        cell.moodImageView.image = moods[(indexPath as NSIndexPath).row].moodSmiley
+        return cell
     }
     
 }

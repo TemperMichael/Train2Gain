@@ -12,7 +12,7 @@ import LocalAuthentication
 import Fabric
 import Crashlytics
 
-class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class TrainingDataVC: UIViewController {
     
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
     let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.dark))
@@ -91,51 +91,6 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.navigationController?.setToolbarHidden(true, animated: true)
     }
 
-    // MARK: TableView
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dayIDs.count
-    }
-    
-    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        selectedDayDetails.append(dayIDs[(indexPath as NSIndexPath).row])
-        selectedDayDetails.append(trainingDataDateLabel.text!)
-        return indexPath
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        //Save chosen exercise day
-        if segue.identifier == "DayIDChosen" {
-            let dayIDChosenTableViewController = segue.destination as! TrainingDataDetailTVC
-            dayIDChosenTableViewController.selectedDayDetails = selectedDayDetails
-        }
-        if segue.identifier == "editSegue" {
-            let editDayIDViewController = segue.destination as! EditTrainingDataDetailVC
-            editDayIDViewController.selectedExercise = selectedDoneExercises
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        // Has to be here so custom action can be used
-    }
-    
-    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        //Handle swipe to single tableview row
-        //Handle the deletion of an row
-        let deleteAction = setupDeleteAction(indexPath, tableView)
-
-        // Handle the changings of the selected row item
-        let editAction = setupEditAction(indexPath)
-        return [deleteAction, editAction]
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return setupCell(tableView, indexPath)
-    }
-    
     override func viewDidAppear(_ animated: Bool) {
         //Reset lists
         selectedDayDetails = []
@@ -321,6 +276,52 @@ class TrainingDataVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
             
         }
+    }
+    
+}
+
+// MARK: TableView
+
+extension TrainingDataVC: UITableViewDelegate, UITableViewDataSource {
+
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return dayIDs.count
+    }
+    
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        selectedDayDetails.append(dayIDs[(indexPath as NSIndexPath).row])
+        selectedDayDetails.append(trainingDataDateLabel.text!)
+        return indexPath
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        //Save chosen exercise day
+        if segue.identifier == "DayIDChosen" {
+            let dayIDChosenTableViewController = segue.destination as! TrainingDataDetailTVC
+            dayIDChosenTableViewController.selectedDayDetails = selectedDayDetails
+        }
+        if segue.identifier == "editSegue" {
+            let editDayIDViewController = segue.destination as! EditTrainingDataDetailVC
+            editDayIDViewController.selectedExercise = selectedDoneExercises
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        //Handle swipe to single tableview row
+        //Handle the deletion of an row
+        let deleteAction = setupDeleteAction(indexPath, tableView)
+        
+        // Handle the changings of the selected row item
+        let editAction = setupEditAction(indexPath)
+        return [deleteAction, editAction]
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return setupCell(tableView, indexPath)
     }
     
 }

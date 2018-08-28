@@ -1,5 +1,5 @@
 //
-//  EditDayIDVC.swift
+//  EditTrainingDataDetailVC.swift
 //  Train2Gain
 //
 //  Created by Michael Temper on 31.07.15.
@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class EditTrainingDataDetailVC: UIViewController, UITextFieldDelegate {
+class EditTrainingDataDetailVC: UIViewController {
     
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
     var currentTime: TimeInterval?
@@ -141,71 +141,6 @@ class EditTrainingDataDetailVC: UIViewController, UITextFieldDelegate {
     
     override func viewDidDisappear(_ animated: Bool) {
         appDelegate.rollBackContext()
-    }
-    
-    // MARK: Keyboard Methods
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        //Close Keyboard when clicking outside
-        editWeightsTextField.resignFirstResponder()
-        editRepsTextField.resignFirstResponder()
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.endEditing(true)
-        return false
-    }
-    
-    //Move view to always see the selected textfield
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        self.view.frame.origin.y -= 20
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        self.view.frame.origin.y += 20
-        if textField == editRepsTextField && editRepsTextField.text != "" {
-            exercisesWithSets[userPosition].doneReps = Int(editRepsTextField.text!)! as NSNumber
-        }
-        if textField == editWeightsTextField &&  editWeightsTextField.text != "" {
-            exercisesWithSets[userPosition].weight = NSDecimalNumber(string: editWeightsTextField.text)
-        }
-    }
-    
-    // Set textfield input options
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let text = (textField.text! as NSString).replacingCharacters(in: range, with: string)
-        let disallowedCharacterSet = CharacterSet(charactersIn: "0123456789.").inverted
-        let replacementStringIsLegal = string.rangeOfCharacter(from: disallowedCharacterSet) == nil
-        let scanner = Scanner(string: text)
-        let resultingTextIsNumeric = scanner.scanDecimal(nil) && scanner.isAtEnd
-        
-        var getDecimalNumbers = (textField.text! as NSString).components(separatedBy: ".")
-        if getDecimalNumbers.count > 1 && (getDecimalNumbers[1] as NSString).integerValue > 9 && string != ""  {
-            return false
-        }
-        let newLength = textField.text!.count + string.count - range.length
-        var back = 0
-        if textField == editWeightsTextField {
-            back = 6
-            let resultingStringLengthIsLegal = text.count <= 6
-            if text.count == 0 || (replacementStringIsLegal &&
-                resultingStringLengthIsLegal &&
-                resultingTextIsNumeric) {
-                if text != "." {
-                    return true
-                }
-            }
-            return false
-        } else if textField == editRepsTextField {
-            back = 2
-            if let checksum = Int(text), newLength <= back, checksum >= 0, checksum < 100 {
-                return true
-            } else if newLength <= back && text == "" {
-                return true
-            } else {
-                return false
-            }
-        }
-        return newLength <= back
     }
     
     // MARK: Own Methods
@@ -380,6 +315,76 @@ class EditTrainingDataDetailVC: UIViewController, UITextFieldDelegate {
         editRepsTextField.text = exercisesWithSets[0].doneReps.stringValue
         
         showWeightCorrectly(&weight)
+    }
+    
+}
+
+// MARK: TextField
+
+extension EditTrainingDataDetailVC : UITextFieldDelegate {
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        //Close Keyboard when clicking outside
+        editWeightsTextField.resignFirstResponder()
+        editRepsTextField.resignFirstResponder()
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.endEditing(true)
+        return false
+    }
+    
+    //Move view to always see the selected textfield
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        self.view.frame.origin.y -= 20
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        self.view.frame.origin.y += 20
+        if textField == editRepsTextField && editRepsTextField.text != "" {
+            exercisesWithSets[userPosition].doneReps = Int(editRepsTextField.text!)! as NSNumber
+        }
+        if textField == editWeightsTextField &&  editWeightsTextField.text != "" {
+            exercisesWithSets[userPosition].weight = NSDecimalNumber(string: editWeightsTextField.text)
+        }
+    }
+    
+    // Set textfield input options
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let text = (textField.text! as NSString).replacingCharacters(in: range, with: string)
+        let disallowedCharacterSet = CharacterSet(charactersIn: "0123456789.").inverted
+        let replacementStringIsLegal = string.rangeOfCharacter(from: disallowedCharacterSet) == nil
+        let scanner = Scanner(string: text)
+        let resultingTextIsNumeric = scanner.scanDecimal(nil) && scanner.isAtEnd
+        
+        var getDecimalNumbers = (textField.text! as NSString).components(separatedBy: ".")
+        if getDecimalNumbers.count > 1 && (getDecimalNumbers[1] as NSString).integerValue > 9 && string != ""  {
+            return false
+        }
+        let newLength = textField.text!.count + string.count - range.length
+        var back = 0
+        if textField == editWeightsTextField {
+            back = 6
+            let resultingStringLengthIsLegal = text.count <= 6
+            if text.count == 0 || (replacementStringIsLegal &&
+                resultingStringLengthIsLegal &&
+                resultingTextIsNumeric) {
+                if text != "." {
+                    return true
+                }
+            }
+            return false
+        } else if textField == editRepsTextField {
+            back = 2
+            if let checksum = Int(text), newLength <= back, checksum >= 0, checksum < 100 {
+                return true
+            } else if newLength <= back && text == "" {
+                return true
+            } else {
+                return false
+            }
+        }
+        return newLength <= back
     }
     
 }

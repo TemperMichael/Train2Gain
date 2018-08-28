@@ -1,5 +1,5 @@
 //
-//  EditChooserVC.swift
+//  EditTrainingDataVC.swift
 //  Train2Gain
 //
 //  Created by Michael Temper on 31.07.15.

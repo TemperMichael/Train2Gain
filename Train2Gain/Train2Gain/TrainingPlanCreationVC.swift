@@ -1,5 +1,5 @@
 //
-//  AddExerciseVC.swift
+//  TrainingPlanCreationVC.swift
 //  Train2Gain
 //
 //  Created by Michael Temper on 29.03.15.
@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class TrainingPlanCreationVC: UIViewController, UITextFieldDelegate {
+class TrainingPlanCreationVC: UIViewController {
     
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
     var dayId: String = ""
@@ -107,89 +107,6 @@ class TrainingPlanCreationVC: UIViewController, UITextFieldDelegate {
     
     override func viewWillDisappear(_ animated: Bool) {
         self.navigationController?.setToolbarHidden(true, animated: true)
-    }
-
-    // MARK: Keyboard Methods
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        // Close Keyboard when clicking outside
-        trainingPlanExerciseNameTextField.resignFirstResponder()
-        trainingPlanSetsTextField.resignFirstResponder()
-        trainingPlanRepsTextField.resignFirstResponder()
-        trainingPlanNameTextField.resignFirstResponder()
-    }
-    
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        // Push up view to see what you are actual entering
-        switch textField {
-        case trainingPlanRepsTextField:
-            self.view.frame.origin.y -= 80
-        case trainingPlanSetsTextField:
-            self.view.frame.origin.y -= 80
-        case trainingPlanExerciseNameTextField:
-            self.view.frame.origin.y -= 20
-        default:
-            print("Error keyboard")
-        }
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        // Put view back down after entering in text fields
-        switch textField {
-        case trainingPlanRepsTextField:
-            self.view.frame.origin.y += 80
-        case trainingPlanSetsTextField:
-            self.view.frame.origin.y += 80
-        case trainingPlanExerciseNameTextField:
-            self.view.frame.origin.y += 20
-        default:
-            print("Error keyboard")
-        }
-    }
-    
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        // Jump to next textfield by clicking on "next" button
-        if string == "\n" {
-            textField.endEditing(true)
-            switch textField {
-            case trainingPlanNameTextField:
-                trainingPlanExerciseNameTextField.becomeFirstResponder()
-            case trainingPlanExerciseNameTextField:
-                trainingPlanSetsTextField.becomeFirstResponder()
-            default:
-                print("Error keyboard")
-            }
-            return true
-        }
-        textField.backgroundColor = UIColor.white
-        textField.placeholder = ""
-        let text = (textField.text! as NSString).replacingCharacters(in: range, with: string)
-        
-        // Setup input settings
-        let newLength = textField.text!.count + string.count - range.length
-        var back = 0
-        if textField == trainingPlanRepsTextField {
-            back = 2
-            if let checksum = Int(text), newLength <= back, checksum > 0, checksum < 100 {
-                return true
-            } else if newLength <= back && text == "" {
-                return true
-            } else {
-                return false
-            }
-        } else if textField == trainingPlanSetsTextField {
-            back = 1
-            if let checksum = Int(text), newLength <= back, checksum > 0, checksum < 10 {
-                return true
-            } else if newLength <= back && text == "" {
-                return true
-            } else {
-                return false
-            }
-        } else {
-            back = 13
-        }
-        return newLength <= back
     }
     
     // MARK: Own Methods
@@ -342,6 +259,93 @@ class TrainingPlanCreationVC: UIViewController, UITextFieldDelegate {
                 trainingPlanSetsTextField.text = exercises[userPosition][2]
             }
         }
+    }
+    
+}
+
+ // MARK: TextField
+
+extension TrainingPlanCreationVC: UITextFieldDelegate {
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        // Close Keyboard when clicking outside
+        trainingPlanExerciseNameTextField.resignFirstResponder()
+        trainingPlanSetsTextField.resignFirstResponder()
+        trainingPlanRepsTextField.resignFirstResponder()
+        trainingPlanNameTextField.resignFirstResponder()
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        // Push up view to see what you are actual entering
+        switch textField {
+        case trainingPlanRepsTextField:
+            self.view.frame.origin.y -= 80
+        case trainingPlanSetsTextField:
+            self.view.frame.origin.y -= 80
+        case trainingPlanExerciseNameTextField:
+            self.view.frame.origin.y -= 20
+        default:
+            print("Error keyboard")
+        }
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        // Put view back down after entering in text fields
+        switch textField {
+        case trainingPlanRepsTextField:
+            self.view.frame.origin.y += 80
+        case trainingPlanSetsTextField:
+            self.view.frame.origin.y += 80
+        case trainingPlanExerciseNameTextField:
+            self.view.frame.origin.y += 20
+        default:
+            print("Error keyboard")
+        }
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        // Jump to next textfield by clicking on "next" button
+        if string == "\n" {
+            textField.endEditing(true)
+            switch textField {
+            case trainingPlanNameTextField:
+                trainingPlanExerciseNameTextField.becomeFirstResponder()
+            case trainingPlanExerciseNameTextField:
+                trainingPlanSetsTextField.becomeFirstResponder()
+            default:
+                print("Error keyboard")
+            }
+            return true
+        }
+        textField.backgroundColor = UIColor.white
+        textField.placeholder = ""
+        let text = (textField.text! as NSString).replacingCharacters(in: range, with: string)
+        
+        // Setup input settings
+        let newLength = textField.text!.count + string.count - range.length
+        var back = 0
+        if textField == trainingPlanRepsTextField {
+            back = 2
+            if let checksum = Int(text), newLength <= back, checksum > 0, checksum < 100 {
+                return true
+            } else if newLength <= back && text == "" {
+                return true
+            } else {
+                return false
+            }
+        } else if textField == trainingPlanSetsTextField {
+            back = 1
+            if let checksum = Int(text), newLength <= back, checksum > 0, checksum < 10 {
+                return true
+            } else if newLength <= back && text == "" {
+                return true
+            } else {
+                return false
+            }
+        } else {
+            back = 13
+        }
+        return newLength <= back
     }
     
 }
