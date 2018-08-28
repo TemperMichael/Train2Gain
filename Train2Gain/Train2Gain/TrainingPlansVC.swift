@@ -127,7 +127,7 @@ class TrainingPlansVC: UIViewController {
     func setupCell(_ tableView: UITableView, _ indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: trainingPlanCell, for: indexPath)
         cell.textLabel?.font = UIFont(name: "HelveticaNeue-Light", size: 18)
-        cell.textLabel?.textColor = UIColor(red: 22 / 255, green: 204 / 255, blue: 255 / 255, alpha: 1)
+        cell.textLabel?.textColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
         cell.textLabel?.text = dayIDs[(indexPath as NSIndexPath).row]
         cell.backgroundColor = UIColor.white
         

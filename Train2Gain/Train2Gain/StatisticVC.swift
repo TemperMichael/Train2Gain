@@ -347,13 +347,13 @@ class StatisticVC: UIViewController {
         
         let xAxis = chartView.xAxis
         xAxis.labelFont =  UIFont(name: "HelveticaNeue-Light", size: 12)!
-        xAxis.labelTextColor = UIColor(red: 51 / 255, green: 181 / 255, blue: 229 / 255, alpha: 1)
+        xAxis.labelTextColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
         xAxis.drawGridLinesEnabled = false
         xAxis.drawAxisLineEnabled = false
         xAxis.spaceMax = 1
         
         let leftAxis = chartView.leftAxis
-        leftAxis.labelTextColor = UIColor(red: 51 / 255, green: 181 / 255, blue: 229 / 255, alpha: 1)
+        leftAxis.labelTextColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
         leftAxis.axisMaximum = 100
         leftAxis.axisMinimum = 0
         leftAxis.drawGridLinesEnabled = false
@@ -437,8 +437,8 @@ class StatisticVC: UIViewController {
             set1.fillAlpha = 255 / 255.0
             let set2 = LineChartDataSet(values: yAxisValues, label: "\(selectedExercise) in \(weightUnit) \(selectedYear)")
             set2.axisDependency = YAxis.AxisDependency.left
-            set2.setColor(UIColor(red: 51  / 255, green: 181 / 255, blue: 229 / 255, alpha: 1))
-            set2.setCircleColor(UIColor(red: 51 / 255, green: 181 / 255, blue: 229 / 255, alpha: 1))
+            set2.setColor(UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1))
+            set2.setCircleColor(UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1))
             set2.lineWidth = 2
             set2.circleRadius = 1.5
             set2.drawCircleHoleEnabled = true

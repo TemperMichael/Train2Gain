@@ -166,7 +166,7 @@ class TrainingDataVC: UIViewController {
         cell.layoutMargins = UIEdgeInsets.zero
         cell.textLabel?.text = dayIDs[(indexPath as NSIndexPath).row]
         cell.textLabel?.font = UIFont(name: "HelveticaNeue-Light", size: 18)
-        cell.textLabel?.textColor = UIColor(red: 22 / 255 , green: 204 / 255, blue: 255 / 255, alpha: 1)
+        cell.textLabel?.textColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
         cell.textLabel?.textAlignment = .center
         cell.backgroundColor = UIColor.white
         return cell
@@ -266,15 +266,14 @@ class TrainingDataVC: UIViewController {
     func setupMoodData() {
         trainingDataMoodNameLabel.text = "---"
         trainingDataMoodImageView.image = UIImage(named: "SmileyNormal.png")
+        trainingDataMoodImageView.tintColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
         
-        for checkMoodExists in moods{
-            
+        for checkMoodExists in moods {
             if(DateFormatHelper.returnDateForm(checkMoodExists.date as Date) ==  DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)){
                 dayHasContent = true
                 trainingDataMoodNameLabel.text = checkMoodExists.moodName
                 trainingDataMoodImageView.image = UIImage(named: checkMoodExists.moodImagePath)
-            }
-            
+            } 
         }
     }
     

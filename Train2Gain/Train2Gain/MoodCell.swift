@@ -21,7 +21,7 @@ class MoodCell: UICollectionViewCell {
             moodNameLabel.font = isSelected ? UIFont(name: "HelveticaNeue-Medium", size: 18) : UIFont(name: "HelveticaNeue-Light", size: 18)
             layer.borderWidth =  isSelected ? 1 : 0
             layer.cornerRadius = 5
-            layer.borderColor = UIColor(red: 20 / 255, green: 204 / 255, blue: 255 / 255, alpha: 1).cgColor
+            layer.borderColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1).cgColor
         }
     }
     
