@@ -1,0 +1,11 @@
+/* 
+  InfoPlist.strings
+  Train2Gain
+
+  Created by Michael Temper on 28.08.18.
+  Copyright © 2018 Temper. All rights reserved.
+*/
+
+"NSPhotoLibraryAddUsageDescription" =  "Diese App braucht die Erlaubnis den Snapshot zur Fotobibliothek hinzuzufügen.";
+
+"NSPhotoLibraryUsageDescription" = "Diese App braucht die Erlaubnis auf die Fotobibliothek zugreifen zu können.";

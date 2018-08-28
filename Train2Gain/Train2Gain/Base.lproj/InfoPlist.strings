@@ -1,0 +1,11 @@
+/* 
+  InfoPlist.strings
+  Train2Gain
+
+  Created by Michael Temper on 28.08.18.
+  Copyright © 2018 Temper. All rights reserved.
+*/
+
+"NSPhotoLibraryAddUsageDescription" =  "This app requires to add the snapshot to the photo library.";
+
+"NSPhotoLibraryUsageDescription" = "This app requires access to the photo library.";

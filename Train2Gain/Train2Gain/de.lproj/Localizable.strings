@@ -6,9 +6,7 @@
   Copyright © 2016 Temper. All rights reserved.
 */
 
-
-
-// OVERVIEW
+// OverviewTVC
 
 "Training" = "Training";
 "Body measurements" = "Körpermaße";
@@ -18,11 +16,11 @@
 "Settings" = "Einstellungen";
 
 
-// DAYIDCHOSENTVC
+// TrainingDataDetailTVC
 
 "Set" = "Satz";
 
-// MOODCVC
+// MoodCVC
 
 "Normal" = "Normal";
 "Good" = "Gut";
@@ -37,9 +35,7 @@
 "Fantastic" = "Fantastisch";
 "K.O." = "K.O.";
 
-
-
-// INFOALERT
+// InfoAlert
 
 "Saved" = "Gespeichert";
 "Your body measurements were saved." = "Deine Körpermaße wurden gespeichert.";
@@ -49,21 +45,21 @@
 "Your training was saved." = "Dein Training wurde gespeichert.";
 "OK" = "OK";
 
-// AddExerciseVC
+// TrainingPlanCreationVC
 
 "Edit Training plan" = "Plan bearbeiten";
 "Enter something!" = "Ausfüllen!";
 "Enter sth.!" = "Ausfüllen!";
 
-//EditChooserVC
+// EditTrainingDataVC
 
 "Change data of" = "Daten ändern vom";
 
-//EditDayIDVC
+// EditTrainingDataDetailVC
 
 // "Set" from above used
 
-// ExerciseChosenVC
+// TrainingModeVC
 
 // "Set" from above used
 
@@ -117,7 +113,6 @@
 
 // TrainingDataVC
 
-
 "Weight" = "Gewicht";
 "Arms" = "Arme";
 "Chest" = "Brust";
@@ -132,7 +127,7 @@
 "Delete" = "Löschen";
 "Edit" = "Bearbeiten";
 
-// PW Alert
+// Password Alert
 
 "Cancel" = "Abbrechen";
 "Enter Password" = "Passwort eingeben";

@@ -7,7 +7,7 @@
 */
 
 
-// Overview
+// OverviewTVC
 
 "Training" = "Training";
 "Body measurements" = "Body measurements";
@@ -16,7 +16,7 @@
 "Statistic" = "Statistic";
 "Settings" = "Settings";
 
-// DayIDChosenTVC
+// TrainingDataDetailTVC
 
 "Set" = "Set";
 
@@ -37,7 +37,7 @@
 
 
 
-// Infoalert
+// InfoAlert
 
 "Saved" = "Saved";
 "Your body measurements were saved." = "Your body measurements were saved.";
@@ -47,21 +47,21 @@
 "Your training was saved." = "Your training was saved.";
 "OK" = "OK";
 
-// AddExerciseVC
+// TrainingPlanCreationVC
 
 "Edit Training plan" = "Edit Training plan";
 "Enter something!" = "Enter something!";
 "Enter sth.!" = "Enter sth.!";
 
-//EditChooserVC
+// EditTrainingDataVC
 
 "Change data of" = "Change data of";
 
-//EditDayIDVC
+// EditTrainingDataDetailVC
 
 // "Set" from above used
 
-// ExerciseChosenVC
+// TrainingModeVC
 
 // "Set" from above used
 
@@ -115,7 +115,6 @@
 
 // TrainingDataVC
 
-
 "Weight" = "Weight";
 "Arms" = "Arms";
 "Chest" = "Chest";
@@ -129,7 +128,7 @@
 "Delete" = "Delete";
 "Edit" = "Edit";
 
-// PW Alert
+// Password Alert
 
 "Cancel" = "Cancel";
 "Enter Password" = "Enter Password";

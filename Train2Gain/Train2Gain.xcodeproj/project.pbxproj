@@ -31,6 +31,7 @@
 		466EF3912132F198005A3BFA /* DateFormatHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 466EF3902132F198005A3BFA /* DateFormatHelper.swift */; };
 		466EF3932132F503005A3BFA /* PickerViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 466EF3922132F503005A3BFA /* PickerViewHelper.swift */; };
 		466EF39B21343493005A3BFA /* AlertFormatHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 466EF39A21343493005A3BFA /* AlertFormatHelper.swift */; };
+		466EF39E21353B66005A3BFA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 466EF3A021353B66005A3BFA /* InfoPlist.strings */; };
 		469121FF1AF7AB260097D22D /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 469121FE1AF7AB260097D22D /* LocalAuthentication.framework */; };
 		46AD66631C383A060040E685 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 46AD66651C383A060040E685 /* Main.storyboard */; };
 		46AD666C1C3A09B20040E685 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 46AD666E1C3A09B20040E685 /* Localizable.strings */; };
@@ -97,6 +98,8 @@
 		466EF3922132F503005A3BFA /* PickerViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerViewHelper.swift; sourceTree = "<group>"; };
 		466EF399213418F2005A3BFA /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Main.strings; sourceTree = "<group>"; };
 		466EF39A21343493005A3BFA /* AlertFormatHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertFormatHelper.swift; sourceTree = "<group>"; };
+		466EF39F21353B66005A3BFA /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		466EF3A121353B70005A3BFA /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		469121FE1AF7AB260097D22D /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
 		46AD666D1C3A09B20040E685 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		46AD666F1C3A09B50040E685 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -216,6 +219,7 @@
 				06DF4D2B1AC59FEB00FA2A01 /* AppDelegate.swift */,
 				466EF3902132F198005A3BFA /* DateFormatHelper.swift */,
 				06DF4D2A1AC59FEB00FA2A01 /* Info.plist */,
+				466EF3A021353B66005A3BFA /* InfoPlist.strings */,
 				463D47741AED17520097E480 /* Moods.swift */,
 				466EF3922132F503005A3BFA /* PickerViewHelper.swift */,
 				466EF39A21343493005A3BFA /* AlertFormatHelper.swift */,
@@ -349,6 +353,7 @@
 				46AD666C1C3A09B20040E685 /* Localizable.strings in Resources */,
 				46AD66701C3ADBB90040E685 /* LaunchScreen.xib in Resources */,
 				46AD66631C383A060040E685 /* Main.storyboard in Resources */,
+				466EF39E21353B66005A3BFA /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -428,6 +433,15 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		466EF3A021353B66005A3BFA /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				466EF39F21353B66005A3BFA /* de */,
+				466EF3A121353B70005A3BFA /* Base */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 		46AD66651C383A060040E685 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
