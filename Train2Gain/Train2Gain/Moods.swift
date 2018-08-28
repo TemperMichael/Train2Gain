@@ -14,10 +14,8 @@ class Moods: NSObject {
     var moodName: String
     
     init(_moodName: String, _moodSmileyString: String){
-        
         moodName = _moodName
         moodSmiley = UIImage(named: _moodSmileyString)!
-        
     }
    
 }
