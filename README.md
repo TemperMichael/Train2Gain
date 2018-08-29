@@ -1,5 +1,9 @@
 # Train2Gain
 
+<p align="center">
+<img src="Images/Logo.png" height="400" width="400"> 
+</p>
+
 Train2Gain is an iOS application which helps to track useful data about trainings and offers the following features:
 - Creating and using own training plans
 - Tracking of body measurements
