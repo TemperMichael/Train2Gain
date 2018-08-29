@@ -12,5 +12,9 @@ Train2Gain is an iOS application which helps to track useful data about training
 The application is implemented completely in Swift and was also already available in the App Store. 
 
 
+<p align="center">
 <img src="Images/AddTrainingPlan.png" width="280"> <img src="Images/Mood.png" width="280"> <img src="Images/ChooseDate.png" width="280">
+</p>
+<p align="center">
 <img src="Images/TrainingData.png" width="280"> <img src="Images/TrainingDataDetail.png" width="280"> <img src="Images/Statistic.png" width="280">
+</p>
