@@ -15,7 +15,7 @@ class TrainingDataDetailTVC: UITableViewController {
     var cellIdentifier = "TrainingDataDetailCell"
     var selectedDayDetails: [String] = []
     var setCountValues: [String] = []
-    var weightUnit = UserDefaults.standard.object(forKey: "weightUnit")! as! String
+    var weightUnit = ""
     
     // MARK: View Methods
     func setupView() {
@@ -28,13 +28,17 @@ class TrainingDataDetailTVC: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        weightUnit = UserDefaults.standard.object(forKey: "weightUnit") as? String ?? ""
+        
         setupView()
         setupDoneTrainingData()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
-        let appdel =  UIApplication.shared.delegate as! AppDelegate
-        appdel.rollBackContext()
+        guard let unwrappedAppDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            return
+        }
+        unwrappedAppDelegate.rollBackContext()
     }
     
     override func didReceiveMemoryWarning() {
@@ -50,7 +54,9 @@ class TrainingDataDetailTVC: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! TrainingDataDetailCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? TrainingDataDetailCell else {
+            return UITableViewCell()
+        }
         setupCell(indexPath, cell)
         return cell
     }
@@ -58,27 +64,36 @@ class TrainingDataDetailTVC: UITableViewController {
     // MARK: Own Methods
     
     func setupDoneTrainingData() {
-        let appDelegate =  UIApplication.shared.delegate as! AppDelegate
-        let requestDoneExercises = NSFetchRequest<NSFetchRequestResult>(entityName: "DoneExercise")
-        let savedDoneExercises = (try! appDelegate.managedObjectContext?.fetch(requestDoneExercises)) as! [DoneExercise]
-        var checkString = ""
-        var checkBefore = ""
-        var setCounter = 0
+        guard let unwrappedAppDelegate =  UIApplication.shared.delegate as? AppDelegate else {
+            return
+        }
         
-        // Get done exercises of this day
-        for singleExercise in savedDoneExercises {
-            checkBefore = checkString
-            if singleExercise.dayID == selectedDayDetails[0] && DateFormatHelper.returnDateForm(singleExercise.date) == selectedDayDetails [1] {
-                checkString = singleExercise.name
-                doneExercises.append(singleExercise)
-                if checkString == checkBefore {
-                    setCountValues.append("\(setCounter)")
-                    setCounter += 1
-                } else {
-                    setCountValues.append("1")
-                    setCounter = 2
+        let requestDoneExercises = NSFetchRequest<NSFetchRequestResult>(entityName: "DoneExercise")
+        do {
+            guard let savedDoneExercises = try unwrappedAppDelegate.managedObjectContext?.fetch(requestDoneExercises) as? [DoneExercise] else {
+                return
+            }
+            var checkString = ""
+            var checkBefore = ""
+            var setCounter = 0
+            
+            // Get done exercises of this day
+            for singleExercise in savedDoneExercises {
+                checkBefore = checkString
+                if singleExercise.dayID == selectedDayDetails[0] && DateFormatHelper.returnDateForm(singleExercise.date) == selectedDayDetails [1] {
+                    checkString = singleExercise.name
+                    doneExercises.append(singleExercise)
+                    if checkString == checkBefore {
+                        setCountValues.append("\(setCounter)")
+                        setCounter += 1
+                    } else {
+                        setCountValues.append("1")
+                        setCounter = 2
+                    }
                 }
             }
+        } catch {
+            print(error)
         }
     }
     
@@ -88,7 +103,7 @@ class TrainingDataDetailTVC: UITableViewController {
         if weightUnit == "lbs" {
             weight = weight * 2.20462262185
         }
-
+        
         cell.trainingDataTrainingPlanNameLabel.text = doneExercises[(indexPath as NSIndexPath).row].name
         cell.trainingDataRepsLabel.text = "\(doneExercises[(indexPath as NSIndexPath).row].reps)"
         cell.trainingDataDoneRepsLabel.text = "\(doneExercises[(indexPath as NSIndexPath).row].doneReps)"

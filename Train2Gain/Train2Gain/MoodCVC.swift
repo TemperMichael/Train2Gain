@@ -13,10 +13,10 @@ import Crashlytics
 
 class MoodCVC: UIViewController {
     
-    var appDelegate = UIApplication.shared.delegate as! AppDelegate
+    var appDelegate: AppDelegate?
     let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.dark))
     let cellIdentifier = "MoodCell"
-    var date: Date!
+    var date: Date?
     var imagePaths: [String] = ["SmileyNormal.png", "SmileyNormal.png", "SmileyGood.png", "SmileyAggressive.png", "SmileyAwesome.png", "SmileySad.png", "SmileyIrritated.png", "SmileySick.png", "SmileyTired.png", "SmileyGreat.png", "SmileyStressed.png", "SmileyFantastic.png", "SmileyKO.png"]
     var moods: [Moods] = []
     var selectedIndexPath: IndexPath?
@@ -39,21 +39,34 @@ class MoodCVC: UIViewController {
             
             //Get the saved moods
             let requestMood = NSFetchRequest<NSFetchRequestResult>(entityName: "Mood")
-            let savedMoods = (try! appDelegate.managedObjectContext?.fetch(requestMood))  as! [Mood]
             
-            date = UserDefaults.standard.object(forKey: "dateUF") as! Date
+            guard let unwrappedAppDelegate = appDelegate, let unwrappedManagedObjectContext = unwrappedAppDelegate.managedObjectContext, let savedDate = UserDefaults.standard.object(forKey: "dateUF") as? Date  else {
+                return
+            }
+            
+            do {
+                guard  let savedMoods = try unwrappedManagedObjectContext.fetch(requestMood) as? [Mood] else {
+                    return
+                }
+                saveMoodCorrectly(savedMoods)
+            } catch {
+                print(error)
+            }
+            
+            date = savedDate
+            
 
-            saveMoodCorrectly(savedMoods)
-            
             //Save context
-            appDelegate.saveContext()
+            unwrappedAppDelegate.saveContext()
             
-            let cell = moodCollectionView.cellForItem(at: selectedIndexPath!) as! MoodCell
+            guard let unwrappedSelectedIndexPath = selectedIndexPath, let cell = moodCollectionView.cellForItem(at: unwrappedSelectedIndexPath) as? MoodCell else {
+                return
+            }
             
             //Fabric - Analytic Tool
             Answers.logContentView(withName: "Mood",
                                    contentType: "Saved data",
-                                   contentId: cell.moodNameLabel.text!,
+                                   contentId: cell.moodNameLabel.text ?? "",
                                    customAttributes: [:])
             
             AlertFormatHelper.showInfoAlert(self, "Your mood was saved.")
@@ -67,22 +80,33 @@ class MoodCVC: UIViewController {
     }
     
     @IBAction func showNextDay(_ sender: AnyObject) {
-        date = DateFormatHelper.setDate(date.addingTimeInterval(60 * 60 * 24), datePickerButton)
+        guard let unwrappedDate = date else {
+            return
+        }
+        date = DateFormatHelper.setDate(unwrappedDate.addingTimeInterval(60 * 60 * 24), datePickerButton)
     }
     
     @IBAction func showPreviousDay(_ sender: AnyObject) {
-        date = DateFormatHelper.setDate(date.addingTimeInterval(-60 * 60 * 24), datePickerButton)
+        guard let unwrappedDate = date else {
+            return
+        }
+        date = DateFormatHelper.setDate(unwrappedDate.addingTimeInterval(-60 * 60 * 24), datePickerButton)
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        date = UserDefaults.standard.object(forKey: "dateUF") as! Date
-        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
+        guard let savedDate = UserDefaults.standard.object(forKey: "dateUF") as? Date else {
+            return
+        }
+        datePickerButton.setTitle(DateFormatHelper.returnDateForm(savedDate), for: UIControlState())
+        date = savedDate
     }
     
     // MARK: View methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        appDelegate =  UIApplication.shared.delegate as? AppDelegate
         
         moodCollectionView.delegate = self
         moodCollectionView.dataSource = self
@@ -94,15 +118,19 @@ class MoodCVC: UIViewController {
     // MARK: Own Methods
     
     func addNewMood(){
-        let newItem = NSEntityDescription.insertNewObject(forEntityName: "Mood", into: appDelegate.managedObjectContext!) as! Mood
+        guard let unwrappedAppDelegate = appDelegate, let unwrappedManagedObjectContext = unwrappedAppDelegate.managedObjectContext, let newItem = NSEntityDescription.insertNewObject(forEntityName: "Mood", into: unwrappedManagedObjectContext) as? Mood else {
+            return
+        }
         addMood(newItem)
     }
     
     func addMood(_ _Object:Mood){
-        let cell = moodCollectionView.cellForItem(at: selectedIndexPath!) as! MoodCell
-        _Object.date = date
-        _Object.moodName = cell.moodNameLabel.text!
-        _Object.moodImagePath = imagePaths[(selectedIndexPath! as NSIndexPath).row + 1]
+        guard let unwrappedSelectedIndexPath = selectedIndexPath, let cell = moodCollectionView.cellForItem(at: unwrappedSelectedIndexPath) as? MoodCell, let unwrappedDate = date else {
+            return
+        }
+        _Object.date = unwrappedDate
+        _Object.moodName = cell.moodNameLabel.text ?? ""
+        _Object.moodImagePath = imagePaths[(unwrappedSelectedIndexPath as NSIndexPath).row + 1]
     }
     
     func setupMoods() {
@@ -159,7 +187,9 @@ extension MoodCVC: UICollectionViewDelegate, UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as! MoodCell
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as? MoodCell else {
+            return UICollectionViewCell()
+        }
         cell.moodNameLabel.text = moods[(indexPath as NSIndexPath).row].moodName
         cell.moodImageView.image = moods[(indexPath as NSIndexPath).row].moodSmiley
         return cell

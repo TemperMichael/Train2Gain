@@ -11,7 +11,7 @@ import LocalAuthentication
 
 class OverviewTVC: UITableViewController {
     
-    var appDelegate = UIApplication.shared.delegate as! AppDelegate
+    var appDelegate: AppDelegate?
     var cellIdentifier = "OverviewCell"
     var menuPoints: [String] = [NSLocalizedString("Training", comment: "Training"),  NSLocalizedString("Body measurements", comment: "Body measurements"), NSLocalizedString("Mood", comment: "Mood"), NSLocalizedString("Training data", comment: "Training data"), NSLocalizedString("Statistic", comment: "Statistic"), NSLocalizedString("Settings", comment: "Settings")]
     var password: String =  ""
@@ -61,7 +61,7 @@ class OverviewTVC: UITableViewController {
     }
     
     // MARK: Own Methods
-
+    
     func checkFingerprint() {
         var error: NSError?
         let context = LAContext()
@@ -74,46 +74,28 @@ class OverviewTVC: UITableViewController {
         })
     }
     
-    // Create password dialog: single = false for setup password
-    //                         single = true for entering password
-    func showPasswordAlert(_ _Message: String, single: Bool) {
+    func showPasswordAlert(_ _Message: String) {
         let passwordPrompt = UIAlertController(title: NSLocalizedString("Enter Password", comment: "Enter Password"), message: _Message, preferredStyle: UIAlertControllerStyle.alert)
         
         passwordPrompt.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel"), style: UIAlertActionStyle.default, handler: nil))
         passwordPrompt.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: UIAlertActionStyle.default, handler: { (action) -> Void in
             //Enter password
-            if single {
-                let textField = passwordPrompt.textFields![0] 
-                let password = textField.text
-                if password == self.password {
-                    self.performSegue(withIdentifier: self.selectedSection, sender: self)
-                } else {
-                    self.showPasswordAlert(NSLocalizedString("Password was wrong", comment: "Password was wrong"),single: true)
-                }
-            } else {
-                // Setup password
-                var textField = passwordPrompt.textFields![0] 
-                let password = textField.text
-                textField = passwordPrompt.textFields![1] 
-                let passwordConfirmend = textField.text
-                if password == passwordConfirmend {
-                    self.password = passwordConfirmend!
-                    UserDefaults.standard.set(passwordConfirmend, forKey: "Password")
-                } else {
-                    self.showPasswordAlert(NSLocalizedString("Confirmed password was wrong or empty", comment: "Confirmed password was wrong or empty"), single: false)
-                }
+            guard let passwordTextFields = passwordPrompt.textFields else {
+                return
             }
+            let textField = passwordTextFields[0]
+            let password = textField.text
+            if password == self.password {
+                self.performSegue(withIdentifier: self.selectedSection, sender: self)
+            } else {
+                self.showPasswordAlert(NSLocalizedString("Password was wrong", comment: "Password was wrong"))
+            }
+            
         }))
         passwordPrompt.addTextField(configurationHandler: {(textField: UITextField) in
             textField.placeholder = NSLocalizedString("Password", comment: "Password")
             textField.isSecureTextEntry = true
         })
-        if single == false {
-            passwordPrompt.addTextField(configurationHandler: {(textField: UITextField) in
-                textField.placeholder = NSLocalizedString("Confirm Password", comment: "Confirm Password")
-                textField.isSecureTextEntry = true
-            })
-        }
         
         present(passwordPrompt, animated: true, completion: nil)
     }
@@ -136,10 +118,14 @@ class OverviewTVC: UITableViewController {
     }
     
     func setupView() {
-        appDelegate.shouldRotate = false
+        guard let unwrappedAppDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            return
+        }
+        
+        unwrappedAppDelegate.shouldRotate = false
         
         if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.pad {
-            appDelegate.shouldRotate = true
+            unwrappedAppDelegate.shouldRotate = true
         }
         
         // Get and save actual date
@@ -192,15 +178,19 @@ class OverviewTVC: UITableViewController {
             }
         } else {
             // Handle other possible situations
-            switch policyError!._code {
+            guard let unwrappedPolicyError = policyError else {
+                UIAlertView(title:"Error", message: NSLocalizedString("Authentication was cancelled by the system", comment: "Authentication was cancelled by the system"), delegate: self, cancelButtonTitle: "OK").show()
+                return
+            }
+            switch unwrappedPolicyError._code {
             case LAError.Code.systemCancel.rawValue:
                 UIAlertView(title:"Error", message: NSLocalizedString("Authentication was cancelled by the system", comment: "Authentication was cancelled by the system"), delegate: self, cancelButtonTitle: "OK").show()
             case LAError.Code.userCancel.rawValue:
                 print("Authentication was cancelled by the user")
             case LAError.Code.userFallback.rawValue:
-                self.showPasswordAlert(NSLocalizedString("Enter your password", comment: "Enter your password"), single: true)
+                self.showPasswordAlert(NSLocalizedString("Enter your password", comment: "Enter your password"))
             default:
-                self.showPasswordAlert(NSLocalizedString("Enter your password", comment: "Enter your password"), single: true)
+                self.showPasswordAlert(NSLocalizedString("Enter your password", comment: "Enter your password"))
             }
         }
     }
