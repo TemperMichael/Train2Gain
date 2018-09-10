@@ -13,15 +13,14 @@ import Crashlytics
 
 class BodyMeasurementsVC: UIViewController {
     
-    var appDelegate = UIApplication.shared.delegate as! AppDelegate
+    var appDelegate: AppDelegate?
     let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.dark))
-    var date: Date!
-    
+    var date: Date?
     var editMode = false
-    var lengthUnit = UserDefaults.standard.object(forKey: "lengthUnit")! as! String
+    var lengthUnit: String?
     var measurements: [Measurements] = []
     let requestedMeasurements = NSFetchRequest<Measurements>(entityName: "Measurements")
-    var weightUnit = UserDefaults.standard.object(forKey: "weightUnit")! as! String
+    var weightUnit: String?
     
     // MARK: IBOutles & IBActions
     @IBOutlet weak var datePicker: UIDatePicker!
@@ -38,21 +37,28 @@ class BodyMeasurementsVC: UIViewController {
     @IBOutlet weak var selectDateButton: UIButton!
     
     @IBAction func saveMeasurements(_ sender: AnyObject) {
-        
-        measurements = (try! appDelegate.managedObjectContext?.fetch(requestedMeasurements))!
-        date = UserDefaults.standard.object(forKey: "dateUF") as! Date
-        
-        saveMeasurementsCorrectly()
-        
-        appDelegate.saveContext()
-        
-        // Fabric - Analytic tool
-        Answers.logContentView(withName: "Body Measurement",
-                               contentType: "Saved data",
-                               contentId: String(stringInterpolationSegment: editMode),
-                               customAttributes: [:])
-        
-        AlertFormatHelper.showInfoAlert(self, "Your body measurements were saved.")
+        do {
+            guard let unwrappedAppDelegate = UIApplication.shared.delegate as? AppDelegate, let unwrappedManagedObjectContext = unwrappedAppDelegate.managedObjectContext, let unwrappedDate =  UserDefaults.standard.object(forKey: "dateUF") as? Date else {
+                return
+            }
+            
+            measurements = try unwrappedManagedObjectContext.fetch(requestedMeasurements)
+            date = unwrappedDate
+            
+            saveMeasurementsCorrectly()
+            
+            unwrappedAppDelegate.saveContext()
+            
+            // Fabric - Analytic tool
+            Answers.logContentView(withName: "Body Measurement",
+                                   contentType: "Saved data",
+                                   contentId: String(stringInterpolationSegment: editMode),
+                                   customAttributes: [:])
+            
+            AlertFormatHelper.showInfoAlert(self, "Your body measurements were saved.")
+        } catch {
+            print(error)
+        }
     }
     
     @IBAction func selectDate(_ sender: AnyObject) {
@@ -66,11 +72,17 @@ class BodyMeasurementsVC: UIViewController {
     }
     
     @IBAction func showNextDay(_ sender: AnyObject) {
-        date = DateFormatHelper.setDate(date.addingTimeInterval(60 * 60 * 24), datePickerButton)
+        guard let unwrappedDate = date else {
+            return
+        }
+        date = DateFormatHelper.setDate(unwrappedDate.addingTimeInterval(60 * 60 * 24), datePickerButton)
     }
     
     @IBAction func showPreviousDay(_ sender: AnyObject) {
-        date = DateFormatHelper.setDate(date.addingTimeInterval(-60 * 60 * 24), datePickerButton)
+        guard let unwrappedDate = date else {
+            return
+        }
+        date = DateFormatHelper.setDate(unwrappedDate.addingTimeInterval(-60 * 60 * 24), datePickerButton)
     }
     
     // MARK: View Methods
@@ -78,8 +90,7 @@ class BodyMeasurementsVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        date = UserDefaults.standard.object(forKey: "dateUF") as! Date
-        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
+        setupView()
         
         measurementsWeightTextField.delegate = self
         measurementsChestTextField.delegate = self
@@ -101,11 +112,23 @@ class BodyMeasurementsVC: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        date = UserDefaults.standard.object(forKey: "dateUF") as! Date
-        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
+        setupView()
     }
     
     // MARK: Own Methods
+    
+    func setupView() {
+        guard let unwrappedLengthUnit = UserDefaults.standard.object(forKey: "lengthUnit") as? String, let unwrappedWeightUnit = UserDefaults.standard.object(forKey: "weightUnit") as? String, let unwrappedDate = UserDefaults.standard.object(forKey: "dateUF") as? Date, let unwrappedAppDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            return
+        }
+        
+        lengthUnit = unwrappedLengthUnit
+        weightUnit = unwrappedWeightUnit
+        appDelegate = unwrappedAppDelegate
+        
+        datePickerButton.setTitle(DateFormatHelper.returnDateForm(unwrappedDate), for: UIControlState())
+        date = unwrappedDate
+    }
     
     func getCorrectString(_ measurementValue: Double, id: Int) -> String{
         var value = measurementValue
@@ -127,40 +150,43 @@ class BodyMeasurementsVC: UIViewController {
     }
     
     // Add measures in right units
-    func addNewMeasure(){
-        let newItem = NSEntityDescription.insertNewObject(forEntityName: "Measurements", into: appDelegate.managedObjectContext!) as! Measurements
+    func addNewMeasure() {
+        guard let unwrappedAppDelegate = appDelegate, let unwrappedManagedObjectContext = unwrappedAppDelegate.managedObjectContext, let newItem = NSEntityDescription.insertNewObject(forEntityName: "Measurements", into: unwrappedManagedObjectContext) as? Measurements else {
+            return
+        }
         addMeasure(newItem)
     }
     
     func addMeasure(_ _Object: Measurements) {
         // TODO Werte  nicht formatiert gespeichert
-        var value = 0.0
-        _Object.date = date
-        value = (measurementsWeightTextField.text! as NSString).doubleValue
+        guard let unwrappedDate = UserDefaults.standard.object(forKey: "dateUF") as? Date else {
+            return
+        }
+        _Object.date = unwrappedDate
+        
+        
+        guard let weightValue = measurementsWeightTextField.text, let armValue = measurementsArmTextField.text, let chestValue = measurementsChestTextField.text, let waistValue = measurementsWaistTextField.text, let legValue = measurementsLegTextField.text else {
+            return
+        }
+        
+        print(NSDecimalNumber(string: weightValue.isEmpty ? "0" : weightValue))
+        _Object.weight = NSDecimalNumber(string: weightValue.isEmpty ? "0" : weightValue)
+        _Object.arm = NSDecimalNumber(string: armValue.isEmpty ? "0" : armValue)
+        _Object.chest = NSDecimalNumber(string: chestValue.isEmpty ? "0" : chestValue)
+        _Object.waist = NSDecimalNumber(string: waistValue.isEmpty ? "0" : waistValue)
+        _Object.leg = NSDecimalNumber(string: legValue.isEmpty ? "0" : legValue)
+        
+        
         if weightUnit == "lbs" {
-            value = value / 2.20462262185
+            _Object.weight.dividing(by: NSDecimalNumber(value: 2.20462262185))
         }
-        _Object.weight = NSDecimalNumber(string: !measurementsWeightTextField.text!.isEmpty ? "\(value)" : "0")
-        value = (measurementsArmTextField.text! as NSString).doubleValue
+        
         if lengthUnit == "inch" {
-            value = value * 2.54
+            _Object.arm = _Object.arm.multiplying(by: NSDecimalNumber(value: 2.54))
+            _Object.chest = _Object.chest.multiplying(by: NSDecimalNumber(value: 2.54))
+            _Object.waist = _Object.waist.multiplying(by: NSDecimalNumber(value: 2.54))
+            _Object.leg = _Object.leg.multiplying(by: NSDecimalNumber(value: 2.54))
         }
-        _Object.arm = NSDecimalNumber(string: !measurementsArmTextField.text!.isEmpty ? "\(value)" : "0")
-        value = (measurementsChestTextField.text! as NSString).doubleValue
-        if lengthUnit == "inch" {
-            value = value * 2.54
-        }
-        _Object.chest = NSDecimalNumber(string: !measurementsChestTextField.text!.isEmpty ? "\(value)" : "0")
-        value = (measurementsWaistTextField.text! as NSString).doubleValue
-        if lengthUnit == "inch" {
-            value = value * 2.54
-        }
-        _Object.waist = NSDecimalNumber(string: !measurementsWaistTextField.text!.isEmpty ? "\(value)" : "0")
-        value = (measurementsLegTextField.text! as NSString).doubleValue
-        if lengthUnit == "inch" {
-            value = value * 2.54
-        }
-        _Object.leg = NSDecimalNumber(string: !measurementsLegTextField.text!.isEmpty ? "\(value)" : "0")
     }
     
     func handleReturnButtonClick(_ textField: UITextField) {
@@ -182,12 +208,12 @@ class BodyMeasurementsVC: UIViewController {
     }
     
     func detectValidInput(_ textField: UITextField, _ string: String, _ range: NSRange) -> Bool {
-        var getDecimalNumbers = (textField.text! as NSString).components(separatedBy: ".")
+        var getDecimalNumbers = (textField.text ?? "").components(separatedBy: ".")
         
         if getDecimalNumbers.count > 1 && (getDecimalNumbers[1] as NSString).length > 1 && string != ""  {
             return false
         }
-        let text = (textField.text! as NSString).replacingCharacters(in: range, with: string)
+        let text = (textField.text as NSString? ?? "").replacingCharacters(in: range, with: string)
         let disallowedCharacterSet = CharacterSet(charactersIn: "0123456789.").inverted
         let replacementStringIsLegal = string.rangeOfCharacter(from: disallowedCharacterSet) == nil
         let resultingStringLengthIsLegal =  (getDecimalNumbers.count > 1 || string == ".") ? text.count <= 6 : text.count <= 3
@@ -204,15 +230,22 @@ class BodyMeasurementsVC: UIViewController {
     }
     
     func loadSavedMeasurements() {
-        measurements = (try! appDelegate.managedObjectContext?.fetch(requestedMeasurements))!
-        for singleMeasure in measurements {
-            if DateFormatHelper.returnDateForm(singleMeasure.date as Date) == DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date) {
-                measurementsWeightTextField.text = getCorrectString(singleMeasure.weight.doubleValue,id: 0)
-                measurementsArmTextField.text = getCorrectString(singleMeasure.arm.doubleValue,id: 1)
-                measurementsLegTextField.text = getCorrectString(singleMeasure.leg.doubleValue,id: 1)
-                measurementsChestTextField.text = getCorrectString(singleMeasure.chest.doubleValue,id: 1)
-                measurementsWaistTextField.text = getCorrectString(singleMeasure.waist.doubleValue,id: 1)
+        do {
+            guard let unwrappedAppDelegate = appDelegate, let unwrappedManagedObjectContext = unwrappedAppDelegate.managedObjectContext, let unwrappedDate = UserDefaults.standard.object(forKey: "dateUF") as? Date else {
+                return
             }
+            measurements = try unwrappedManagedObjectContext.fetch(requestedMeasurements)
+            for singleMeasure in measurements {
+                if DateFormatHelper.returnDateForm(singleMeasure.date as Date) == DateFormatHelper.returnDateForm(unwrappedDate) {
+                    measurementsWeightTextField.text = getCorrectString(singleMeasure.weight.doubleValue,id: 0)
+                    measurementsArmTextField.text = getCorrectString(singleMeasure.arm.doubleValue,id: 1)
+                    measurementsLegTextField.text = getCorrectString(singleMeasure.leg.doubleValue,id: 1)
+                    measurementsChestTextField.text = getCorrectString(singleMeasure.chest.doubleValue,id: 1)
+                    measurementsWaistTextField.text = getCorrectString(singleMeasure.waist.doubleValue,id: 1)
+                }
+            }
+        } catch {
+            print(error)
         }
     }
     

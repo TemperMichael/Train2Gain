@@ -14,20 +14,20 @@ import Crashlytics
 
 class TrainingDataVC: UIViewController {
     
-    var appDelegate = UIApplication.shared.delegate as! AppDelegate
+    var appDelegate: AppDelegate?
     let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.dark))
     let cellIdentifier = "TrainingDataCell"
     var dayIDs: [String] = []
     var dayHasContent = false
     var doneExercises: [DoneExercise] = []
-    var lengthUnit = UserDefaults.standard.object(forKey: "lengthUnit")! as! String
+    var lengthUnit: String?
     var measurements: [Measurements] = []
     var moods: [Mood] = []
     let requestedDoneExercises = NSFetchRequest<NSFetchRequestResult>(entityName: "DoneExercise")
     var selectedDayDetails: [String] = []
     var selectedDoneExercises: [DoneExercise] = []
-    var weightUnit = UserDefaults.standard.object(forKey: "weightUnit")! as! String
-
+    var weightUnit: String?
+    
     @IBOutlet weak var datePicker: UIDatePicker!
     @IBOutlet weak var datePickerButton: UIButton!
     @IBOutlet weak var datePickerBackgroundView: UIView!
@@ -44,7 +44,7 @@ class TrainingDataVC: UIViewController {
     @IBOutlet weak var trainingDataMoodNameLabel: UILabel!
     @IBOutlet weak var trainingDataWaistLabel: UILabel!
     @IBOutlet weak var trainingDataWeightLabel: UILabel!
-
+    
     
     @IBAction func pickDateClicked(_ sender: AnyObject) {
         PickerViewHelper.setupPickerViewBackground(blurView, datePickerBackgroundView)
@@ -58,12 +58,18 @@ class TrainingDataVC: UIViewController {
     }
     
     @IBAction func showNextDay(_ sender: AnyObject) {
-        _ = DateFormatHelper.setDate((UserDefaults.standard.object(forKey: "dateUF") as! Date).addingTimeInterval(60 * 60 * 24), datePickerButton)
+        guard let unwrappedDate = UserDefaults.standard.object(forKey: "dateUF") as? Date else {
+            return
+        }
+        _ = DateFormatHelper.setDate(unwrappedDate.addingTimeInterval(60 * 60 * 24), datePickerButton)
         viewDidAppear(true)
     }
     
     @IBAction func showPreviousDay(_ sender: AnyObject) {
-        _ = DateFormatHelper.setDate((UserDefaults.standard.object(forKey: "dateUF") as! Date).addingTimeInterval(-60 * 60 * 24), datePickerButton)
+        guard let unwrappedDate = UserDefaults.standard.object(forKey: "dateUF") as? Date else {
+            return
+        }
+        _ = DateFormatHelper.setDate(unwrappedDate.addingTimeInterval(-60 * 60 * 24), datePickerButton)
         viewDidAppear(true)
     }
     
@@ -71,26 +77,38 @@ class TrainingDataVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        selectedDoneExercises = []
-        
-        datePickerButton.titleLabel?.text = DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)
-        trainingDataDayIDTableView.dataSource = self
-        trainingDataDayIDTableView.delegate = self
-        
-        //Fabric - Analytic tool
-        Answers.logContentView(withName: "Watched Training data",
-            contentType: "Saved data",
-            contentId: "Training data",
-            customAttributes: [:])
-        doneExercises = (try! appDelegate.managedObjectContext?.fetch(requestedDoneExercises))  as! [DoneExercise]
-        
-        PickerViewHelper.setupPickerView(datePicker, datePickerTitleLabel)
+        do {
+            guard let unwrappedLengthUnit = UserDefaults.standard.object(forKey: "lengthUnit") as? String, let unwrappedWeightUnit = UserDefaults.standard.object(forKey: "weightUnit") as? String, let unwrappedAppDelegate = UIApplication.shared.delegate as? AppDelegate, let unwrappedManagedObjectContext = unwrappedAppDelegate.managedObjectContext, let unwrappedDoneExercises = try unwrappedManagedObjectContext.fetch(requestedDoneExercises)  as? [DoneExercise], let unwrappedDate = UserDefaults.standard.object(forKey: "dateUF") as? Date else {
+                return
+            }
+            
+            lengthUnit = unwrappedLengthUnit
+            weightUnit = unwrappedWeightUnit
+            appDelegate = unwrappedAppDelegate
+            
+            selectedDoneExercises = []
+            
+            datePickerButton.titleLabel?.text = DateFormatHelper.returnDateForm(unwrappedDate)
+            trainingDataDayIDTableView.dataSource = self
+            trainingDataDayIDTableView.delegate = self
+            
+            //Fabric - Analytic tool
+            Answers.logContentView(withName: "Watched Training data",
+                                   contentType: "Saved data",
+                                   contentId: "Training data",
+                                   customAttributes: [:])
+            doneExercises = unwrappedDoneExercises
+            
+            PickerViewHelper.setupPickerView(datePicker, datePickerTitleLabel)
+        } catch {
+            print(error)
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         self.navigationController?.setToolbarHidden(true, animated: true)
     }
-
+    
     override func viewDidAppear(_ animated: Bool) {
         //Reset lists
         selectedDayDetails = []
@@ -98,8 +116,16 @@ class TrainingDataVC: UIViewController {
         selectedDoneExercises = []
         dayHasContent = false
         
+        guard let unwrappedLengthUnit = UserDefaults.standard.object(forKey: "lengthUnit") as? String, let unwrappedWeightUnit = UserDefaults.standard.object(forKey: "weightUnit") as? String, let unwrappedAppDelegate = UIApplication.shared.delegate as? AppDelegate, let unwrappedDate = UserDefaults.standard.object(forKey: "dateUF") as? Date else {
+            return
+        }
+        
+        lengthUnit = unwrappedLengthUnit
+        weightUnit = unwrappedWeightUnit
+        appDelegate = unwrappedAppDelegate
+        
         //Show date of chosen day
-        datePickerButton.setTitle(DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date), for: UIControlState())
+        datePickerButton.setTitle(DateFormatHelper.returnDateForm(unwrappedDate), for: UIControlState())
         
         loadTrainingData()
         
@@ -109,7 +135,7 @@ class TrainingDataVC: UIViewController {
         
         setupMoodData()
         
-        trainingDataDateLabel.text = DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)
+        trainingDataDateLabel.text = DateFormatHelper.returnDateForm(unwrappedDate)
         
         trainingDataDayIDTableView.reloadData()
         
@@ -123,10 +149,13 @@ class TrainingDataVC: UIViewController {
     
     func setupDeleteAction(_ indexPath: IndexPath, _ tableView: UITableView) -> UITableViewRowAction {
         let deleteAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: NSLocalizedString("Delete", comment: "Delete")) { (action, index) -> Void in
-            let context:NSManagedObjectContext = self.appDelegate.managedObjectContext!
+            guard let unwrappedAppDelegate = self.appDelegate, let unwrappedManageObjectContext = unwrappedAppDelegate.managedObjectContext, let unwrappedDate = UserDefaults.standard.object(forKey: "dateUF") as? Date else {
+                return
+            }
+            let context = unwrappedManageObjectContext
             var count = self.doneExercises.count - 1
-            for _ in 0..<self.doneExercises.count{
-                if self.doneExercises[count].dayID == self.dayIDs[(indexPath as NSIndexPath).row] && DateFormatHelper.returnDateForm(self.doneExercises[count].date as Date) == DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date) {
+            for _ in 0..<self.doneExercises.count {
+                if self.doneExercises[count].dayID == self.dayIDs[(indexPath as NSIndexPath).row] && DateFormatHelper.returnDateForm(self.doneExercises[count].date as Date) == DateFormatHelper.returnDateForm(unwrappedDate) {
                     context.delete(self.doneExercises[count] as NSManagedObject)
                     self.doneExercises.remove(at: count)
                 }
@@ -145,9 +174,12 @@ class TrainingDataVC: UIViewController {
     }
     
     func setupEditAction(_ indexPath: IndexPath) -> UITableViewRowAction {
+        guard let unwrappedDate = UserDefaults.standard.object(forKey: "dateUF") as? Date else {
+            return UITableViewRowAction()
+        }
         let editAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: NSLocalizedString("Edit", comment: "Edit")) { (action, index) -> Void in
             for i in 0  ..< self.doneExercises.count {
-                if self.doneExercises[i].dayID == self.dayIDs[(indexPath as NSIndexPath).row] && DateFormatHelper.returnDateForm(self.doneExercises[i].date as Date) == DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date) {
+                if self.doneExercises[i].dayID == self.dayIDs[(indexPath as NSIndexPath).row] && DateFormatHelper.returnDateForm(self.doneExercises[i].date as Date) == DateFormatHelper.returnDateForm(unwrappedDate) {
                     self.selectedDoneExercises.append(self.doneExercises[i])
                 }
             }
@@ -177,8 +209,12 @@ class TrainingDataVC: UIViewController {
         var checkBefore = ""
         var dayIDExists = true
         
+        guard let unwrappedDate = UserDefaults.standard.object(forKey: "dateUF") as? Date else {
+            return
+        }
+        
         for checkIDAmount in doneExercises {
-            if(DateFormatHelper.returnDateForm(checkIDAmount.date as Date) ==  DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)) {
+            if DateFormatHelper.returnDateForm(checkIDAmount.date as Date) == DateFormatHelper.returnDateForm(unwrappedDate) {
                 dayHasContent = true
                 checkBefore=checkString
                 checkString = checkIDAmount.dayID
@@ -200,18 +236,24 @@ class TrainingDataVC: UIViewController {
     
     func loadTrainingData() {
         let requestDoneExercises = NSFetchRequest<NSFetchRequestResult>(entityName: "DoneExercise")
-        doneExercises = (try! appDelegate.managedObjectContext?.fetch(requestDoneExercises))  as! [DoneExercise]
+        let requestMeasurements = NSFetchRequest<NSFetchRequestResult>(entityName: "Measurements")
+        let requestMood = NSFetchRequest<NSFetchRequestResult>(entityName: "Mood")
         
-        let  requestMeasurements = NSFetchRequest<NSFetchRequestResult>(entityName: "Measurements")
-        measurements = (try! appDelegate.managedObjectContext?.fetch(requestMeasurements))  as! [Measurements]
-        
-        let  requestMood = NSFetchRequest<NSFetchRequestResult>(entityName: "Mood")
-        moods = (try! appDelegate.managedObjectContext?.fetch(requestMood))  as! [Mood]
+        do {
+            guard let unwrappedAppDelegate = appDelegate, let unwrappedManagedObjectContext = unwrappedAppDelegate.managedObjectContext, let unwrappedDoneExercises = try unwrappedManagedObjectContext.fetch(requestDoneExercises) as? [DoneExercise], let unwrappedMeasurements = try unwrappedManagedObjectContext.fetch(requestMeasurements) as? [Measurements], let unwrappedMoods = try unwrappedManagedObjectContext.fetch(requestMood) as? [Mood]  else {
+                return
+            }
+            
+            doneExercises = unwrappedDoneExercises
+            measurements = unwrappedMeasurements
+            moods = unwrappedMoods
+        } catch {
+            print(error)
+        }
     }
     
     func setupMeasurementData() {
         //Default text
-        
         let translationWeight = NSLocalizedString("Weight", comment: "Weight")
         let translationArms = NSLocalizedString("Arms", comment: "Arms")
         let translationChest = NSLocalizedString("Chest", comment: "Chest")
@@ -224,40 +266,43 @@ class TrainingDataVC: UIViewController {
         trainingDataWaistLabel.text = "\(translationWaist): ---"
         trainingDataLegLabel.text = "\(translationLegs): ---"
         
+        guard let unwrappedDate = UserDefaults.standard.object(forKey: "dateUF") as? Date, let unwrappedWeightUnit = weightUnit, let unwrappedLengthUnit = lengthUnit else {
+            return
+        }
+        
         //Show data in right unit
         for checkMeasureExists in measurements {
-            if(DateFormatHelper.returnDateForm(checkMeasureExists.date as Date) ==  DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)) {
+            if DateFormatHelper.returnDateForm(checkMeasureExists.date as Date) ==  DateFormatHelper.returnDateForm(unwrappedDate) {
                 var weight = (checkMeasureExists.weight).doubleValue
                 if weightUnit == "lbs" {
                     weight = weight * 2.20462262185
                 }
                 dayHasContent = true
-                trainingDataWeightLabel.text = NSString(format:"\(translationWeight): %.2f \(weightUnit)" as NSString, weight) as String
+                trainingDataWeightLabel.text = NSString(format:"\(translationWeight): %.2f \(unwrappedWeightUnit)" as NSString, weight) as String
                 
                 var length = (checkMeasureExists.arm).doubleValue
                 if lengthUnit == "inch" {
                     length = length / 2.54
                 }
-                trainingDataArmLabel.text =  NSString(format:"\(translationArms): %.2f \(lengthUnit)" as NSString, length) as String
+                trainingDataArmLabel.text =  NSString(format:"\(translationArms): %.2f \(unwrappedLengthUnit)" as NSString, length) as String
                 
                 length = (checkMeasureExists.chest).doubleValue
                 if lengthUnit == "inch" {
                     length = length / 2.54
                 }
-                trainingDataChestLabel.text =  NSString(format:"\(translationChest): %.2f \(lengthUnit)" as NSString, length) as String
-                
+                trainingDataChestLabel.text =  NSString(format:"\(translationChest): %.2f \(unwrappedLengthUnit)" as NSString, length) as String
                 
                 length = (checkMeasureExists.waist).doubleValue
                 if lengthUnit == "inch" {
                     length = length / 2.54
                 }
-                trainingDataWaistLabel.text =  NSString(format:"\(translationWaist): %.2f \(lengthUnit)" as NSString, length) as String
+                trainingDataWaistLabel.text =  NSString(format:"\(translationWaist): %.2f \(unwrappedLengthUnit)" as NSString, length) as String
                 
                 length = (checkMeasureExists.leg).doubleValue
                 if lengthUnit == "inch" {
                     length = length / 2.54
                 }
-                trainingDataLegLabel.text =  NSString(format:"\(translationLegs): %.2f \(lengthUnit)" as NSString, length) as String
+                trainingDataLegLabel.text =  NSString(format:"\(translationLegs): %.2f \(unwrappedLengthUnit)" as NSString, length) as String
             }
             
         }
@@ -267,9 +312,12 @@ class TrainingDataVC: UIViewController {
         trainingDataMoodNameLabel.text = "---"
         trainingDataMoodImageView.image = UIImage(named: "SmileyNormal.png")
         trainingDataMoodImageView.tintColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
+        guard let unwrappedDate = UserDefaults.standard.object(forKey: "dateUF") as? Date else {
+            return
+        }
         
         for checkMoodExists in moods {
-            if(DateFormatHelper.returnDateForm(checkMoodExists.date as Date) ==  DateFormatHelper.returnDateForm(UserDefaults.standard.object(forKey: "dateUF") as! Date)){
+            if DateFormatHelper.returnDateForm(checkMoodExists.date as Date) ==  DateFormatHelper.returnDateForm(unwrappedDate) {
                 dayHasContent = true
                 trainingDataMoodNameLabel.text = checkMoodExists.moodName
                 trainingDataMoodImageView.image = UIImage(named: checkMoodExists.moodImagePath)
@@ -282,7 +330,7 @@ class TrainingDataVC: UIViewController {
 // MARK: TableView
 
 extension TrainingDataVC: UITableViewDelegate, UITableViewDataSource {
-
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -293,18 +341,22 @@ extension TrainingDataVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         selectedDayDetails.append(dayIDs[(indexPath as NSIndexPath).row])
-        selectedDayDetails.append(trainingDataDateLabel.text!)
+        selectedDayDetails.append(trainingDataDateLabel.text ?? "")
         return indexPath
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         //Save chosen exercise day
         if segue.identifier == "DayIDChosen" {
-            let dayIDChosenTableViewController = segue.destination as! TrainingDataDetailTVC
+            guard let dayIDChosenTableViewController = segue.destination as? TrainingDataDetailTVC else {
+                return
+            }
             dayIDChosenTableViewController.selectedDayDetails = selectedDayDetails
         }
         if segue.identifier == "editSegue" {
-            let editDayIDViewController = segue.destination as! EditTrainingDataDetailVC
+            guard let editDayIDViewController = segue.destination as? EditTrainingDataDetailVC else {
+                return
+            }
             editDayIDViewController.selectedExercise = selectedDoneExercises
         }
     }

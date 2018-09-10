@@ -11,18 +11,17 @@ import CoreData
 
 class EditTrainingDataDetailVC: UIViewController {
     
-    var appDelegate = UIApplication.shared.delegate as! AppDelegate
-    var currentTime: TimeInterval?
-    var editDate: Date!
+    var appDelegate: AppDelegate?
+    var editDate: Date?
     var exercisesWithSets: [DoneExercise] = []
-    var lengthUnit = UserDefaults.standard.object(forKey: "lengthUnit")! as! String
+    var lengthUnit: String?
     var saveCurrentTime: TimeInterval?
     var selectedExercise: [DoneExercise] = []
     var setCounter: [Int] = []
     var startTime = TimeInterval()
     var timer = Timer()
     var wasStopped = true
-    var weightUnit = UserDefaults.standard.object(forKey: "weightUnit")! as! String
+    var weightUnit: String?
     var userPosition: Int = 0
     
     // MARK: IBOutles & IBActions
@@ -44,48 +43,14 @@ class EditTrainingDataDetailVC: UIViewController {
         }
     }
     
-    func prepareDataSet() -> [Array<String>] {
-        
-        var weight = (editWeightsTextField.text! as NSString).doubleValue
-        //Save all in kg
-        if weightUnit == "lbs" {
-            weight = weight /  2.20462262185
-        }
-        
-        //If nothing was entered save zero as weight and rep value
-        exercisesWithSets[userPosition].weight =  editWeightsTextField.text != "" ?  NSDecimalNumber(value: weight as Double) : 0
-        exercisesWithSets[userPosition].doneReps = editRepsTextField.text != "" ?  NSDecimalNumber(string: editRepsTextField.text) : 0
-        
-        
-        var dataSet: [[String]] = []
-        for i in 0 ..< exercisesWithSets.count {
-            dataSet.append([exercisesWithSets[i].dayID, exercisesWithSets[i].name,"\(exercisesWithSets[i].reps)", "\(exercisesWithSets[i].doneReps)","\(exercisesWithSets[i].sets)","\(exercisesWithSets[i].weight)", "\(exercisesWithSets[i].setCounter)"])
-        }
-        return dataSet
-    }
-    
-    func saveDoneExercises(_ preparedDataSet: [[String]]) {
-        let requestDoneEx = NSFetchRequest<NSFetchRequestResult>(entityName: "DoneExercise")
-        let savedDoneExercises = (try! appDelegate.managedObjectContext?.fetch(requestDoneEx))  as! [DoneExercise]
-        
-        //setup data
-        for doneExercises in preparedDataSet {
-            for singleSavedDoneExercise in savedDoneExercises{
-                if DateFormatHelper.returnDateForm(singleSavedDoneExercise.date) == DateFormatHelper.returnDateForm(editDate) && singleSavedDoneExercise.dayID == doneExercises[0] && singleSavedDoneExercise.name == doneExercises[1] && singleSavedDoneExercise.setCounter ==  NSDecimalNumber(string:doneExercises[6]){
-                    singleSavedDoneExercise.doneReps = NSDecimalNumber(string:doneExercises[3])
-                    singleSavedDoneExercise.weight = NSDecimalNumber(string: doneExercises[5])
-                }
-            }
-            appDelegate.saveContext()
-        }
-        
-    }
-    
     @IBAction func saveTrainingPlan(_ sender: AnyObject) {
+        guard let unwrappedAppDelegate = appDelegate else {
+            return
+        }
         let preparedDataSet: [[String]] = prepareDataSet()
         
         //Rollback to don't save exerices which were needed to get done exercises
-        appDelegate.rollBackContext()
+        unwrappedAppDelegate.rollBackContext()
         
         saveDoneExercises(preparedDataSet)
         
@@ -108,7 +73,10 @@ class EditTrainingDataDetailVC: UIViewController {
                 startTime = Date.timeIntervalSinceReferenceDate
                 wasStopped = false
             } else {
-                startTime =  saveCurrentTime! +  Date.timeIntervalSinceReferenceDate
+                guard let unwrappedSaveCurrentTime = saveCurrentTime else {
+                    return
+                }
+                startTime =  unwrappedSaveCurrentTime +  Date.timeIntervalSinceReferenceDate
             }
         }
     }
@@ -122,6 +90,14 @@ class EditTrainingDataDetailVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        guard let unwrappedLengthUnit = UserDefaults.standard.object(forKey: "lengthUnit") as? String, let unwrappedWeightUnit = UserDefaults.standard.object(forKey: "weightUnit") as? String, let unwrappedAppDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            return
+        }
+        
+        lengthUnit = unwrappedLengthUnit
+        weightUnit = unwrappedWeightUnit
+        appDelegate = unwrappedAppDelegate
         
         // Set delegate of textfields
         editRepsTextField.delegate = self
@@ -140,10 +116,54 @@ class EditTrainingDataDetailVC: UIViewController {
     // Cancel changings
     
     override func viewDidDisappear(_ animated: Bool) {
-        appDelegate.rollBackContext()
+        guard let unwrappedAppDelegate = appDelegate else {
+            return
+        }
+        unwrappedAppDelegate.rollBackContext()
     }
     
     // MARK: Own Methods
+    
+    func prepareDataSet() -> [Array<String>] {
+        var weight = (editWeightsTextField.text as NSString? ?? "").doubleValue
+        //Save all in kg
+        if weightUnit == "lbs" {
+            weight = weight /  2.20462262185
+        }
+        
+        //If nothing was entered save zero as weight and rep value
+        exercisesWithSets[userPosition].weight =  editWeightsTextField.text != "" ?  NSDecimalNumber(value: weight as Double) : 0
+        exercisesWithSets[userPosition].doneReps = editRepsTextField.text != "" ?  NSDecimalNumber(string: editRepsTextField.text) : 0
+        
+        
+        var dataSet: [[String]] = []
+        for i in 0 ..< exercisesWithSets.count {
+            dataSet.append([exercisesWithSets[i].dayID, exercisesWithSets[i].name,"\(exercisesWithSets[i].reps)", "\(exercisesWithSets[i].doneReps)","\(exercisesWithSets[i].sets)","\(exercisesWithSets[i].weight)", "\(exercisesWithSets[i].setCounter)"])
+        }
+        return dataSet
+    }
+    
+    func saveDoneExercises(_ preparedDataSet: [[String]]) {
+        do {
+            let requestDoneEx = NSFetchRequest<NSFetchRequestResult>(entityName: "DoneExercise")
+            guard let unwrappedAppDelegate = appDelegate, let unwrappedManagedObjectContext = unwrappedAppDelegate.managedObjectContext, let savedDoneExercises = try unwrappedManagedObjectContext.fetch(requestDoneEx)  as? [DoneExercise], let unwrappedEditDate = editDate else {
+                return
+            }
+            
+            // Setup data
+            for doneExercises in preparedDataSet {
+                for singleSavedDoneExercise in savedDoneExercises{
+                    if DateFormatHelper.returnDateForm(singleSavedDoneExercise.date) == DateFormatHelper.returnDateForm(unwrappedEditDate) && singleSavedDoneExercise.dayID == doneExercises[0] && singleSavedDoneExercise.name == doneExercises[1] && singleSavedDoneExercise.setCounter ==  NSDecimalNumber(string:doneExercises[6]) {
+                        singleSavedDoneExercise.doneReps = NSDecimalNumber(string:doneExercises[3])
+                        singleSavedDoneExercise.weight = NSDecimalNumber(string: doneExercises[5])
+                    }
+                }
+                unwrappedAppDelegate.saveContext()
+            }
+        } catch {
+            print(error)
+        }
+    }
     
     func showWeightCorrectly(_ weight: inout Double) {
         //Show as lbs
@@ -188,14 +208,17 @@ class EditTrainingDataDetailVC: UIViewController {
         slideInTransition.fillMode = kCAFillModeRemoved
         
         // Add the animation to the View's layer
-        (completionDelegate as! UIView).layer.add(slideInTransition, forKey: "slideInTransition")
+        guard let completionView = completionDelegate as? UIView else {
+            return
+        }
+        completionView.layer.add(slideInTransition, forKey: "slideInTransition")
     }
     
     @objc func updateTime() {
-        currentTime = Date.timeIntervalSinceReferenceDate
+        let currentTime = Date.timeIntervalSinceReferenceDate
         
         // Find the difference between current time and start time.
-        var elapsedTime: TimeInterval = currentTime! - startTime
+        var elapsedTime: TimeInterval = currentTime - startTime
         
         // Calculate the minutes in elapsed time.
         let minutes = UInt8(elapsedTime / 60.0)
@@ -221,7 +244,7 @@ class EditTrainingDataDetailVC: UIViewController {
         for view in self.view.subviews {
             if view.tag == 123 {
                 editWeightsLabel.text = weightUnit
-                var weight = (editWeightsTextField.text! as NSString).doubleValue
+                var weight = (editWeightsTextField.text as NSString? ?? "").doubleValue
                 
                 //Save all in kg
                 if weightUnit == "lbs" {
@@ -238,7 +261,10 @@ class EditTrainingDataDetailVC: UIViewController {
                 let translationSet = NSLocalizedString("Set", comment: "Set")
                 editSetLabel.text = "\(setCounter[userPosition]).\(translationSet)"
                 editExerciseNameLabel.text = exercisesWithSets[userPosition].name
-                if (exercisesWithSets[userPosition].reps as! Int) < 10 {
+                guard let unwrappedReps = exercisesWithSets[userPosition].reps as? Int else {
+                    return
+                }
+                if unwrappedReps < 10 {
                     editRepsLabel.text = "  / \(exercisesWithSets[userPosition].reps)"
                 } else {
                     editRepsLabel.text = " /\(exercisesWithSets[userPosition].reps)"
@@ -297,7 +323,10 @@ class EditTrainingDataDetailVC: UIViewController {
         editTrainingPlanNameLabel.text = selectedExercise[0].dayID
         editWeightsLabel.text = weightUnit
         editExerciseNameLabel.text = exercisesWithSets[0].name
-        if (exercisesWithSets[0].reps as! Int) < 10 {
+        guard let unwrappedReps = exercisesWithSets[0].reps as? Int else {
+            return
+        }
+        if unwrappedReps < 10 {
             editRepsLabel.text = "  / \(exercisesWithSets[0].reps)"
         } else {
             editRepsLabel.text = " /\(exercisesWithSets[0].reps)"
@@ -341,8 +370,8 @@ extension EditTrainingDataDetailVC : UITextFieldDelegate {
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         self.view.frame.origin.y += 20
-        if textField == editRepsTextField && editRepsTextField.text != "" {
-            exercisesWithSets[userPosition].doneReps = Int(editRepsTextField.text!)! as NSNumber
+        if let unwrappedRepsText = Int(editRepsTextField.text ?? "") as NSNumber?, textField == editRepsTextField && editRepsTextField.text != "" {
+            exercisesWithSets[userPosition].doneReps = unwrappedRepsText
         }
         if textField == editWeightsTextField &&  editWeightsTextField.text != "" {
             exercisesWithSets[userPosition].weight = NSDecimalNumber(string: editWeightsTextField.text)
@@ -351,17 +380,17 @@ extension EditTrainingDataDetailVC : UITextFieldDelegate {
     
     // Set textfield input options
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let text = (textField.text! as NSString).replacingCharacters(in: range, with: string)
+        let text = (textField.text as NSString? ?? "").replacingCharacters(in: range, with: string)
         let disallowedCharacterSet = CharacterSet(charactersIn: "0123456789.").inverted
         let replacementStringIsLegal = string.rangeOfCharacter(from: disallowedCharacterSet) == nil
         let scanner = Scanner(string: text)
         let resultingTextIsNumeric = scanner.scanDecimal(nil) && scanner.isAtEnd
         
-        var getDecimalNumbers = (textField.text! as NSString).components(separatedBy: ".")
+        var getDecimalNumbers = (textField.text as NSString? ?? "").components(separatedBy: ".")
         if getDecimalNumbers.count > 1 && (getDecimalNumbers[1] as NSString).integerValue > 9 && string != ""  {
             return false
         }
-        let newLength = textField.text!.count + string.count - range.length
+        let newLength = (textField.text ?? "").count + string.count - range.length
         var back = 0
         if textField == editWeightsTextField {
             back = 6

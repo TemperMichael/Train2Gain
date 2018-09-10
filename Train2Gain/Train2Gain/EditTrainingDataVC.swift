@@ -24,7 +24,9 @@ class EditTrainingDataVC: UIViewController {
         moodButton.layer.borderColor = UIColor.white.cgColor
         
         // Set title with correct chosen date
-        let chosendate = UserDefaults.standard.object(forKey: "dateUF") as! Date
+        guard let chosendate = UserDefaults.standard.object(forKey: "dateUF") as? Date else {
+            return
+        }
         
         let translationChangeDataOf = NSLocalizedString("Change data of", comment: "Change data of")
         editTitleLabel.text = "\(translationChangeDataOf) \(DateFormatHelper.returnDateForm(chosendate))"
@@ -35,7 +37,9 @@ class EditTrainingDataVC: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let button = sender as? UIButton {
             if button == bodyMeasurementsButton {
-                let bodyMeasurementsViewController = segue.destination as! BodyMeasurementsVC
+                guard let bodyMeasurementsViewController = segue.destination as? BodyMeasurementsVC else {
+                    return
+                }
                 bodyMeasurementsViewController.editMode = true
             }
         }
