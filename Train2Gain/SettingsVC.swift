@@ -97,7 +97,7 @@ class SettingsVC: UIViewController {
     // Create password dialog: single = false for setup password
     //                         single = true for entering password
     func showPasswordAlert(_ _Message: String, single: Bool) {
-        let passwordPrompt = UIAlertController(title: NSLocalizedString("Enter Password", comment: "Enter Password"), message: _Message, preferredStyle: UIAlertControllerStyle.alert)
+        let passwordPrompt = UIAlertController(title: NSLocalizedString("Enter Password", comment: "Enter Password"), message: NSLocalizedString(_Message, comment: _Message), preferredStyle: UIAlertControllerStyle.alert)
         passwordPrompt.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel"), style: UIAlertActionStyle.default, handler: { (action) -> Void in
             if self.privacyModeSwitch.isOn {
                 self.privacyModeSwitch.setOn(false, animated: true)
