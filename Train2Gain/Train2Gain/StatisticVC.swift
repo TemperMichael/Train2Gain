@@ -35,7 +35,7 @@ import Charts
 
 class StatisticVC: UIViewController {
     
-    var appDelegate = UIApplication.shared.delegate as! AppDelegate
+    var appDelegate: AppDelegate?
     let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.dark))
     var doneExercises: [DoneExercise] = []
     var exercises: [String] = []
@@ -49,7 +49,7 @@ class StatisticVC: UIViewController {
     var selectedDoneExercise: [DoneExercise] = []
     var setAmount = 0
     var sets: [String] = ["1. Set", "2. Set", "3. Set"]
-    var weightUnit = UserDefaults.standard.object(forKey: "weightUnit")! as! String
+    var weightUnit: String?
     var years: [String] = []
     
     // MARK: IBOutlets & IBActions
@@ -72,7 +72,7 @@ class StatisticVC: UIViewController {
             self.pickerBackgroundView.isHidden = true
         })
         
-        switch self.pickerTitle.text! {
+        switch self.pickerTitle.text ?? "" {
         case NSLocalizedString("Exercise", comment: "Exercise"):
             loadSelectedExercise()
         case NSLocalizedString("Month", comment: "Month"):
@@ -123,19 +123,27 @@ class StatisticVC: UIViewController {
         let informUserSnapshot = UIAlertController(title: NSLocalizedString("Snapshot", comment: "Snapshot"), message: NSLocalizedString("Do you want to take a snapshot of the chart?", comment: "Do you want to take a snapshot of the chart?"), preferredStyle: UIAlertControllerStyle.alert)
         informUserSnapshot.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel"), style: UIAlertActionStyle.default, handler: nil))
         informUserSnapshot.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: UIAlertActionStyle.default, handler: { (action) -> Void in
-            UIImageWriteToSavedPhotosAlbum(self.chartView.getChartImage(transparent: false)!, nil, nil, nil)
+            if let chartImage = self.chartView.getChartImage(transparent: false) {
+                UIImageWriteToSavedPhotosAlbum(chartImage, nil, nil, nil)
+            }
         }))
         
         present(informUserSnapshot, animated: true, completion: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        appDelegate.shouldRotate = false
+        appDelegate?.shouldRotate = false
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        appDelegate.shouldRotate = true
+        
+        guard let unwrappedAppDelegate = UIApplication.shared.delegate as? AppDelegate, let unwrappedWeightUnit = UserDefaults.standard.object(forKey: "weightUnit") as? String else {
+            return
+        }
+        unwrappedAppDelegate.shouldRotate = true
+        appDelegate = unwrappedAppDelegate
+        weightUnit = unwrappedWeightUnit
         
         // Get current year
         let date = Date()
@@ -160,7 +168,7 @@ class StatisticVC: UIViewController {
     }
     
     // MARK: Own Methods
-
+    
     func setChartViewData() {
         
         setAmount = 0
@@ -179,9 +187,6 @@ class StatisticVC: UIViewController {
         var date = Date()
         var calendar = Calendar.current
         var components = (calendar as NSCalendar).components([.year, .month, .day], from: date)
-        var month = components.month
-        var year = components.year
-        var day = components.day
         
         // Loop to show single month or whole year
         for singleMonth in selectedMonths {
@@ -192,9 +197,9 @@ class StatisticVC: UIViewController {
                 date = singleDoneEx.date as Date
                 calendar = Calendar.current
                 components = (calendar as NSCalendar).components([.year, .month,.day], from: date)
-                month = components.month
-                year = components.year
-                day = components.day
+                guard let month = components.month, let year = components.year, let day = components.day else {
+                    return
+                }
                 
                 // Get maximum for axis
                 if singleDoneEx.weight.doubleValue > weight {
@@ -213,19 +218,19 @@ class StatisticVC: UIViewController {
                     if weightUnit == "lbs" {
                         weight = weight * 2.20462262185
                     }
-                    if singleDoneEx.setCounter.stringValue == selectedSet && !saveDays.contains(day!) {
-                        
+                    if singleDoneEx.setCounter.stringValue == selectedSet && !saveDays.contains(day) {
+                        var daysToAdd = 0
                         //Fullfill axis when whole year should show up
                         if selectedMonths.count > 1 {
-                            showWholeYear(year, singleMonth, &day)
+                            showWholeYear(year, singleMonth, &daysToAdd)
                         }
                         
-                        yAxisValues.append(ChartDataEntry(x: Double(day! - 1), y: weight))
+                        yAxisValues.append(ChartDataEntry(x: Double(day + daysToAdd - 1), y: weight))
                         if singleDoneEx.doneReps.doubleValue > rightMax {
                             rightMax = singleDoneEx.doneReps.doubleValue
                         }
-                        yAxisValuesRight.append(ChartDataEntry(x: Double(day! - 1), y: singleDoneEx.doneReps.doubleValue))
-                        saveDays.append(day!)
+                        yAxisValuesRight.append(ChartDataEntry(x: Double(day + daysToAdd - 1), y: singleDoneEx.doneReps.doubleValue))
+                        saveDays.append(day + daysToAdd)
                         
                         // Insert test comment here
                     }
@@ -233,7 +238,7 @@ class StatisticVC: UIViewController {
             }
         }
         
-        if let checkNumb = Int((self.setButton.titleLabel!.text! as NSString).substring(to: 1)) {
+        if let checkNumb = Int((self.setButton.titleLabel?.text as NSString? ?? "").substring(to: 1)) {
             if checkNumb > self.setAmount {
                 self.setButton.setTitle(NSLocalizedString("Set", comment: "Set"), for: UIControlState())
                 selectedSet = ""
@@ -299,18 +304,25 @@ class StatisticVC: UIViewController {
     
     func loadDoneExercises() {
         let requestDoneEx = NSFetchRequest<NSFetchRequestResult>(entityName: "DoneExercise")
-        doneExercises = (try! appDelegate.managedObjectContext?.fetch(requestDoneEx)) as! [DoneExercise]
-        
-        // Sort array by date
-        doneExercises.sort(by: { $0.date.compare($1.date as Date) == ComparisonResult.orderedAscending})
-        
-        // Get exercises
-        var alreadyAddedEx: [String] = []
-        for i in 0  ..< doneExercises.count {
-            if !alreadyAddedEx.contains(doneExercises[i].name) {
-                alreadyAddedEx.append(doneExercises[i].name)
-                exercises.append(doneExercises[i].name)
+        do {
+            guard let unwrappedDoneExercises = try appDelegate?.managedObjectContext?.fetch(requestDoneEx) as? [DoneExercise] else {
+                return
             }
+            doneExercises = unwrappedDoneExercises
+            
+            // Sort array by date
+            doneExercises.sort(by: { $0.date.compare($1.date as Date) == ComparisonResult.orderedAscending})
+            
+            // Get exercises
+            var alreadyAddedEx: [String] = []
+            for i in 0  ..< doneExercises.count {
+                if !alreadyAddedEx.contains(doneExercises[i].name) {
+                    alreadyAddedEx.append(doneExercises[i].name)
+                    exercises.append(doneExercises[i].name)
+                }
+            }
+        } catch {
+            print(error)
         }
     }
     
@@ -325,14 +337,18 @@ class StatisticVC: UIViewController {
         chartView.pinchZoomEnabled = true
         chartView.backgroundColor = UIColor.white
         chartView.legend.enabled = true
-        chartView.legend.font = UIFont(name:"HelveticaNeue-Light", size: 11)!
+        if let legendFont = UIFont(name:"HelveticaNeue-Light", size: 11) {
+            chartView.legend.font = legendFont
+        }
         chartView.legend.horizontalAlignment = Legend.HorizontalAlignment.left
         chartView.legend.verticalAlignment = Legend.VerticalAlignment.bottom
         chartView.legend.xOffset = -10
         chartView.xAxis.axisMinimum = 1
         
         let xAxis = chartView.xAxis
-        xAxis.labelFont =  UIFont(name: "HelveticaNeue-Light", size: 12)!
+        if let xAxisLabelFont = UIFont(name: "HelveticaNeue-Light", size: 12) {
+            xAxis.labelFont = xAxisLabelFont
+        }
         xAxis.labelTextColor = UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1)
         xAxis.drawGridLinesEnabled = false
         xAxis.drawAxisLineEnabled = false
@@ -356,42 +372,45 @@ class StatisticVC: UIViewController {
         setChartViewData()
     }
     
-    func showWholeYear(_ year: Int?, _ singleMonth: String, _ day: inout Int?) {
-        print("wholeYear")
+    func showWholeYear(_ year: Int, _ singleMonth: String, _ day: inout Int) {
         chartView.xAxis.axisMaximum = 365
         
+        guard let monthAmount = monthDateDictionary.value(forKey: singleMonth) as? Int else {
+            return
+        }
+        
         // Add days to set data to correct day in correct month
-        switch monthDateDictionary.value(forKey: singleMonth) as! Int {
+        switch monthAmount {
         case 2 :
-            day! += 31
+            day += 31
         case 3 :
-            day! += 59
+            day += 59
         case 4 :
-            day! += 90
+            day += 90
         case 5 :
-            day! += 120
+            day += 120
         case 6 :
-            day! += 151
+            day += 151
         case 7 :
-            day! += 181
+            day += 181
         case 8 :
-            day! += 212
+            day += 212
         case 9 :
-            day! += 243
+            day += 243
         case 10 :
-            day! += 273
+            day += 273
         case 11 :
-            day! += 304
+            day += 304
         case 12 :
-            day! += 334
+            day += 334
         default :
             print("Month Error")
         }
         
-        if ((year! % 4 == 0) && (year! % 100 != 0)) || (year! % 400 == 0) && monthDateDictionary.value(forKey: singleMonth) as! Int > 2 {
+        if ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0) && monthAmount > 2 {
             
             // Leap year
-            day! += 1
+            day += 1
             chartView.xAxis.axisMaximum = 366
         }
     }
@@ -423,16 +442,20 @@ class StatisticVC: UIViewController {
             set1.lineWidth = 2
             set1.circleRadius = 1.5
             set1.drawCircleHoleEnabled = true
-            set1.valueFont = UIFont(name: "HelveticaNeue-Light", size:9)!
+            if let valueFont = UIFont(name: "HelveticaNeue-Light", size:9) {
+                set1.valueFont = valueFont
+            }
             set1.fillAlpha = 255 / 255.0
-            let set2 = LineChartDataSet(values: yAxisValues, label: "\(selectedExercise) in \(weightUnit) \(selectedYear)")
+            let set2 = LineChartDataSet(values: yAxisValues, label: "\(selectedExercise) in \(weightUnit ?? "") \(selectedYear)")
             set2.axisDependency = YAxis.AxisDependency.left
             set2.setColor(UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1))
             set2.setCircleColor(UIColor(red: 37 / 255, green: 190 / 255, blue: 254 / 255, alpha: 1))
             set2.lineWidth = 2
             set2.circleRadius = 1.5
             set2.drawCircleHoleEnabled = true
-            set2.valueFont = UIFont(name: "HelveticaNeue-Light", size: 9)!
+            if let valueFont = UIFont(name: "HelveticaNeue-Light", size:9) {
+                set2.valueFont = valueFont
+            }
             set2.fillAlpha = 255 / 255.0
             
             let dataSets = [set1, set2]
@@ -456,7 +479,7 @@ extension StatisticVC: ChartViewDelegate {
         selectedValueLabel.isHidden = false
         if highlight.dataSetIndex == 1 {
             selectedValueLabel.textColor = UIColor(red: 51 / 255, green: 181 / 255, blue: 229 / 255, alpha: 1)
-            selectedValueLabel.text = NSString(format: "Val.:%.2f \(weightUnit)" as NSString,entry.y ) as String
+            selectedValueLabel.text = NSString(format: "Val.:%.2f \(weightUnit ?? "")" as NSString,entry.y ) as String
         } else {
             selectedValueLabel.textColor = UIColor.gray
             let translationReps = NSLocalizedString("reps", comment: "reps")

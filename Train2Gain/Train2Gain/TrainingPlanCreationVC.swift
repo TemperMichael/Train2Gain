@@ -11,7 +11,7 @@ import CoreData
 
 class TrainingPlanCreationVC: UIViewController {
     
-    var appDelegate = UIApplication.shared.delegate as! AppDelegate
+    var appDelegate: AppDelegate?
     var dayId: String = ""
     var deleteOn: Bool = false
     var editDayIDSaver = ""
@@ -32,7 +32,7 @@ class TrainingPlanCreationVC: UIViewController {
     
     @IBAction func addExercise(_ sender: AnyObject) {
         if isAllFilled() {
-            exercises[userPosition] = [trainingPlanExerciseNameTextField.text!, trainingPlanRepsTextField.text!, trainingPlanSetsTextField.text!]
+            exercises[userPosition] = [trainingPlanExerciseNameTextField.text ?? "", trainingPlanRepsTextField.text ?? "", trainingPlanSetsTextField.text ?? ""]
             exercises.insert(["", "", ""], at: userPosition + 1)
             filterSpecificView(false)
             clearDetails()
@@ -52,30 +52,36 @@ class TrainingPlanCreationVC: UIViewController {
     @IBAction func saveTrainingPlan(_ sender: AnyObject) {
         // Save all created exercises
         if isAllFilled() {
-            dayId = trainingPlanNameTextField.text!
-            exercises[userPosition] = [trainingPlanExerciseNameTextField.text!, trainingPlanRepsTextField.text!, trainingPlanSetsTextField.text!]
-            let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Exercise")
-            let exercisesCD = (try! appDelegate.managedObjectContext?.fetch(request)) as! [Exercise]
-            
-            // In edit mode remove old saved exercises and add the new edited one
-            if editMode {
-                removePreviousExercises(exercisesCD)
+            do {
+                dayId = trainingPlanNameTextField.text ?? ""
+                exercises[userPosition] = [trainingPlanExerciseNameTextField.text ?? "", trainingPlanRepsTextField.text ?? "", trainingPlanSetsTextField.text ?? ""]
+                let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Exercise")
+                guard let exercisesCD = try appDelegate?.managedObjectContext?.fetch(request) as? [Exercise] else {
+                    return
+                }
+                
+                // In edit mode remove old saved exercises and add the new edited one
+                if editMode {
+                    removePreviousExercises(exercisesCD)
+                }
+                appDelegate?.saveContext()
+                saveExercises()
+                
+                AlertFormatHelper.showInfoAlert(self, "Your training plan was saved.")
+            } catch {
+                print(error)
             }
-            appDelegate.saveContext()
-            saveExercises()
-
-            AlertFormatHelper.showInfoAlert(self, "Your training plan was saved.")
         }
         
     }
     
     @IBAction func showPreviousExercise(_ sender: AnyObject) {
-        exercises[userPosition] = [trainingPlanExerciseNameTextField.text!, trainingPlanRepsTextField.text!, trainingPlanSetsTextField.text!]
+        exercises[userPosition] = [trainingPlanExerciseNameTextField.text ?? "", trainingPlanRepsTextField.text ?? "", trainingPlanSetsTextField.text ?? ""]
         filterSpecificView(true)
     }
     
     @IBAction func showNextExercise(_ sender: AnyObject) {
-        exercises[userPosition] = [trainingPlanExerciseNameTextField.text!, trainingPlanRepsTextField.text!, trainingPlanSetsTextField.text!]
+        exercises[userPosition] = [trainingPlanExerciseNameTextField.text ?? "", trainingPlanRepsTextField.text ?? "", trainingPlanSetsTextField.text ?? ""]
         filterSpecificView(false)
     }
     
@@ -83,6 +89,11 @@ class TrainingPlanCreationVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        guard let unwrappedAppDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            return
+        }
+        appDelegate = unwrappedAppDelegate
         
         // Set delegates of textfields
         trainingPlanRepsTextField.delegate = self
@@ -144,7 +155,7 @@ class TrainingPlanCreationVC: UIViewController {
     
     func filterSpecificView(_ animationDirection: Bool) {
         if deleteOn || isAllFilled() {
-            dayId = trainingPlanNameTextField.text!
+            dayId = trainingPlanNameTextField.text ?? ""
             for view in self.view.subviews {
                 if view.tag == 123 {
                     // Start animation
@@ -214,26 +225,37 @@ class TrainingPlanCreationVC: UIViewController {
         slideInTransition.fillMode = kCAFillModeRemoved
         
         // Add the animation to the View's layer
-        (completionDelegate as! UIView).layer.add(slideInTransition, forKey: "slideInTransition")
+        guard let completionView = completionDelegate as? UIView else {
+            return
+        }
+        completionView.layer.add(slideInTransition, forKey: "slideInTransition")
         
     }
     
     func removePreviousExercises(_ exercisesCD: [Exercise]) {
+        guard let unwrappedManagedObjectContext = appDelegate?.managedObjectContext else {
+            return
+        }
         for singleExCD in exercisesCD {
             if singleExCD.dayID == editDayIDSaver {
-                appDelegate.managedObjectContext!.delete(singleExCD as NSManagedObject)
+                unwrappedManagedObjectContext.delete(singleExCD as NSManagedObject)
             }
         }
     }
     
     func saveExercises() {
+        guard let unwrappedManagedObjectContext = appDelegate?.managedObjectContext else {
+            return
+        }
         for checkCells in self.exercises {
-            let newItem = NSEntityDescription.insertNewObject(forEntityName: "Exercise", into: appDelegate.managedObjectContext!) as! Exercise
+            guard let newItem = NSEntityDescription.insertNewObject(forEntityName: "Exercise", into: unwrappedManagedObjectContext) as? Exercise else {
+                return
+            }
             newItem.dayID = dayId
             newItem.name = checkCells[0]
-            newItem.reps = Int(checkCells[1])! as NSNumber
-            newItem.sets = Int(checkCells[2])! as NSNumber
-            appDelegate.saveContext()
+            newItem.reps = Int(checkCells[1]) as NSNumber? ?? 0
+            newItem.sets = Int(checkCells[2]) as NSNumber? ?? 0
+            appDelegate?.saveContext()
         }
     }
     
@@ -263,7 +285,7 @@ class TrainingPlanCreationVC: UIViewController {
     
 }
 
- // MARK: TextField
+// MARK: TextField
 
 extension TrainingPlanCreationVC: UITextFieldDelegate {
     
@@ -319,10 +341,10 @@ extension TrainingPlanCreationVC: UITextFieldDelegate {
         }
         textField.backgroundColor = UIColor.white
         textField.placeholder = ""
-        let text = (textField.text! as NSString).replacingCharacters(in: range, with: string)
+        let text = (textField.text as NSString? ?? "").replacingCharacters(in: range, with: string)
         
         // Setup input settings
-        let newLength = textField.text!.count + string.count - range.length
+        let newLength = (textField.text ?? "").count + string.count - range.length
         var back = 0
         if textField == trainingPlanRepsTextField {
             back = 2

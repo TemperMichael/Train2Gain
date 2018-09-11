@@ -34,7 +34,11 @@ class SettingsVC: UIViewController {
                     }
                 } else {
                     // Handle other possible situations
-                    switch policyError!._code {
+                    guard let unwrappedPolicyError = policyError else {
+                        UIAlertView(title: "Error", message: "Authentication was cancelled by the system", delegate: self, cancelButtonTitle: "OK").show()
+                        return
+                    }
+                    switch unwrappedPolicyError._code {
                     case LAError.Code.systemCancel.rawValue :
                         UIAlertView(title: "Error", message: "Authentication was cancelled by the system", delegate: self, cancelButtonTitle: "OK").show()
                     case LAError.Code.userCancel.rawValue :
@@ -49,11 +53,11 @@ class SettingsVC: UIViewController {
         }
     }
     
-  
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         setupView()
         
         //Get password
@@ -89,7 +93,7 @@ class SettingsVC: UIViewController {
     }
     
     // MARK: Own Methods
-
+    
     // Create password dialog: single = false for setup password
     //                         single = true for entering password
     func showPasswordAlert(_ _Message: String, single: Bool) {
@@ -103,8 +107,11 @@ class SettingsVC: UIViewController {
         }))
         passwordPrompt.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: UIAlertActionStyle.default, handler: { (action) -> Void in
             //Enter password
+            guard let unwrappedPasswordTextFields = passwordPrompt.textFields else {
+                return
+            }
             if single {
-                let textField = passwordPrompt.textFields![0]
+                let textField = unwrappedPasswordTextFields[0]
                 let password = textField.text
                 if password == self.password {
                     self.privacyModeSwitch.setOn(false, animated: true)
@@ -114,12 +121,12 @@ class SettingsVC: UIViewController {
                 }
             } else {
                 // Setup password
-                var textField = passwordPrompt.textFields![0]
+                var textField = unwrappedPasswordTextFields[0]
                 let password = textField.text
-                textField = passwordPrompt.textFields![1]
-                let passwordConfirmend = textField.text
-                if password == passwordConfirmend && passwordConfirmend != "" {
-                    self.password = passwordConfirmend!
+                textField = unwrappedPasswordTextFields[1]
+                
+                if let passwordConfirmend = textField.text, password == passwordConfirmend && passwordConfirmend != "" {
+                    self.password = passwordConfirmend
                     UserDefaults.standard.set(passwordConfirmend, forKey: "Password")
                 } else {
                     self.showPasswordAlert(NSLocalizedString("Confirmed password was wrong or empty", comment: "Confirmed password was wrong or empty"),single: false)
@@ -141,8 +148,11 @@ class SettingsVC: UIViewController {
     }
     
     func setupView() {
-        weightUnitSwitch.isOn = UserDefaults.standard.object(forKey: "weightUnit") as! String == "kg" ? true : false
-        lengthUnitSwitch.isOn = UserDefaults.standard.object(forKey: "lengthUnit") as! String == "cm" ? true : false
+        guard let unwrappedWeightUnit = UserDefaults.standard.object(forKey: "weightUnit") as? String, let unwrappedLengthUnit = UserDefaults.standard.object(forKey: "lengthUnit") as? String else {
+            return
+        }
+        weightUnitSwitch.isOn = unwrappedWeightUnit == "kg" ? true : false
+        lengthUnitSwitch.isOn = unwrappedLengthUnit == "cm" ? true : false
         weightUnitSwitch.tintColor = UIColor.white
         lengthUnitSwitch.tintColor = UIColor.white
         privacyModeSwitch.tintColor = UIColor.white

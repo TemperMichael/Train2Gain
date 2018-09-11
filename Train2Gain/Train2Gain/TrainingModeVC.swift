@@ -13,12 +13,11 @@ import Crashlytics
 
 class TrainingModeVC: UIViewController {
     
-    var appDelegate =  UIApplication.shared.delegate as! AppDelegate
+    var appDelegate: AppDelegate?
     let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.dark))
-    var currentTime: TimeInterval?
-    var date = UserDefaults.standard.object(forKey: "dateUF") as! Date
+    var date: Date?
     var exercisesWithSets: [Exercise] = []
-    var lengthUnit = UserDefaults.standard.object(forKey: "lengthUnit")! as! String
+    var lengthUnit: String?
     var saveCurrentTime: TimeInterval?
     var savedEnteredExercises: [[String]] = []
     var startTime = TimeInterval()
@@ -26,7 +25,7 @@ class TrainingModeVC: UIViewController {
     var setCounter: [Int] = []
     var timer = Timer()
     var wasStopped = true
-    var weightUnit = UserDefaults.standard.object(forKey: "weightUnit")! as! String
+    var weightUnit: String?
     var userPosition: Int = 0
     
     // MARK: IBOutlets & IBActions
@@ -56,8 +55,11 @@ class TrainingModeVC: UIViewController {
     @IBAction func saveTrainingPlan(_ sender: AnyObject) {
         var preparedDataSet = prepareDataSet()
         
+        guard let unwrappedAppDelegate = appDelegate else {
+            return
+        }
         // Rollback to don't save exerices which were needed to get done exercises
-        appDelegate.rollBackContext()
+        unwrappedAppDelegate.rollBackContext()
         
         saveDoneExercises(preparedDataSet)
         
@@ -66,7 +68,7 @@ class TrainingModeVC: UIViewController {
                             score: nil,
                             success: true,
                             customAttributes: ["Training name": preparedDataSet[0][0]])
-
+        
         AlertFormatHelper.showInfoAlert(self, "Your training was saved.")
     }
     
@@ -81,7 +83,10 @@ class TrainingModeVC: UIViewController {
     }
     
     @IBAction func showNextDay(_ sender: AnyObject) {
-        date = DateFormatHelper.setDate(date.addingTimeInterval(60 * 60 * 24), datePickerButton)
+        guard let unwrappedDate = date else {
+            return
+        }
+        date = DateFormatHelper.setDate(unwrappedDate.addingTimeInterval(60 * 60 * 24), datePickerButton)
     }
     
     @IBAction func showNextExercise(_ sender: AnyObject) {
@@ -89,7 +94,10 @@ class TrainingModeVC: UIViewController {
     }
     
     @IBAction func showPreviousDay(_ sender: AnyObject) {
-        date = DateFormatHelper.setDate(date.addingTimeInterval(-60 * 60 * 24), datePickerButton)
+        guard let unwrappedDate = date else {
+            return
+        }
+        date = DateFormatHelper.setDate(unwrappedDate.addingTimeInterval(-60 * 60 * 24), datePickerButton)
     }
     
     @IBAction func showPreviousExercise(_ sender: AnyObject) {
@@ -104,7 +112,10 @@ class TrainingModeVC: UIViewController {
                 startTime = Date.timeIntervalSinceReferenceDate
                 wasStopped = false
             } else {
-                startTime =  saveCurrentTime! +  Date.timeIntervalSinceReferenceDate
+                guard let unwrappedSaveCurrentTime = saveCurrentTime else {
+                    return
+                }
+                startTime =  unwrappedSaveCurrentTime +  Date.timeIntervalSinceReferenceDate
             }
         }
     }
@@ -115,9 +126,18 @@ class TrainingModeVC: UIViewController {
     }
     
     // MARK: View Methods
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        guard let unwrappedLengthUnit = UserDefaults.standard.object(forKey: "lengthUnit") as? String, let unwrappedWeightUnit = UserDefaults.standard.object(forKey: "weightUnit") as? String, let unwrappedAppDelegate = UIApplication.shared.delegate as? AppDelegate, let unwrappedDate = UserDefaults.standard.object(forKey: "dateUF") as? Date else {
+            return
+        }
+        
+        lengthUnit = unwrappedLengthUnit
+        weightUnit = unwrappedWeightUnit
+        appDelegate = unwrappedAppDelegate
+        date = unwrappedDate
         
         //Set delegate of textfields
         exerciseRepsTextField.delegate = self
@@ -134,8 +154,11 @@ class TrainingModeVC: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         exercisesWithSets = []
-        date = UserDefaults.standard.object(forKey: "dateUF") as! Date
-        datePickerButton.setTitle(DateFormatHelper.returnDateForm(date), for: UIControlState())
+        guard let unwrappedDate = UserDefaults.standard.object(forKey: "dateUF") as? Date else {
+            return
+        }
+        datePickerButton.setTitle(DateFormatHelper.returnDateForm(unwrappedDate), for: UIControlState())
+        date = unwrappedDate
         loadSelectedExercises()
     }
     
@@ -143,12 +166,15 @@ class TrainingModeVC: UIViewController {
         Answers.logLevelEnd("Canceled Training",
                             score: nil,
                             success: true,
-                            customAttributes: ["Training name": exerciseTrainingPlanNameLabel.text!])
+                            customAttributes: ["Training name": exerciseTrainingPlanNameLabel.text ?? ""])
         self.navigationController?.setToolbarHidden(true, animated: true)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
-        appDelegate.rollBackContext()
+        guard let unwrappedAppDelegate = appDelegate else {
+            return
+        }
+        unwrappedAppDelegate.rollBackContext()
     }
     
     // MARK: Own Methods
@@ -157,7 +183,7 @@ class TrainingModeVC: UIViewController {
         for view in self.view.subviews {
             if view.tag == 123 {
                 exerciseWeightsLabel.text = weightUnit
-                var weight = (exerciseWeightsTextField.text! as NSString).doubleValue
+                var weight = (exerciseWeightsTextField.text as NSString? ?? "").doubleValue
                 
                 //Save all in kg
                 if weightUnit == "lbs" {
@@ -176,7 +202,11 @@ class TrainingModeVC: UIViewController {
                 
                 exerciseNameLabel.text = exercisesWithSets[userPosition].name
                 
-                if (exercisesWithSets[userPosition].reps as! Int) < 10 {
+                guard let unwrappedReps = exercisesWithSets[userPosition].reps as? Int else {
+                    return
+                }
+                
+                if unwrappedReps < 10 {
                     exerciseRepsLabel.text = "  / \(exercisesWithSets[userPosition].reps)"
                 } else {
                     exerciseRepsLabel.text = " /\(exercisesWithSets[userPosition].reps)"
@@ -224,10 +254,10 @@ class TrainingModeVC: UIViewController {
     }
     
     @objc func updateTime() {
-        currentTime = Date.timeIntervalSinceReferenceDate
+        let currentTime = Date.timeIntervalSinceReferenceDate
         
         // Find the difference between current time and start time.
-        var elapsedTime: TimeInterval = currentTime! - startTime
+        var elapsedTime: TimeInterval = currentTime - startTime
         
         // Calculate the minutes in elapsed time.
         let minutes = UInt8(elapsedTime / 60.0)
@@ -274,16 +304,24 @@ class TrainingModeVC: UIViewController {
         slideInTransition.fillMode = kCAFillModeRemoved
         
         // Add the animation to the View's layer
-        (completionDelegate as! UIView).layer.add(slideInTransition, forKey: "slideInTransition")
+        guard let completionView = completionDelegate as? UIView else {
+            return
+        }
+        completionView.layer.add(slideInTransition, forKey: "slideInTransition")
     }
     
     func saveDoneExercises(_ preparedDataSet: [[String]]) {
         var i = 0
+        guard let unwrappedAppDelegate = appDelegate, let unwrappedManagedObjectContext = unwrappedAppDelegate.managedObjectContext, let unwrappedDate = date else {
+            return
+        }
         
         //Save data
         for checkCells in preparedDataSet {
-            let newItem = NSEntityDescription.insertNewObject(forEntityName: "DoneExercise", into: appDelegate.managedObjectContext!) as! DoneExercise
-            newItem.date = date
+            guard let newItem = NSEntityDescription.insertNewObject(forEntityName: "DoneExercise", into: unwrappedManagedObjectContext) as? DoneExercise else {
+                return
+            }
+            newItem.date = unwrappedDate
             newItem.dayID = checkCells[0]
             newItem.name = checkCells[1]
             newItem.reps = NSDecimalNumber(string: checkCells[2])
@@ -291,13 +329,13 @@ class TrainingModeVC: UIViewController {
             newItem.sets = NSDecimalNumber(string:checkCells[4])
             newItem.weight = NSDecimalNumber(string: checkCells[5])
             newItem.setCounter = NSNumber(value: setCounter[i])
-            appDelegate.saveContext()
+            unwrappedAppDelegate.saveContext()
             i += 1
         }
     }
     
     func prepareDataSet() -> [Array<String>] {
-        var weight = (exerciseWeightsTextField.text! as NSString).doubleValue
+        var weight = (exerciseWeightsTextField.text as NSString? ?? "").doubleValue
         
         // Save all in kg
         if weightUnit == "lbs" {
@@ -318,7 +356,10 @@ class TrainingModeVC: UIViewController {
     
     func loadSelectedExercises() {
         for item in selectedExercise as [Exercise] {
-            for i in 0..<(item.sets as! Int) {
+            guard let unwrappedSet = item.sets as? Int else {
+                return
+            }
+            for i in 0..<unwrappedSet {
                 setCounter.append(i + 1)
                 let newItem = Exercise()
                 newItem.dayID = item.dayID
@@ -333,10 +374,13 @@ class TrainingModeVC: UIViewController {
     }
     
     func setupStartView() {
+        guard let unwrappedReps = exercisesWithSets[0].reps as? Int else {
+            return
+        }
         exerciseTrainingPlanNameLabel.text = selectedExercise[0].dayID
         exerciseWeightsLabel.text = weightUnit
         exerciseNameLabel.text = exercisesWithSets[0].name
-        if (exercisesWithSets[0].reps as! Int) < 10 {
+        if unwrappedReps < 10 {
             exerciseRepsLabel.text = "  / \(exercisesWithSets[0].reps)"
         } else {
             exerciseRepsLabel.text = " /\(exercisesWithSets[0].reps)"
@@ -374,7 +418,10 @@ extension TrainingModeVC: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         self.view.frame.origin.y += 20
         if textField == exerciseRepsTextField && exerciseRepsTextField.text != "" {
-            exercisesWithSets[userPosition].doneReps = Int(exerciseRepsTextField.text!)! as NSNumber
+            guard let unwrappedInput = Int(exerciseRepsTextField.text ?? "") as NSNumber? else {
+                return
+            }
+            exercisesWithSets[userPosition].doneReps = unwrappedInput
         }
         if textField == exerciseWeightsTextField &&  exerciseWeightsTextField.text != "" {
             exercisesWithSets[userPosition].weight = NSDecimalNumber(string: exerciseWeightsTextField.text)
@@ -383,16 +430,16 @@ extension TrainingModeVC: UITextFieldDelegate {
     
     // Set textfield input options
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let text = (textField.text! as NSString).replacingCharacters(in: range, with: string)
+        let text = (textField.text as NSString? ?? "").replacingCharacters(in: range, with: string)
         let disallowedCharacterSet = CharacterSet(charactersIn: "0123456789.").inverted
         let replacementStringIsLegal = string.rangeOfCharacter(from: disallowedCharacterSet) == nil
         let scanner = Scanner(string: text)
         let resultingTextIsNumeric = scanner.scanDecimal(nil) && scanner.isAtEnd
-        var getDecimalNumbers = (textField.text! as NSString).components(separatedBy: ".")
+        var getDecimalNumbers = (textField.text as NSString? ?? "").components(separatedBy: ".")
         if getDecimalNumbers.count > 1 && (getDecimalNumbers[1] as NSString).integerValue > 9 && string != ""  {
             return false
         }
-        let newLength = textField.text!.count + string.count - range.length
+        let newLength = (textField.text ?? "").count + string.count - range.length
         var back = 0
         if textField == exerciseWeightsTextField {
             back = 6

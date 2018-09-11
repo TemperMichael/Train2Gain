@@ -11,10 +11,10 @@ import CoreData
 
 class TrainingPlansVC: UIViewController {
     
-    var appDelegate = UIApplication.shared.delegate as! AppDelegate
+    var appDelegate: AppDelegate?
     var dayIDs: [String] = []
     var savedExercises: [Exercise] = []
-    var selectedDayID: String!
+    var selectedDayID: String?
     var selectedExercises: [Exercise] = []
     var trainingPlanCell = "TrainingPlanCell"
     
@@ -24,6 +24,10 @@ class TrainingPlansVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        guard let unwrappedAppDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            return
+        }
+        appDelegate = unwrappedAppDelegate
         tableView.delegate = self
         tableView.dataSource = self
         
@@ -31,6 +35,7 @@ class TrainingPlansVC: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        
         // Set actual date
         UserDefaults.standard.set(Date(), forKey: "dateUF")
         
@@ -46,12 +51,16 @@ class TrainingPlansVC: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         //Give the next view the selected exercises
         if segue.identifier == "TrainingPlanChosen" {
-            let trainingModeViewController = segue.destination as! TrainingModeVC
+            guard let trainingModeViewController = segue.destination as? TrainingModeVC else {
+                return
+            }
             trainingModeViewController.selectedExercise = selectedExercises
         }
         if segue.identifier == "AddTrainingPlan" {
             if let _ = sender as? UITableViewRowAction {
-                let trainingPlanCreationViewController = segue.destination as! TrainingPlanCreationVC
+                guard let trainingPlanCreationViewController = segue.destination as? TrainingPlanCreationVC else {
+                    return
+                }
                 trainingPlanCreationViewController.editMode = true
                 trainingPlanCreationViewController.selectedExercise = self.selectedExercises
             }
@@ -59,24 +68,31 @@ class TrainingPlansVC: UIViewController {
     }
     
     // MARK: Own Methods
-
+    
     func setupDayIds() {
         // Get exercises core data
-        let  request = NSFetchRequest<NSFetchRequestResult>(entityName: "Exercise")
-        savedExercises = (try! appDelegate.managedObjectContext?.fetch(request))  as! [Exercise]
-        var alreadyExists = false
-        
-        // Check if data already exists
-        for checkIDAmount in savedExercises {
-            alreadyExists = false
-            for singleDayId in dayIDs {
-                if checkIDAmount.dayID == singleDayId {
-                    alreadyExists = true
+        do {
+            let  request = NSFetchRequest<NSFetchRequestResult>(entityName: "Exercise")
+            guard let unwrappedExercises = try appDelegate?.managedObjectContext?.fetch(request) as? [Exercise] else {
+                return
+            }
+            savedExercises = unwrappedExercises
+            var alreadyExists = false
+            
+            // Check if data already exists
+            for checkIDAmount in savedExercises {
+                alreadyExists = false
+                for singleDayId in dayIDs {
+                    if checkIDAmount.dayID == singleDayId {
+                        alreadyExists = true
+                    }
+                }
+                if !alreadyExists {
+                    dayIDs.append(checkIDAmount.dayID)
                 }
             }
-            if !alreadyExists {
-                dayIDs.append(checkIDAmount.dayID)
-            }
+        } catch {
+            print(error)
         }
     }
     
@@ -90,7 +106,10 @@ class TrainingPlansVC: UIViewController {
     
     func setupDeleteAction(_ indexPath: IndexPath) -> UITableViewRowAction {
         let deleteAction = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: NSLocalizedString("Delete", comment: "Delete")) { (action, index) -> Void in
-            let context: NSManagedObjectContext = self.appDelegate.managedObjectContext!
+            guard let unwrappedManagedObjectContext = self.appDelegate?.managedObjectContext else {
+                return
+            }
+            let context: NSManagedObjectContext = unwrappedManagedObjectContext
             var count = self.savedExercises.count - 1
             for _ in 0..<self.savedExercises.count  {
                 if self.savedExercises[count].dayID == self.dayIDs[(indexPath as NSIndexPath).row] {
